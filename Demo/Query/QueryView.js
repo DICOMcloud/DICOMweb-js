@@ -193,3 +193,4 @@ var QueryView = (function () {
     };
     return QueryView;
 })();
+//# sourceMappingURL=queryview.js.map
