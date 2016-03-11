@@ -1,0 +1,21 @@
+﻿<div class="panel panel-default">
+    <div class="panel-body">
+        <p>Browse and upload your DICOM files to store them using the STOW –RS service then use the “Query & Retrieve” tab to search for your studies, series and instances, and retrieve them on the client using the QIDO-RS and WADO-RS services.</param>
+        <div class="input-group">
+            <span class="input-group-btn">
+                <span class="btn btn-primary btn-file">
+                    Browse&hellip; <input id="getFile" class="btn btn-default" type="file" multiple>
+                </span>
+                <span>
+                    <input id="addFileButton" type="button" class="btn btn-default" value="Upload" />
+                </span>
+            </span>
+            <input id="displayName" type="text" class="form-control" readonly>
+        </div>
+    </div>
+    <div class="panel-footer">
+        <div class="text-danger">Do not store your personal DICOM images as they <strong>WILL NOT</strong> be anonymized and anyone can view them.</div>
+        <div class="text-danger">Stored files will be automatically deleted after 2 hours.</div>
+    </div>
+</div>
+

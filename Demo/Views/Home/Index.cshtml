@@ -1,0 +1,45 @@
+﻿@{
+    ViewBag.Title = "Demo";
+}
+
+
+<ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active">
+        <a href="#_QueryFieldsView" aria-controls="_QueryFieldsView" role="tab" data-toggle="tab">Query & Retrieve</a>
+    </li>
+    <li role="presentation">
+        <a href="#_StoreView" aria-controls="_StoreView" role="tab" data-toggle="tab">Store</a>
+    </li>
+</ul>
+
+<div class="tab-content clearfix">
+    <div role="tabpanel" class="tab-pane active" id="_QueryFieldsView">
+        <div class="col-sm-3">
+            @Html.Partial("_QueryFieldsView")
+        </div>
+        <div class="col-sm-9">
+            @Html.Partial("_StudyView")
+        </div>
+    </div>
+    <div role="tabpanel" class="tab-pane" id="_StoreView">
+        @Html.Partial("_StoreView")
+    </div>
+</div>
+
+
+
+@Html.Partial("_AlertDlg")
+
+
+@section scripts
+{
+        <script src="References/MedicalCoJs.Dicom.js"></script>
+        <script src="References/MedicalCoJs.Client.Proxies.js"></script>
+        <script src="~/Query/RetrieveService.js"></script>
+        <script src="Query/QueryModel.js"></script>
+        <script src="Query/QueryView.js"></script>
+        <script src="Query/QueryController.js"></script>
+        <script src="app.js"></script>
+
+
+    }

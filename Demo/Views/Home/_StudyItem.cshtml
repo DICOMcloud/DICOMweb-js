@@ -1,0 +1,38 @@
+﻿@using Demo.Models
+
+    <div class="col-sm-4" data-target="series-query">
+        <div class="thumbnail tile tile-medium">
+            <div class="panel-body">
+                <div class="xcol-md-3">
+                    <strong><span>Patient:</span></strong>
+                    <strong><span data-pacs-patientName="true"></span></strong>
+                </div>
+                <div class="xcol-md-1">
+                    <span>Accession #:</span>
+                    <span data-pacs-accessionNumber="true"></span>
+                </div>
+                <div class="xcol-md-2">
+                    <span>Date:</span>
+                    <span data-pacs-studyDate="true"></span>
+                </div>
+                <div class="xcol-md-1">
+                    <span>Study ID:</span>
+                    <span data-pacs-studyID="true"></span>
+                </div>
+                <div class="xcol-md-3">
+                    <span>Description:</span>
+                    <a data-pacs-studyDesc="true"></a>
+                </div>
+            </div>
+
+            <div class="xtile-toolbar panel-footer">
+                <div class="btn-group btn-group-justified" role="group">
+                    <a href="#" role="button" data-pacs-studyJson="true" class="btn btn-default">Json</a>
+                    <a href="#" role="button" data-pacs-studyRetrieve class="btn btn-default">DICOM </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+

@@ -1,0 +1,14 @@
+﻿@using Demo.Models
+
+
+@model ToolbarViewModel
+
+<div class="xtile-toolbar panel-footer">
+    <div class="btn-group btn-group-justified" role="group">
+        
+        @foreach(var toolbarItem in Model ) {
+            <a href="#" role="button" @{toolbarItem.DataAttribute}="true" class="btn btn-default">Json</a>
+        }
+
+    </div>
+</div>
