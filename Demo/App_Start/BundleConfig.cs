@@ -26,10 +26,19 @@ namespace Demo
             bundles.Add(new ScriptBundle("~/bundles/dicomweb").Include(
                         "~/Scripts/DICOMweb*"));
 
+            bundles.Add(new ScriptBundle("~/bundles/app").Include(
+                        "~/Query/RetrieveService.js",
+                        "~/Query/QueryModel.js",
+                        "~/Query/QueryView.js",
+                        "~/Query/QueryController.js",
+                        "~/app.js",
+                        "~/Scripts/jquery.json-viewer.js"));
+
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       //"~/Content/flatly-bootstrap.css",
-                      "~/Content/site.css"));
+                      "~/Content/site.css",
+                      "~/Content/jquery.json-viewer.css" ) );
         }
     }
 }

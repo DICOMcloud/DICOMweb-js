@@ -169,14 +169,6 @@
       var patientName = "";
       
                
-      $item.on("click", (ev: JQueryEventObject) => {
-         
-         this._model.SelectedStudyIndex = index;
-         ev.preventDefault();
-         return false;
-      });
-      
-
       if (study.PatientName)
       {
          patientName = study.PatientName.Alphabetic;
@@ -188,15 +180,25 @@
       $item.find("*[data-pacs-studyID]").text(study.StudyID);
       $item.find("*[data-pacs-studyDesc]").text(study.StudyDescription);
 
+      $item.on("click", (ev: JQueryEventObject) => {
+         this.ViewJson(study.DicomSourceProvider.dataSource, "JSON Study Query Response" );
+
+         ev.preventDefault();
+         return false;
+      });
+      
       $item.find("*[data-pacs-studyJson]").on("click", (ev: JQueryEventObject) => {
-         this._retrieveService.getStudyAsJson(study, (studyMetadata: any) => {
-            var $dlg: any = $("#modal-alert");
 
-            $dlg.find(".modal-title").text("JSON Study Response");
-            $dlg.modal("show");
-            $dlg.find(".modal-body").jJsonViewer(studyMetadata);
-
+         this._retrieveService.getStudyAsJson(study, (studyInstances: any) => {
+            this.ViewJson(studyInstances, "JSON Study Response");
          });
+
+         ev.preventDefault();
+         return false;
+      });
+
+      $item.find("*[data-pacs-findSeires]").on("click", (ev:JQueryEventObject)=> {
+         this._model.SelectedStudyIndex = index;
 
          ev.preventDefault();
          return false;
@@ -208,30 +210,9 @@
    private getSeriesItem(series: SeriesParams, index: number): JQuery {
       var $item = this._$seriesItemTemplate.clone();
 
-      $item.find("*[data-pacs-seriesNum]").text(series.SeriesNumber);
-      $item.find("*[data-pacs-modality]").text(series.Modality);
-      $item.find("*[data-pacs-seriesDesc]").text(series.SeriesDescription);
-      $item.find("*[data-pacs-seriesDate]").text(series.SeriesDate);      
+      this.updateSeriesItem(series, $item);
 
-      $item.on("click", (ev: Event) => {
-
-         this._model.SelectedSeriesIndex = index;
-
-         ev.preventDefault();
-         return false;
-      });
-
-      $item.find("*[data-pacs-seriesJson]").on("click", (ev: JQueryEventObject) => {
-         var $dlg: any = $("#modal-alert");
-
-         $dlg.find(".modal-title").text("JSON Series Response");
-         $dlg.find(".modal-body").text(JSON.stringify(series.DicomSourceProvider));
-
-         $dlg.modal("show");
-
-         ev.preventDefault();
-         return false;
-      });
+      this.registerSeriesEvents(series, $item);
 
       return $item;
    }
@@ -242,18 +223,22 @@
       $item.find("*[data-pacs-InstanceNum]").text(instance.InstanceNumber);
       $item.find("*[data-pacs-SopInstanceUid]").text(instance.SopInstanceUid);
 
+      $item.on("click", (ev: JQueryEventObject) => {
+         this.ViewJson(instance.DicomSourceProvider.dataSource, "Instance Query Response");
+
+         ev.preventDefault();
+         return false;
+      });
+
       $item.find("*[data-pacs-metadata]").on("click", (ev: JQueryEventObject) => {
-          this._retrieveService.getObjectAsJson(instance, (data: any) => {
-             var $dlg :any= $("#modal-alert");
 
-             $dlg.find(".modal-title").text("JSON metadata");
-             $dlg.find(".modal-body").text(JSON.stringify(data));
+         this._retrieveService.getObjectAsJson(instance, (objectInstance: any) => {
 
-             $dlg.modal("show");
+            this.ViewJson(objectInstance, "JSON metadata");
+
+            ev.preventDefault();
+            return false;
          });
-
-          ev.preventDefault();
-          return false;
       });
 
       $item.find("*[data-pacs-dicom]").on("click", (ev: JQueryEventObject) => {
@@ -270,5 +255,48 @@
        });
 
        return $item;
+   }
+   
+   private updateSeriesItem(series: SeriesParams, $item: JQuery)
+   {
+      $item.find("*[data-pacs-seriesNum]").text(series.SeriesNumber);
+      $item.find("*[data-pacs-modality]").text(series.Modality);
+      $item.find("*[data-pacs-seriesDesc]").text(series.SeriesDescription);
+      $item.find("*[data-pacs-seriesDate]").text(series.SeriesDate);      
+   }
+
+   private registerSeriesEvents(series: SeriesParams, $item: JQuery) {
+      $item.on("click", (ev: Event) => {
+         this.ViewJson(series.DicomSourceProvider);
+
+         ev.preventDefault();
+         return false;
+      });
+
+      $item.find("*[data-pacs-seriesJson]").on("click", (ev: JQueryEventObject) => {
+         this._retrieveService.getStudyAsJson(series, (seriesInstances: any) => {
+            this.ViewJson(seriesInstances, "(" + seriesInstances.length + ") Series Instances Response");
+         });
+
+         ev.preventDefault();
+         return false;
+      });
+
+      $item.find("*[data-pacs-findInstances]").on("click", (ev: JQueryEventObject) => {
+         this._model.SelectedSeriesIndex = index;
+
+         ev.preventDefault();
+         return false;
+      });
+   }
+
+   private ViewJson ( data: any, caption: string )
+   {
+      var $dlg: any = $("#modal-alert");
+
+      $dlg.find(".modal-title").text(caption);
+      $dlg.find(".modal-body").jsonViewer(data, { collapsed: true });
+
+      $dlg.modal("show");
    }
 } 

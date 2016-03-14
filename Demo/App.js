@@ -80,4 +80,3 @@ $(document).ready(function () {
         }
     });
 });
-//# sourceMappingURL=App.js.map

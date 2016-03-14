@@ -179,4 +179,3 @@ var QueryModel = (function () {
     };
     return QueryModel;
 })();
-//# sourceMappingURL=querymodel.js.map

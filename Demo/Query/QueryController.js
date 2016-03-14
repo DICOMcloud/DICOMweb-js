@@ -98,4 +98,3 @@ var QueryController = (function () {
     };
     return QueryController;
 })();
-//# sourceMappingURL=querycontroller.js.map
