@@ -181,7 +181,7 @@
       $item.find("*[data-pacs-studyDesc]").text(study.StudyDescription);
 
       $item.on("click", (ev: JQueryEventObject) => {
-         this.ViewJson(study.DicomSourceProvider.dataSource, "JSON Study Query Response" );
+         this.ViewJson(study.DicomSourceProvider.getSourceDataset(), "JSON Study Query Response" );
 
          ev.preventDefault();
          return false;
@@ -212,7 +212,7 @@
 
       this.updateSeriesItem(series, $item);
 
-      this.registerSeriesEvents(series, $item);
+      this.registerSeriesEvents(series, $item, index);
 
       return $item;
    }
@@ -224,7 +224,7 @@
       $item.find("*[data-pacs-SopInstanceUid]").text(instance.SopInstanceUid);
 
       $item.on("click", (ev: JQueryEventObject) => {
-         this.ViewJson(instance.DicomSourceProvider.dataSource, "Instance Query Response");
+         this.ViewJson(instance.DicomSourceProvider.getSourceDataset(), "Instance Query Response");
 
          ev.preventDefault();
          return false;
@@ -265,9 +265,9 @@
       $item.find("*[data-pacs-seriesDate]").text(series.SeriesDate);      
    }
 
-   private registerSeriesEvents(series: SeriesParams, $item: JQuery) {
+   private registerSeriesEvents(series: SeriesParams, $item: JQuery, index:number) {
       $item.on("click", (ev: Event) => {
-         this.ViewJson(series.DicomSourceProvider);
+         this.ViewJson(series.DicomSourceProvider.getSourceDataset(), "Series Query Response");
 
          ev.preventDefault();
          return false;

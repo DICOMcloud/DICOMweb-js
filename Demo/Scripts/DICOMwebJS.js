@@ -148,11 +148,11 @@ var JsonDicomDatasetService = (function (_super) {
     __extends(JsonDicomDatasetService, _super);
     function JsonDicomDatasetService() {
         _super.call(this);
-        this.dataSource = {};
+        this._dataSource = {};
         this._cache = new DicomElementsCache();
     }
     JsonDicomDatasetService.prototype.setModel = function (jsonDicom) {
-        this.dataSource = jsonDicom;
+        this._dataSource = jsonDicom;
     };
     JsonDicomDatasetService.prototype.getElement = function (tagValue) {
         var element;
@@ -161,7 +161,7 @@ var JsonDicomDatasetService = (function (_super) {
         }
         else {
             var dicomTag = new DicomTag(tagValue);
-            var jsonElement = this.dataSource[dicomTag.StringValue];
+            var jsonElement = this._dataSource[dicomTag.StringValue];
             element = new DicomElement();
             if (jsonElement) {
                 element.Value = jsonElement.Value;
@@ -173,12 +173,15 @@ var JsonDicomDatasetService = (function (_super) {
         }
     };
     JsonDicomDatasetService.prototype.getElements = function () {
-        for (var tagValue in this.dataSource) {
+        for (var tagValue in this._dataSource) {
             if (!this._cache[tagValue]) {
                 this._cache.addElement(this.getElement(parseInt(tagValue, 16)));
             }
         }
         return this._cache.getAllElements();
+    };
+    JsonDicomDatasetService.prototype.getSourceDataset = function () {
+        return this._dataSource;
     };
     return JsonDicomDatasetService;
 })(DicomDatasetService);

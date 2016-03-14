@@ -7,6 +7,8 @@ interface IDicomDatasetService
 {
     getElement(tagValue: number): DicomElement;
     getElements(): DicomElement[];
+
+    getSourceDataset();
 }
 
 class DicomElementsCache //TODO: work around until I figure out how to enumerate the array
@@ -64,19 +66,19 @@ class DicomDatasetService {
 
 class JsonDicomDatasetService extends DicomDatasetService implements IDicomDatasetService {
 
-   private dataSource: {};
+   private _dataSource: {};
 
     private _cache : DicomElementsCache ;
 
     constructor()
     {
         super();
-        this.dataSource = {};
+        this._dataSource = {};
         this._cache = new DicomElementsCache();
     }
 
     public setModel(jsonDicom?: Array<string>) {
-       this.dataSource = jsonDicom;
+       this._dataSource = jsonDicom;
    }
 
     public getElement(tagValue: number): DicomElement {
@@ -88,7 +90,7 @@ class JsonDicomDatasetService extends DicomDatasetService implements IDicomDatas
 
             var dicomTag = new DicomTag(tagValue);
 
-            var jsonElement = this.dataSource[dicomTag.StringValue];
+            var jsonElement = this._dataSource[dicomTag.StringValue];
 
             element = new DicomElement();
 
@@ -103,11 +105,10 @@ class JsonDicomDatasetService extends DicomDatasetService implements IDicomDatas
             return element;
         }
     }
-
-
+   
     public getElements(): DicomElement[]
     {
-        for( var tagValue in this.dataSource){
+        for( var tagValue in this._dataSource){
             if (!this._cache[tagValue]) {
                 this._cache.addElement(this.getElement(parseInt(tagValue, 16)));
             }
@@ -117,6 +118,11 @@ class JsonDicomDatasetService extends DicomDatasetService implements IDicomDatas
 
         //return this._cache.values() ;
         //return [];
+    }
+
+    public getSourceDataset()
+    {
+       return this._dataSource;
     }
 
 }

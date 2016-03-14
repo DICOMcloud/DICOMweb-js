@@ -126,7 +126,7 @@ var QueryView = (function () {
         $item.find("*[data-pacs-studyID]").text(study.StudyID);
         $item.find("*[data-pacs-studyDesc]").text(study.StudyDescription);
         $item.on("click", function (ev) {
-            _this.ViewJson(study.DicomSourceProvider.dataSource, "JSON Study Query Response");
+            _this.ViewJson(study.DicomSourceProvider.getSourceDataset(), "JSON Study Query Response");
             ev.preventDefault();
             return false;
         });
@@ -147,7 +147,7 @@ var QueryView = (function () {
     QueryView.prototype.getSeriesItem = function (series, index) {
         var $item = this._$seriesItemTemplate.clone();
         this.updateSeriesItem(series, $item);
-        this.registerSeriesEvents(series, $item);
+        this.registerSeriesEvents(series, $item, index);
         return $item;
     };
     QueryView.prototype.getInstanceItem = function (instance, index) {
@@ -156,7 +156,7 @@ var QueryView = (function () {
         $item.find("*[data-pacs-InstanceNum]").text(instance.InstanceNumber);
         $item.find("*[data-pacs-SopInstanceUid]").text(instance.SopInstanceUid);
         $item.on("click", function (ev) {
-            _this.ViewJson(instance.DicomSourceProvider.dataSource, "Instance Query Response");
+            _this.ViewJson(instance.DicomSourceProvider.getSourceDataset(), "Instance Query Response");
             ev.preventDefault();
             return false;
         });
@@ -185,10 +185,10 @@ var QueryView = (function () {
         $item.find("*[data-pacs-seriesDesc]").text(series.SeriesDescription);
         $item.find("*[data-pacs-seriesDate]").text(series.SeriesDate);
     };
-    QueryView.prototype.registerSeriesEvents = function (series, $item) {
+    QueryView.prototype.registerSeriesEvents = function (series, $item, index) {
         var _this = this;
         $item.on("click", function (ev) {
-            _this.ViewJson(series.DicomSourceProvider);
+            _this.ViewJson(series.DicomSourceProvider.getSourceDataset(), "Series Query Response");
             ev.preventDefault();
             return false;
         });
@@ -213,3 +213,4 @@ var QueryView = (function () {
     };
     return QueryView;
 })();
+//# sourceMappingURL=queryview.js.map

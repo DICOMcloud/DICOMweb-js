@@ -29,6 +29,7 @@ interface DicomElementArray extends Array<DicomElement> {
 interface IDicomDatasetService {
     getElement(tagValue: number): DicomElement;
     getElements(): DicomElement[];
+    getSourceDataset(): any;
 }
 declare class DicomElementsCache {
     private elementsArray;
@@ -43,12 +44,13 @@ declare class DicomDatasetService {
     static fromDate(date: Date): string;
 }
 declare class JsonDicomDatasetService extends DicomDatasetService implements IDicomDatasetService {
-    private dataSource;
+    private _dataSource;
     private _cache;
     constructor();
     setModel(jsonDicom?: Array<string>): void;
     getElement(tagValue: number): DicomElement;
     getElements(): DicomElement[];
+    getSourceDataset(): {};
 }
 declare class DicomTag {
     constructor(tagValue: number);

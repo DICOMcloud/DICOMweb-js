@@ -1,3 +1,16 @@
+declare module DICOMwebJS {
+    module ServerConfiguration {
+        var BaseServerUrl: string;
+        var WadoUriPart: string;
+        var WadoRsPart: string;
+        var StowPart: string;
+        var QidoPart: string;
+        function getWadoUriUrl(): string;
+        function getWadoRsUrl(): string;
+        function getStowUrl(): string;
+        function getQidoUrl(): string;
+    }
+}
 declare class MimeTypes {
     static DICOM: string;
     static xmlDicom: string;
@@ -55,19 +68,6 @@ declare class InstanceParams extends SeriesParams {
     SopInstanceUid: string;
     InstanceNumber: string;
 }
-declare module DICOMwebJS {
-    module ServerConfiguration {
-        var BaseServerUrl: string;
-        var WadoUriPart: string;
-        var WadoRsPart: string;
-        var StowPart: string;
-        var QidoPart: string;
-        function getWadoUriUrl(): string;
-        function getWadoRsUrl(): string;
-        function getStowUrl(): string;
-        function getQidoUrl(): string;
-    }
-}
 declare class StowRsProxy {
     BaseUrl: string;
     constructor(baseUrl: string);
@@ -75,17 +75,6 @@ declare class StowRsProxy {
     returnJson: boolean;
     StoreInstance(fileBuffer: ArrayBuffer, successCallback: (xhr: XMLHttpRequest) => void, failureCallback: (error: Event) => void): void;
     private gen_multipart(title, boundary, mimetype, byteBuffer);
-}
-declare class WadoRsProxy {
-    private _baseUrl;
-    constructor(baseUrl: string);
-    getObjectInstanceMetadata(studyInstanceUid: string, seriesInstanceUid: string, sopInstanceUID: string, successCallback: (data: any, textStatus: string, jqXHR: JQueryXHR) => any, dataType?: string): void;
-    getObjectUncompressed(studyInstanceUid: string, seriesInstanceUid: string, sopInstanceUID: string, successCallback: (data: any, textStatus: string) => any, failureCallback: (ev: Event) => void): void;
-    getObjectDicom(studyInstanceUid: string, seriesInstanceUid: string, sopInstanceUID: string, successCallback: (data: any, textStatus: string) => any, failureCallback: (ev: Event) => void): void;
-    getStudyMetadata(studyInstanceUid: string, successCallback: (data: any, textStatus: string, jqXHR: JQueryXHR) => any, failureCallback: (ev: Event) => void): void;
-    getStudyDicom(studyInstanceUid: string, successCallback: (data: any, textStatus: string) => any, failureCallback: (ev: Event) => void): void;
-    getStudyUncompressed(studyInstanceUid: string, successCallback: (data: any, textStatus: string) => any, failureCallback: (ev: Event) => void): void;
-    getDICOMMultipart(urlRsPart: string, acceptDataType: string, successCallback: (data: any, textStatus: string) => any, failureCallback: (ev: Event) => void): void;
 }
 declare class WadoUriProxy {
     private _xhr;
@@ -102,6 +91,17 @@ declare class CommonDicomInstanceParams {
     instanceUID: string;
 }
 declare class WadoImageParams {
+}
+declare class WadoRsProxy {
+    private _baseUrl;
+    constructor(baseUrl: string);
+    getObjectInstanceMetadata(studyInstanceUid: string, seriesInstanceUid: string, sopInstanceUID: string, successCallback: (data: any, textStatus: string, jqXHR: JQueryXHR) => any, dataType?: string): void;
+    getObjectUncompressed(studyInstanceUid: string, seriesInstanceUid: string, sopInstanceUID: string, successCallback: (data: any, textStatus: string) => any, failureCallback: (ev: Event) => void): void;
+    getObjectDicom(studyInstanceUid: string, seriesInstanceUid: string, sopInstanceUID: string, successCallback: (data: any, textStatus: string) => any, failureCallback: (ev: Event) => void): void;
+    getStudyMetadata(studyInstanceUid: string, successCallback: (data: any, textStatus: string, jqXHR: JQueryXHR) => any, failureCallback: (ev: Event) => void): void;
+    getStudyDicom(studyInstanceUid: string, successCallback: (data: any, textStatus: string) => any, failureCallback: (ev: Event) => void): void;
+    getStudyUncompressed(studyInstanceUid: string, successCallback: (data: any, textStatus: string) => any, failureCallback: (ev: Event) => void): void;
+    getDICOMMultipart(urlRsPart: string, acceptDataType: string, successCallback: (data: any, textStatus: string) => any, failureCallback: (ev: Event) => void): void;
 }
 interface String {
     format(...arguments: string[]): string;
