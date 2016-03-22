@@ -4,9 +4,9 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace CloudPacs.WebApp.Controllers
+namespace Demo
 {
-    public class HomeController : Controller
+    public class DemoController : Controller
     {
         // GET: Demo
         public ActionResult Index()

@@ -1,4 +1,5 @@
-﻿class QueryView
+﻿
+class QueryView
 {
    //these will be replaced by some event dispatcher, 
    //keep it simple for now
@@ -119,7 +120,7 @@
    {
       var ajaxSettings: JQueryAjaxSettings = {};
 
-      ajaxSettings.url = "/Home/_StudyItem/";
+      ajaxSettings.url = "/Demo/_StudyItem/";
       ajaxSettings.success = (data: any, textStatus: string, jqXHR: JQueryXHR) => {
          this._$studyItemTemplate = $(data);
       };
@@ -133,13 +134,13 @@
 
    private createSeriesTemplate()
    {
-      $.get("/Home/_SeriesItem/", (data: any, textStatus: string, jqXHR: JQueryXHR) => {
+      $.get("/Demo/_SeriesItem/", (data: any, textStatus: string, jqXHR: JQueryXHR) => {
          this._$seriesItemTemplate = $(data);
       }, "html");
    }
 
    private createInstanceTemplate() {
-      $.get("/Home/_InstanceItem/", (data: any, textStatus: string, jqXHR: JQueryXHR) => {
+      $.get("/Demo/_InstanceItem/", (data: any, textStatus: string, jqXHR: JQueryXHR) => {
          this._$instanceItemTemplate = $(data);
       }, "html");
    }
@@ -241,14 +242,36 @@
          });
       });
 
+      //TODO: response data is reurned without parsing multi-part related so boundary and header is included
+      //TODO: need to use a multipart parser, possibly https://github.com/anentropic/stream
       $item.find("*[data-pacs-dicom]").on("click", (ev: JQueryEventObject) => {
-          this._retrieveService.DownloadObject(instance, (data: any) => {
-             var $dlg: any = $("#modal-alert");
+         this._retrieveService.DownloadObject(instance, (data: any) => {
+            //http://stackoverflow.com/questions/16086162/handle-file-download-from-ajax-post/23797348#23797348
+            var filename = "dicom.txt";
+            var blob = new Blob([data], { type: "application/octec-stream" });
+            if (typeof window.navigator.msSaveBlob !== 'undefined') {
+               // IE workaround for "HTML7007: One or more blob URLs were revoked by closing the blob for which they were created. These URLs will no longer resolve as the data backing the URL has been freed."
+               window.navigator.msSaveBlob(blob, filename);
+            } else {
+               var URL = window.URL || window.webkitURL;
+               var downloadUrl = URL.createObjectURL(blob);
 
-             $dlg.find(".modal-title").text("DICOM");
-             $dlg.find(".modal-body").text(data);
-
-             $dlg.modal("show");
+               if (filename) {
+                  // use HTML5 a[download] attribute to specify filename
+                  var a = document.createElement("a");
+                  // safari doesn't support this yet
+                  if (typeof a.download === 'undefined') {
+                     window.location = downloadUrl;
+                  } else {
+                     a.href = downloadUrl;
+                     a.download = filename;
+                     document.body.appendChild(a);
+                     a.click();
+                  }
+               } else {
+                  window.location = downloadUrl;
+               }
+            }
          });
           ev.preventDefault();
           return false;
@@ -295,8 +318,11 @@
       var $dlg: any = $("#modal-alert");
 
       $dlg.find(".modal-title").text(caption);
-      $dlg.find(".modal-body").jsonViewer(data, { collapsed: true });
 
+      var editor = ace.edit($dlg.find(".modal-body")[0]);
+
+      editor.getSession( ).setMode("ace/mode/json");
+      editor.setValue(JSON.stringify(data, null, '\t'));
       $dlg.modal("show");
    }
-} 
+}

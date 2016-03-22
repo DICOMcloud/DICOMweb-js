@@ -11,7 +11,6 @@ var app = (function () {
     }
     app.prototype.init = function () {
         this._baseUrl = "https://dicomcloud.azurewebsites.net/";
-        //this._baseUrl = "https://localhost:44301/";
         //this._baseUrl = "http://dicomserver.co.uk:81/";
         //DICOMwebJS.ServerConfiguration.QidoPart = "qido"
         DICOMwebJS.ServerConfiguration.BaseServerUrl = this._baseUrl;

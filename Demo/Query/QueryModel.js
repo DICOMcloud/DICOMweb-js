@@ -72,7 +72,8 @@ var QueryModel = (function () {
             return this._selectedStudyIndex;
         },
         set: function (value) {
-            if (this._selectedStudyIndex != value) {
+            //if (this._selectedStudyIndex != value) 
+            {
                 if (this._studies.length <= value || value < this.__NOT_SELECTED) {
                     throw new RangeError();
                 }
@@ -89,7 +90,8 @@ var QueryModel = (function () {
             return this._selectedSeriesIndex;
         },
         set: function (value) {
-            if (this._selectedSeriesIndex != value) {
+            //if (this._selectedSeriesIndex != value)
+            {
                 if (this._series.length <= value || value < this.__NOT_SELECTED) {
                     throw new RangeError();
                 }
@@ -106,7 +108,8 @@ var QueryModel = (function () {
             return this._selectedInstancesIndex;
         },
         set: function (value) {
-            if (this._selectedInstancesIndex != value) {
+            //if (this._selectedInstancesIndex != value) 
+            {
                 if (this._instances.length <= value || value < this.__NOT_SELECTED) {
                     throw new RangeError();
                 }

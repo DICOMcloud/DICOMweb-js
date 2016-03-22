@@ -1,4 +1,8 @@
 ﻿@{
+    Layout = "../Shared/_Layout.cshtml";
+}
+
+@{
     ViewBag.Title = "Demo";
 }
 
@@ -32,8 +36,12 @@
 @Html.Partial("_AlertDlg")
 
 
+@section styles
+{
+
+}
+
 @section scripts
 {
-    <script src="References/MedicalCoJs.Dicom.js"></script>
-    <script src="References/MedicalCoJs.Client.Proxies.js"></script>
-    }
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/ace/1.1.01/ace.js"></script>
+}

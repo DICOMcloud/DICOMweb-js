@@ -85,3 +85,12 @@ margin-left:10px;
 
     bottom: -5px;
 }
+
+
+.thumbnail {
+   cursor:pointer;
+}
+
+.thumbnail:hover {
+   cursor:pointer;
+} 

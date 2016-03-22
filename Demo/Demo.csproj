@@ -122,7 +122,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\DemoController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -166,6 +166,7 @@
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
+    <Content Include="Scripts\typings\libs\html.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
@@ -178,15 +179,16 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Home\_AlertDlg.cshtml" />
-    <Content Include="Views\Home\_InstanceItem.cshtml" />
-    <Content Include="Views\Home\_QueryFieldsView.cshtml" />
-    <Content Include="Views\Home\_SeriesItem.cshtml" />
-    <Content Include="Views\Home\_StoreView.cshtml" />
-    <Content Include="Views\Home\_StudyItem.cshtml" />
-    <Content Include="Views\Home\_StudyView.cshtml" />
-    <Content Include="Views\Home\_Toolbar.cshtml" />
+    <Content Include="Views\Demo\Index.cshtml" />
+    <Content Include="Views\Demo\_AlertDlg.cshtml" />
+    <Content Include="Views\Demo\_InstanceItem.cshtml" />
+    <Content Include="Views\Demo\_QueryFieldsView.cshtml" />
+    <Content Include="Views\Demo\_SeriesItem.cshtml" />
+    <Content Include="Views\Demo\_StoreView.cshtml" />
+    <Content Include="Views\Demo\_StudyItem.cshtml" />
+    <Content Include="Views\Demo\_StudyView.cshtml" />
+    <Content Include="Views\Demo\_Toolbar.cshtml" />
+    <Content Include="Views\Shared\_Scripts.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -208,6 +210,8 @@
     <TypeScriptCompile Include="Scripts\typings\DICOMwebJS\DICOMwebJS.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\DICOMwebJS\DICOMwebJS.Proxies.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\jquery\jquery.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\libs\ace.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\libs\html.ts" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />

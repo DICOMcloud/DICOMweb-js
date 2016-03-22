@@ -21,5 +21,12 @@
         <span class="pull-right">pagination</span>
     </div>
 
-    <div class="panel-body instance-query"></div>
+    <div class="panel-body instance-query">
+
+    </div>
+    <div class="panel-footer">
+        <div class="alert alert-danger">DICOM instance will be downloaded as complete multipart response including Boundary and content type</div>
+        <p class="info text-info">You can open the downloaded file in a text editor and strip the header and footer then open in any DICOM Viewer.</p>
+        <p class="info text-info">Need to use a multipart parser, possibly <a href="https://github.com/anentropic/stream" target="_blank">https://github.com/anentropic/stream</a></p>
+    </div>
 </div>

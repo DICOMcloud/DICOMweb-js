@@ -29,12 +29,13 @@
        var matches: string[] = [];
        var includes: string[] = [];
        var queryString = "";
-       var methodUrl = this.BaseUrl + path ;
+       var methodUrl = this.BaseUrl + path;
+
 
        while (length--) {
           var element = elements[length];
 
-          matches.push ( element.Tag.StringValue + "=" + element.toString() ) ;
+          matches.push(element.Tag.StringValue + "=" + encodeURIComponent(element.toString()) ) ;
        }
 
        length = query.returnValues.length;
@@ -43,15 +44,17 @@
           includes.push("includefield=" + query.returnValues[length].StringValue);
        }
 
-       methodUrl += "?" + matches.join("&");
+       queryString += matches.join("&") ;
 
        if (matches.length != 0 && includes.length != 0)
        {
-          methodUrl += "&";
+          queryString += "&";
        }
 
-       methodUrl += includes.join("&");
+       queryString += includes.join("&");
        
+       methodUrl += "?" + queryString;
+
        ajaxSettings.url = methodUrl;
        ajaxSettings.timeout = 20000;
        ajaxSettings.success = (data: any, textStatus: string, jqXHR: JQueryXHR) => {
