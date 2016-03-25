@@ -21,12 +21,13 @@
    }
 
    getObjectInstance
-       (instanceData: CommonDicomInstanceParams,
-           mimeType: string,
-           imageParams: WadoImageParams,
-           successCallback: (buffer: any) => void,
-           failureCallback: (error: Event) => void
-       )
+   (
+      instanceData: CommonDicomInstanceParams,
+      mimeType: string,
+      imageParams: WadoImageParams,
+      successCallback: (buffer: any) => void,
+      failureCallback: (error: Event) => void
+   )
    {
        var url = this.createUrl(instanceData, mimeType, imageParams);
        var xhr = new XMLHttpRequest();
@@ -56,6 +57,12 @@
        {
            url += "&contentType=" + mimeType;
        }
+
+       if (imageParams.frameNumber )
+       {
+          url += "&frameNumber=" + imageParams.frameNumber;
+       }
+
        //TODO: implement all other parameters....
        
        return url;
@@ -74,7 +81,7 @@ class WadoImageParams
 
    //int? Rows    { get; set; }
    //int? Columns { get; set; }
-   //int? FrameNumber  { get; set; }
+   frameNumber: string;
    //int? ImageQuality { get; set; }
 
    //string Region                { get; set; }
