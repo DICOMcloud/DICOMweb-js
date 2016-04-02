@@ -5,49 +5,6 @@ class WadoRsProxy{
       this._baseUrl = baseUrl;
    }
 
-   public getObjectInstanceMetadata
-   (
-      studyInstanceUid: string,
-      seriesInstanceUid: string,
-      sopInstanceUID: string,
-      successCallback: (data: any, textStatus: string, jqXHR: JQueryXHR) => any, dataType?: string
-   )
-   {
-      var url = this._baseUrl + "/studies/" + studyInstanceUid + "/series/" + seriesInstanceUid + "/instances/" + sopInstanceUID + "/metadata";
-      $.get(url, successCallback, "json");
-   }
-
-   public getObjectUncompressed
-   (
-       studyInstanceUid: string,
-       seriesInstanceUid: string,
-       sopInstanceUID: string,
-       successCallback: (data: any, textStatus: string) => any,
-       failureCallback: (ev: Event) => void
-    ) {
-       var url = this._baseUrl + "/studies/" + studyInstanceUid + "/series/" + seriesInstanceUid + "/instances/" + sopInstanceUID + "/" ;
-       this.getDICOMMultipart("/studies/" + studyInstanceUid + "/series/" + seriesInstanceUid + "/instances/" + sopInstanceUID + "/",
-                        "application/octec-stream",
-                        successCallback,
-                        failureCallback);
-   }
-
-   public getObjectDicom
-   (
-      studyInstanceUid: string,
-      seriesInstanceUid: string,
-      sopInstanceUID: string,
-      successCallback: (data: any, textStatus: string) => any,
-      failureCallback: (ev: Event) => void
-   ) {
-      var url = this._baseUrl + "/studies/" + studyInstanceUid + "/series/" + seriesInstanceUid + "/instances/" + sopInstanceUID + "/";
-      this.getDICOMMultipart("/studies/" + studyInstanceUid + "/series/" + seriesInstanceUid + "/instances/" + sopInstanceUID + "/",
-         "application/dicom",
-         successCallback,
-         failureCallback);
-   }
-
-
    public getStudyMetadata
    (
       studyInstanceUid: string,
@@ -59,13 +16,128 @@ class WadoRsProxy{
       $.get(url, successCallback, "json");
    }
 
+   public getStudy
+   (
+      studyInstanceUid: string,
+      mediaType: string,
+      successCallback: (data: any, textStatus: string) => any,
+      failureCallback: (ev: Event) => void
+   )
+   {
+      this.getDICOMMultipart("/studies/" + studyInstanceUid + "/",
+         mediaType,
+         successCallback,
+         failureCallback);
+   }
+
+   public getObjectInstanceMetadata
+   (
+      studyInstanceUid: string,
+      seriesInstanceUid: string,
+      sopInstanceUID: string,
+      mediaType:string,
+      successCallback: (data: any, textStatus: string, jqXHR: JQueryXHR) => any,
+      failureCallback?: (ev: Event) => void
+   )
+   {
+      var url = this._baseUrl + "/studies/" + studyInstanceUid + "/series/" + seriesInstanceUid + "/instances/" + sopInstanceUID + "/metadata";
+      if (!mediaType || mediaType == MimeTypes.Json) {
+         $.get(url, successCallback, "json");
+      }
+      else if (mediaType==MimeTypes.xmlDicom)
+      {
+         this.getDICOMMultipart("/studies/" + studyInstanceUid + "/series/" + seriesInstanceUid + "/instances/" + sopInstanceUID + "/",
+            mediaType,
+            successCallback,
+            failureCallback);
+      }
+   }
+
+
+   public getObjectInstance
+   (
+      studyInstanceUid: string,
+      seriesInstanceUid: string,
+      sopInstanceUID: string,
+      mediaType: string,
+      successCallback: (data: any, textStatus?: string, jqXHR?: JQueryXHR) => any,
+      failureCallback: (ev: Event) => void
+   )
+   {
+      this.getDICOMMultipart("/studies/" + studyInstanceUid + "/series/" + seriesInstanceUid + "/instances/" + sopInstanceUID + "/",
+         mediaType,
+         successCallback,
+         failureCallback);
+   }
+
+   public getFrame
+   (
+      studyInstanceUid: string,
+      seriesInstanceUid: string,
+      sopInstanceUID: string,
+      frameList:string,
+      mediaType: string,
+      successCallback: (data: any, textStatus?: string, jqXHR?: JQueryXHR) => any,
+      failureCallback: (ev: Event) => void
+   )
+   {
+      this.getDICOMMultipart("/studies/" + studyInstanceUid + "/series/" + seriesInstanceUid + "/instances/" + sopInstanceUID +
+         "/frames/" + frameList,
+         mediaType,
+         successCallback,
+         failureCallback);
+   }
+
+   public getFrameUncompressed
+   (
+      studyInstanceUid: string,
+      seriesInstanceUid: string,
+      sopInstanceUID: string,
+      frameList: string,
+      successCallback: (data: any, textStatus?: string, jqXHR?: JQueryXHR) => any,
+      failureCallback: (ev: Event) => void
+   ) {
+      this.getFrame(studyInstanceUid, seriesInstanceUid, sopInstanceUID, frameList, "application/octec-stream",
+         successCallback,
+         failureCallback);
+   }
+
+   public getObjectUncompressed
+   (
+       studyInstanceUid: string,
+       seriesInstanceUid: string,
+       sopInstanceUID: string,
+       successCallback: (data: any, textStatus?: string, jqXHR?: JQueryXHR) => any,
+       failureCallback: (ev: Event) => void
+   )
+   {
+      this.getObjectInstance(studyInstanceUid, seriesInstanceUid, sopInstanceUID,
+                             "application/octec-stream", successCallback, failureCallback);
+   }
+
+   public getObjectDicom
+   (
+      studyInstanceUid: string,
+      seriesInstanceUid: string,
+      sopInstanceUID: string,
+      successCallback: (data: any, textStatus?: string, jqXHR?: JQueryXHR) => any,
+      failureCallback: (ev: Event) => void
+   ) {
+      this.getObjectInstance(studyInstanceUid, seriesInstanceUid, sopInstanceUID,
+         "application/dicom",
+         successCallback,
+         failureCallback);
+   }
+
+
+
    public getStudyDicom
    (
       studyInstanceUid: string,
-      successCallback: (data: any, textStatus: string) => any,
+      successCallback: (data: any, textStatus?: string, jqXHR?: JQueryXHR) => any,
       failureCallback: (ev: Event) => void
    ) {
-      this.getDICOMMultipart("/studies/" + studyInstanceUid + "/",
+      this.getStudy( studyInstanceUid,
          "application/dicom",
          successCallback,
          failureCallback);
@@ -74,11 +146,11 @@ class WadoRsProxy{
    public getStudyUncompressed
    (
        studyInstanceUid: string,
-       successCallback: (data: any, textStatus: string) => any,
+       successCallback: (data: any, textStatus?: string, jqXHR?: JQueryXHR) => any,
        failureCallback: (ev: Event) => void
    )
    {
-      this.getDICOMMultipart("/studies/" + studyInstanceUid + "/",
+      this.getStudy(studyInstanceUid,
          "application/octec-stream",
          successCallback,
          failureCallback);
@@ -88,7 +160,7 @@ class WadoRsProxy{
    (
       urlRsPart: string,
       acceptDataType: string,
-      successCallback: (data: any, textStatus: string) => any,
+      successCallback: (data: any, textStatus?: string, jqXHR?: JQueryXHR) => any,
       failureCallback: (ev: Event) => void
    )
    {
@@ -105,7 +177,7 @@ class WadoRsProxy{
             //listener.onDataReceived(new Uint8Array(xhr.response));
             var buffer = new Uint8Array(xhr.response);
 
-            successCallback(buffer, xhr.statusText);
+            successCallback(buffer, xhr.statusText );
          }
       };
       xhr.onerror = function (error) {
