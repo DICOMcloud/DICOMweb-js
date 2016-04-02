@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.Mvc;
 
-namespace Demo
+namespace CloudPacs.Demo
 {
     public class FilterConfig
     {

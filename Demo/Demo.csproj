@@ -126,6 +126,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\MimeTypes.cs" />
     <Compile Include="Models\ToolbarViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -152,11 +153,12 @@
     <Content Include="Query\QueryModel.js.map" />
     <Content Include="Query\QueryView.js.map" />
     <Content Include="Query\RetrieveService.js.map" />
-    <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\DICOMwebJS.js" />
     <Content Include="Scripts\DICOMwebJS.Proxies.js" />
-    <Content Include="Scripts\jquery-1.10.2.js" />
-    <Content Include="Scripts\jquery-1.10.2.min.js" />
+    <None Include="Scripts\jquery-2.1.4.intellisense.js" />
+    <Content Include="Scripts\jquery-2.1.4.js" />
+    <Content Include="Scripts\jquery-2.1.4.min.js" />
+    <Content Include="Scripts\jquery-2.1.4.min.map" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery.json-viewer.js" />
     <Content Include="Scripts\jquery.validate.js" />
@@ -168,6 +170,10 @@
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\typings\libs\html.js" />
     <Content Include="Scripts\_references.js" />
+    <Content Include="Types\ILiteEvent.js" />
+    <Content Include="Types\RsFramesEventArgs.js" />
+    <Content Include="Types\RsInstanceEventArgs.js" />
+    <Content Include="Types\WadoUriEventArgs.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -189,6 +195,11 @@
     <Content Include="Views\Demo\_StudyView.cshtml" />
     <Content Include="Views\Demo\_Toolbar.cshtml" />
     <Content Include="Views\Shared\_Scripts.cshtml" />
+    <Content Include="Types\ILiteEvent.js.map" />
+    <Content Include="Types\RsFramesEventArgs.js.map" />
+    <Content Include="Types\RsInstanceEventArgs.js.map" />
+    <Content Include="Types\WadoUriEventArgs.js.map" />
+    <Content Include="Views\Demo\_ItemDetailsToolbar.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -199,7 +210,6 @@
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="packages.config" />
     <None Include="Project_Readme.html" />
-    <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="App.ts" />
@@ -207,11 +217,16 @@
     <TypeScriptCompile Include="Query\QueryModel.ts" />
     <TypeScriptCompile Include="Query\QueryView.ts" />
     <TypeScriptCompile Include="Query\RetrieveService.ts" />
+    <TypeScriptCompile Include="Scripts\typings\bootstrap\bootstrap.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\DICOMwebJS\DICOMwebJS.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\DICOMwebJS\DICOMwebJS.Proxies.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\jquery\jquery.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\libs\ace.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\libs\html.ts" />
+    <TypeScriptCompile Include="Types\ILiteEvent.ts" />
+    <TypeScriptCompile Include="Types\RsFramesEventArgs.ts" />
+    <TypeScriptCompile Include="Types\RsInstanceEventArgs.ts" />
+    <TypeScriptCompile Include="Types\WadoUriEventArgs.ts" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />

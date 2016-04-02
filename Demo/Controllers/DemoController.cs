@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace Demo
+namespace CloudPacs.Demo
 {
     public class DemoController : Controller
     {
