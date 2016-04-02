@@ -1,32 +1,57 @@
 ﻿
-<div class="panel panel-default study-view clearfix">
-    <div class="panel-heading studies-title clearfix"">
-        <h3 class="panel-title pull-left">Studies</h3>
-        <span class="pull-right">pagination</span>
+<div class="panel-group">
+
+
+    <div class="panel panel-default study-view clearfix">
+        <div class="panel-heading studies-title clearfix">
+            <h3 class="panel-title">
+                <a data-toggle="collapse" href="#studyCollapse">Studies</a>
+            </h3>
+        </div>
+
+        <div id="studyCollapse" class="panel-collapse collapse in">
+            <div class="panel-body studies-query row"></div>
+        </div>
     </div>
 
-    <div class="panel-body studies-query row"></div>
-</div>
-<div class="panel panel-default series-view clearfix">
-    <div class="panel-heading series-title clearfix">
-        <h3 class="panel-title pull-left">Series</h3>
-        <span class="pull-right">pagination</span>
+    <div class="panel panel-default series-view clearfix">
+        <div class="panel-heading series-title clearfix">
+            <h3 class="panel-title pull-left">
+                <a data-toggle="collapse" href="#seriesCollapse">Series</a>
+            </h3>
+        </div>
+        <div id="seriesCollapse" class="panel-collapse collapse in">
+            <div class="panel-body series-query"></div>
+        </div>
+    </div>
+    
+    <div class="panel panel-default instance-view clearfix">
+        <div class="panel-heading instance-title clearfix">
+            <h3 class="panel-title">
+                <a data-toggle="collapse" href="#instanceCollapse">Instances</a>
+            </h3>
+        </div>
+
+        <div id="instanceCollapse" class="panel-collapse collapse in">
+            <div class="panel-body instance-query">
+            </div>
+        </div>
     </div>
 
-    <div class="panel-body series-query"></div>
-</div>
-<div class="panel panel-default instance-view clearfix">
-    <div class="panel-heading instance-title clearfix"">
-        <h3 class="panel-title pull-left">Instances</h3>
-        <span class="pull-right">pagination</span>
-    </div>
+    <div class="panel panel-default instance-details clearfix">
+        <div class="panel-heading instance-title clearfix">
+            <h3 class="panel-title">Instance Details</h3>
+            <div>
+                @Html.Partial("_ItemDetailsToolbar")
+            </div>
+        </div>
 
-    <div class="panel-body instance-query">
-
-    </div>
-    <div class="panel-footer">
-        <div class="alert alert-danger">DICOM instance will be downloaded as complete multipart response including Boundary and content type</div>
-        <p class="info text-info">You can open the downloaded file in a text editor and strip the header and footer then open in any DICOM Viewer.</p>
-        <p class="info text-info">Need to use a multipart parser, possibly <a href="https://github.com/anentropic/stream" target="_blank">https://github.com/anentropic/stream</a></p>
+        <div class="panel-body instance-metadata">
+            <div class="pacs-metadata-viewer"></div>
+        </div>
+        <div class="panel-footer">
+            <div class="alert alert-danger">*DICOM instance will be downloaded as complete multipart response including Boundary and content type</div>
+            <p class="info text-info">Need to use a multipart parser, possibly <a href="https://github.com/anentropic/stream" target="_blank">https://github.com/anentropic/stream</a></p>
+        </div>
     </div>
 </div>

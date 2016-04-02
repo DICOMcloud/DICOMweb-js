@@ -1,22 +1,94 @@
 ﻿class QueryController {
    _queryService: QidoRsProxy;
    _queryModel: QueryModel;
+   _queryView: QueryView;
+   _retrieveService: WadoRsProxy;
+   _wadoUriService : WadoUriProxy;
 
-
-   constructor(queryModel: QueryModel, queryService: QidoRsProxy) {
-      this._queryModel = queryModel ;
+   constructor
+   (
+      queryView: QueryView,
+      queryModel: QueryModel,
+      queryService: QidoRsProxy,
+      retrieveService: WadoRsProxy,
+      wadoUriService: WadoUriProxy
+   ) {
+      this._queryView = queryView;
+      this._queryModel = queryModel;
       this._queryService = queryService;
+      this._retrieveService = retrieveService;
+      this._wadoUriService = wadoUriService;
+      this.registerEvents();
+   }
 
-      queryModel.StudyQueryChangedEvent = () => {
+   private registerEvents()
+   {
+      this._queryView.instanceMetaDataRequest.on((args) => {
+         this._retrieveService.getObjectInstanceMetadata(args.InstanceParams.StudyInstanceUid,
+            args.InstanceParams.SeriesInstanceUID,
+            args.InstanceParams.SopInstanceUid,
+            args.MediaType,
+            (data: any, textStatus: string, jqXHR: JQueryXHR) => {
+               this._queryView.showInstanceMetadata(data, args);
+            });
+      });
+
+      this._queryView.instanceRequest.on((args) => {
+         this._retrieveService.getObjectInstance(args.InstanceParams.StudyInstanceUid,
+            args.InstanceParams.SeriesInstanceUID,
+            args.InstanceParams.SopInstanceUid,
+            args.MediaType,
+            (data: any, textStatus: string, jqXHR: JQueryXHR) => {
+               this._queryView.download(data);
+            },
+            (ev) => {
+               this._queryView.showError();
+            });
+      });
+
+      this._queryView.framesRequest.on((args) => {
+         this._retrieveService.getFrame(args.InstanceParams.StudyInstanceUid,
+            args.InstanceParams.SeriesInstanceUID,
+            args.InstanceParams.SopInstanceUid,
+            args.FrameList,
+            args.MediaType,
+            (data, textStatus, xhr) => {
+               this._queryView.download(data);
+            },
+            (ev)=>{
+               this._queryView.showError();
+            });
+      });
+
+      this._queryView.wadoUriRequest.on((args) => {
+         let instance: CommonDicomInstanceParams = {
+            studyUID: args.InstanceParams.StudyInstanceUid,
+            seriesUID: args.InstanceParams.SeriesInstanceUID,
+            instanceUID: args.InstanceParams.SopInstanceUid
+         };
+
+         let imageParam: WadoImageParams = { frameNumber: args.Frame };
+         this._wadoUriService.getDicomInstance(instance, false, imageParam,
+            (data) => {
+               this._queryView.download(data);
+            },
+            (err) => {
+               this._queryView.showError();
+            }
+         );
+      });
+   
+      this._queryModel.StudyQueryChangedEvent = () => {
          this.queryStudies();
       };
 
-      queryModel.SelectedStudyChangedEvent = () => {
-          this.querySeries(this._queryModel.selectedStudy());
-      };
-      queryModel.SelectedSeriesChangedEvent = () => {
+      this._queryModel.SelectedStudyChangedEvent.on ( () => {
+         this.querySeries(this._queryModel.selectedStudy());
+      });
+
+      this._queryModel.SelectedSeriesChangedEvent.on ( () => {
          this.queryInstances(this._queryModel.selectedSeries());
-      };
+      });
    }
 
    queryStudies(): any {

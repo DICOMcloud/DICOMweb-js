@@ -6,26 +6,111 @@ using System.Web;
 
 namespace Demo.Models
 {
-    public class ToolbarViewModel : List<ToolbarItem>
+    public class ToolbarFactory
     {
-        //public ToolbarViewModel ( ) 
-        //{
-        //    Items = new List<ToolbarItem> ( ) ;
-        //}
+        private static ToolbarViewModel _defaultInstanceDetails = InstanceToolbarBuilder.Build ( ) ;
 
-        //private ICollection<ToolbarItem> Items { get; set;}
+        public static ToolbarViewModel DefaultInstanceDetails
+        {
+            get
+            {
+                return _defaultInstanceDetails ;
+            }
+        }
+
+        private static class InstanceToolbarBuilder
+        {
+            private static ToolbarViewModel _instance = null ;
+
+            public static ToolbarViewModel Build ( )
+            {
+
+                if ( null == _instance )
+                {
+                    _instance = new ToolbarViewModel ( ) ;
+                    ToolbarGroup metadataGroup = new ToolbarGroup ( ) { Name="WADO-RS-Metadata" }; 
+                    ToolbarGroup instanceGroup = new ToolbarGroup ( ) { Name="WADO-RS-Instance*" }; 
+                    ToolbarGroup framesGroup   = new ToolbarGroup ( ) { Name="WADO-RS-Frames*" }; 
+                    ToolbarGroup WadoUriGroup  = new ToolbarGroup ( ) { Name="WADO-URI" }; 
+                                    
+                    metadataGroup.Add ( new ToolbarLink ( "{..}", "data-rs-metadata", MimeTypes.Json )) ;
+                    metadataGroup.Add ( new ToolbarLink ( "XML", "data-rs-metadata", MimeTypes.xmlDicom )) ;
+
+                    instanceGroup.Add ( new ToolbarLink ( "DICOM", "data-rs-instance", MimeTypes.DICOM )) ;
+                    instanceGroup.Add ( new ToolbarLink ( "Uncompressed", "data-rs-instance", MimeTypes.UncompressedData )) ;
+                    //instanceGroup.Add ( new ToolbarLink ( "Jpg", "data-rs-instance", MimeTypes.Jpeg )) ;
+
+                    framesGroup.Add ( new ToolbarInput ( "frame list (e.g. 1,4,6)", "text", "data-rs-frames-input" )) ;
+                    framesGroup.Add ( new ToolbarLink ( "Uncompressed", "data-rs-frames", MimeTypes.UncompressedData )) ;
+                    //framesGroup.Add ( new ToolbarLink ( "Jpg", "data-rs-frames", MimeTypes.Jpeg )) ;
+            
+                    WadoUriGroup.Add ( new ToolbarInput ( "single frame number (optional)", "text", "data-uri-frame-input" )) ;
+                    WadoUriGroup.Add ( new ToolbarLink ( "DICOM", "data-uri-instance", MimeTypes.DICOM )) ;
+
+                    _instance.Add ( metadataGroup ) ;
+                    _instance.Add ( instanceGroup ) ;
+                    _instance.Add ( framesGroup ) ;
+                    _instance.Add (WadoUriGroup ) ;
+                }
+
+                return _instance ;
+            }
+        }        
     }
 
-    public class ToolbarItem
+    public class ToolbarViewModel : List<ToolbarGroup>
     {
-        public ToolbarItem ( string text, string dataAttribute )
+    }
+    
+    public interface IToolbarItem
+    {
+        IHtmlString Render ( ) ;
+    }
+
+    public class ToolbarLink : IToolbarItem
+    {
+        public ToolbarLink ( string text, string dataAttribute, string dataArgs )
         {
             Text          = text ;
             DataAttribute = dataAttribute ;
+            DataArgs      = dataArgs ;
         }
 
         public string Text { get; set; }
         public string DataAttribute { get; set; }
+        public string DataArgs { get; set; }
 
+        public IHtmlString Render ( ) 
+        {
+          
+            return new HtmlString ( string.Format ( LinkHtmlFormat, DataAttribute, DataArgs, Text ) ) ;
+        }
+
+        private static string LinkHtmlFormat = "<span class=\"input-group-btn\"><button {0} data-pacs-args=\"{1}\" class=\"btn btn-outline-secondary\">{2}</button></span>" ;
+    }
+
+    public class ToolbarInput : IToolbarItem
+    {
+        public ToolbarInput ( string text, string inputType, string dataAttribute )
+        {
+            Text          = text ;
+            InputType     = inputType ;
+            DataAttribute = dataAttribute ;
+        }
+
+        public string Text { get; set; }
+        public string InputType { get; set; }
+        public string DataAttribute { get; set; }
+        
+
+        public IHtmlString Render ( ) 
+        {
+            return new HtmlString ( "<input type=\"" + InputType + "\" " + DataAttribute + " class=\"form-control\" placeholder=\"" + Text + "\"/>") ;
+        }
+    }
+
+    public class ToolbarGroup : List<IToolbarItem>
+    {
+        public string Name { get; set; }
     }
 }

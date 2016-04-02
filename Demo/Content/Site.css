@@ -77,20 +77,14 @@ max-height:400px;
 padding-top:30px;
 }
 
-/*.tile {
-margin-left:10px;
-}*/
-.tile-toolbar {
-    position: absolute;
-
-    bottom: -5px;
-}
-
-
 .thumbnail {
    cursor:pointer;
 }
+.thumbnail:hover,.thumbnail.selected {
+   background-color:#E1DBF3;
+   
+}
 
-.thumbnail:hover {
-   cursor:pointer;
+.pacs-metadata-viewer{
+   height:450px;
 } 

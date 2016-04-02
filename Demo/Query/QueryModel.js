@@ -5,9 +5,9 @@ var QueryModel = (function () {
         this.StudiesChangedEvent = null;
         this.SeriesChangedEvent = null;
         this.InstancesChangedEvent = null;
-        this.SelectedStudyChangedEvent = null;
-        this.SelectedSeriesChangedEvent = null;
-        this.SelectedInstancesChangedEvent = null;
+        this._onSelectedStudyChanged = new LiteEvent();
+        this._onSelectedSeriesChanged = new LiteEvent();
+        this._onSelectedInstanceChanged = new LiteEvent();
         this._studyQueryParams = new StudyParams(new JsonDicomDatasetService());
         this._studies = [];
         this._series = [];
@@ -17,6 +17,21 @@ var QueryModel = (function () {
         this._selectedSeriesIndex = this.__NOT_SELECTED;
         this._selectedInstancesIndex = this.__NOT_SELECTED;
     }
+    Object.defineProperty(QueryModel.prototype, "SelectedStudyChangedEvent", {
+        get: function () { return this._onSelectedStudyChanged; },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(QueryModel.prototype, "SelectedSeriesChangedEvent", {
+        get: function () { return this._onSelectedSeriesChanged; },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(QueryModel.prototype, "SelectedInstanceChangedEvent", {
+        get: function () { return this._onSelectedInstanceChanged; },
+        enumerable: true,
+        configurable: true
+    });
     Object.defineProperty(QueryModel.prototype, "StudyQueryParams", {
         get: function () {
             return this._studyQueryParams;
@@ -144,19 +159,13 @@ var QueryModel = (function () {
         }
     };
     QueryModel.prototype.onSelectedStudyChanged = function () {
-        if (this.SelectedStudyChangedEvent) {
-            this.SelectedStudyChangedEvent();
-        }
+        this._onSelectedStudyChanged.trigger();
     };
     QueryModel.prototype.onSelectedSeriesChanged = function () {
-        if (this.SelectedSeriesChangedEvent) {
-            this.SelectedSeriesChangedEvent();
-        }
+        this._onSelectedSeriesChanged.trigger();
     };
     QueryModel.prototype.onSelectedInstanceChanged = function () {
-        if (this.SelectedInstancesChangedEvent) {
-            this.SelectedInstancesChangedEvent();
-        }
+        this._onSelectedInstanceChanged.trigger();
     };
     QueryModel.prototype.onStudiesChanged = function () {
         //calling props to fire events
@@ -182,4 +191,4 @@ var QueryModel = (function () {
     };
     return QueryModel;
 })();
-//# sourceMappingURL=querymodel.js.map
+//# sourceMappingURL=QueryModel.js.map

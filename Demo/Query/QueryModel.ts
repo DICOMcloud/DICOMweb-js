@@ -7,9 +7,13 @@ class QueryModel
    public SeriesChangedEvent: () => any = null;
    public InstancesChangedEvent: () =>  any = null;
 
-   public SelectedStudyChangedEvent: () => any = null;
-   public SelectedSeriesChangedEvent: () => any = null;
-   public SelectedInstancesChangedEvent: () => any = null;
+   private _onSelectedStudyChanged = new LiteEvent();
+   private _onSelectedSeriesChanged = new LiteEvent();
+   private _onSelectedInstanceChanged = new LiteEvent();
+
+   public get SelectedStudyChangedEvent ( ) { return this._onSelectedStudyChanged ; } 
+   public get SelectedSeriesChangedEvent() { return this._onSelectedSeriesChanged; }
+   public get SelectedInstanceChangedEvent() { return this._onSelectedInstanceChanged; }
 
 
    private _studyQueryParams: StudyParams = new StudyParams(new JsonDicomDatasetService());
@@ -157,22 +161,15 @@ class QueryModel
 
    protected onSelectedStudyChanged()
    {
-      if (this.SelectedStudyChangedEvent)
-      {
-         this.SelectedStudyChangedEvent();
-      }
+      this._onSelectedStudyChanged.trigger();
    }
 
    protected onSelectedSeriesChanged() {
-      if (this.SelectedSeriesChangedEvent) {
-         this.SelectedSeriesChangedEvent();
-      }
+      this._onSelectedSeriesChanged.trigger();
    }
 
    protected onSelectedInstanceChanged() {
-      if (this.SelectedInstancesChangedEvent) {
-         this.SelectedInstancesChangedEvent();
-      }
+      this._onSelectedInstanceChanged.trigger();
    }
 
    protected onStudiesChanged() {

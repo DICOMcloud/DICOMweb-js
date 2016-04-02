@@ -1,18 +1,56 @@
 var QueryController = (function () {
-    function QueryController(queryModel, queryService) {
-        var _this = this;
+    function QueryController(queryView, queryModel, queryService, retrieveService, wadoUriService) {
+        this._queryView = queryView;
         this._queryModel = queryModel;
         this._queryService = queryService;
-        queryModel.StudyQueryChangedEvent = function () {
+        this._retrieveService = retrieveService;
+        this._wadoUriService = wadoUriService;
+        this.registerEvents();
+    }
+    QueryController.prototype.registerEvents = function () {
+        var _this = this;
+        this._queryView.instanceMetaDataRequest.on(function (args) {
+            _this._retrieveService.getObjectInstanceMetadata(args.InstanceParams.StudyInstanceUid, args.InstanceParams.SeriesInstanceUID, args.InstanceParams.SopInstanceUid, args.MediaType, function (data, textStatus, jqXHR) {
+                _this._queryView.showInstanceMetadata(data, args);
+            });
+        });
+        this._queryView.instanceRequest.on(function (args) {
+            _this._retrieveService.getObjectInstance(args.InstanceParams.StudyInstanceUid, args.InstanceParams.SeriesInstanceUID, args.InstanceParams.SopInstanceUid, args.MediaType, function (data, textStatus, jqXHR) {
+                _this._queryView.download(data);
+            }, function (ev) {
+                _this._queryView.showError();
+            });
+        });
+        this._queryView.framesRequest.on(function (args) {
+            _this._retrieveService.getFrame(args.InstanceParams.StudyInstanceUid, args.InstanceParams.SeriesInstanceUID, args.InstanceParams.SopInstanceUid, args.FrameList, args.MediaType, function (data, textStatus, xhr) {
+                _this._queryView.download(data);
+            }, function (ev) {
+                _this._queryView.showError();
+            });
+        });
+        this._queryView.wadoUriRequest.on(function (args) {
+            var instance = {
+                studyUID: args.InstanceParams.StudyInstanceUid,
+                seriesUID: args.InstanceParams.SeriesInstanceUID,
+                instanceUID: args.InstanceParams.SopInstanceUid
+            };
+            var imageParam = { frameNumber: args.Frame };
+            _this._wadoUriService.getDicomInstance(instance, false, imageParam, function (data) {
+                _this._queryView.download(data);
+            }, function (err) {
+                _this._queryView.showError();
+            });
+        });
+        this._queryModel.StudyQueryChangedEvent = function () {
             _this.queryStudies();
         };
-        queryModel.SelectedStudyChangedEvent = function () {
+        this._queryModel.SelectedStudyChangedEvent.on(function () {
             _this.querySeries(_this._queryModel.selectedStudy());
-        };
-        queryModel.SelectedSeriesChangedEvent = function () {
+        });
+        this._queryModel.SelectedSeriesChangedEvent.on(function () {
             _this.queryInstances(_this._queryModel.selectedSeries());
-        };
-    }
+        });
+    };
     QueryController.prototype.queryStudies = function () {
         var _this = this;
         if (!this._queryModel.StudyQueryParams) {
@@ -98,4 +136,4 @@ var QueryController = (function () {
     };
     return QueryController;
 })();
-//# sourceMappingURL=querycontroller.js.map
+//# sourceMappingURL=QueryController.js.map

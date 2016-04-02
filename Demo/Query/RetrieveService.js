@@ -4,7 +4,12 @@ var RetrieveService = (function () {
         this._retrieveService = retrieveServic;
     }
     RetrieveService.prototype.getObjectAsJson = function (instance, successCallback) {
-        this._retrieveService.getObjectInstanceMetadata(instance.StudyInstanceUid, instance.SeriesInstanceUID, instance.SopInstanceUid, function (data, textStatus, jqXHR) {
+        this._retrieveService.getObjectInstanceMetadata(instance.StudyInstanceUid, instance.SeriesInstanceUID, instance.SopInstanceUid, MimeTypes.Json, function (data, textStatus, jqXHR) {
+            successCallback(data);
+        });
+    };
+    RetrieveService.prototype.getObjectAsXml = function (instance, successCallback) {
+        this._retrieveService.getObjectInstanceMetadata(instance.StudyInstanceUid, instance.SeriesInstanceUID, instance.SopInstanceUid, MimeTypes.xmlDicom, function (data, textStatus, jqXHR) {
             successCallback(data);
         });
     };
@@ -14,6 +19,9 @@ var RetrieveService = (function () {
         }, function (ev) {
             console.error("getStudyMetadata failed");
         });
+    };
+    RetrieveService.prototype.getFrameUncompressed = function (instance, frameList, successCallback, failureCallback) {
+        this._retrieveService.getFrameUncompressed(instance.StudyInstanceUid, instance.SeriesInstanceUID, instance.SopInstanceUid, frameList, successCallback, failureCallback);
     };
     RetrieveService.prototype.DownloadObject = function (instance, successCallback) {
         this._retrieveService.getObjectDicom(instance.StudyInstanceUid, instance.SeriesInstanceUID, instance.SopInstanceUid, function (data, textStatus) {
@@ -31,4 +39,4 @@ var RetrieveService = (function () {
     };
     return RetrieveService;
 })();
-//# sourceMappingURL=retrieveservice.js.map
+//# sourceMappingURL=RetrieveService.js.map

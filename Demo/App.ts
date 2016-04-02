@@ -1,10 +1,5 @@
-﻿/// <reference path="query/querymodel.ts" />
-/// <reference path="query/queryview.ts" />
-/// <reference path="query/retrieveservice.ts" />
-/// <reference path="query/querycontroller.ts" />
-
-window.onload = () => {
-   new app(); 
+﻿window.onload = () => {
+   new app();
 };
 
 class app {
@@ -14,17 +9,17 @@ class app {
       this.init();
    }
 
-   private init(): void
-   {
+   private init(): void {
       this._baseUrl = "https://dicomcloud.azurewebsites.net/";
+      //this._baseUrl = "https://localhost:44301/";
       //this._baseUrl = "http://dicomserver.co.uk:81/";
       //DICOMwebJS.ServerConfiguration.QidoPart = "qido"
-
       DICOMwebJS.ServerConfiguration.BaseServerUrl = this._baseUrl;
-      
-      var model           = new QueryModel ( ) ;
-      var queryView = new QueryView(document.getElementById("#content"), model, new RetrieveService(new WadoRsProxy(DICOMwebJS.ServerConfiguration.getWadoRsUrl())));
-      var queryController = new QueryController(model, new QidoRsProxy(DICOMwebJS.ServerConfiguration.getQidoUrl()));
+      var rsProxy = new WadoRsProxy(DICOMwebJS.ServerConfiguration.getWadoRsUrl());
+      var uriProxy = new WadoUriProxy();
+      var model = new QueryModel();
+      var queryView = new QueryView(document.getElementById("#content"), model, new RetrieveService(rsProxy));
+      var queryController = new QueryController(queryView, model, new QidoRsProxy(DICOMwebJS.ServerConfiguration.getQidoUrl()), rsProxy, uriProxy);
 
       //new TestClientProxies().StoreFile();
 
@@ -46,15 +41,14 @@ class app {
 
             proxy.StoreInstance(arrayBuffer, (xhr: XMLHttpRequest) => {
 
-               if ( xhr.getResponseHeader("content-type").indexOf("application/json") >= 0 ) {
+               if (xhr.getResponseHeader("content-type").indexOf("application/json") >= 0) {
                   var $dlg: any = $("#modal-alert");
 
                   $dlg.find(".modal-title").text("JSON Store Response");
                   $dlg.modal("show");
-                  $dlg.find(".modal-body").text (xhr.response);
+                  $dlg.find(".modal-body").text(xhr.response);
                }
-               else
-               {
+               else {
                   alert(xhr.status);
                }
             },
@@ -78,7 +72,7 @@ class app {
       reader.onerror = function (e: any) {
          deferred.reject(e.target.error);
       }
-      
+
       reader.readAsArrayBuffer(fileInput[0].files[0]);
 
       return deferred.promise();
@@ -86,7 +80,7 @@ class app {
 }
 
 $(document).on('change', '.btn-file :file', function () {
-   var input : any = $(this),
+   var input: any = $(this),
       numFiles = input.get(0).files ? input.get(0).files.length : 1,
       label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
    input.trigger('fileselect', [numFiles, label]);
