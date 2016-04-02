@@ -91,6 +91,7 @@ declare class CommonDicomInstanceParams {
     instanceUID: string;
 }
 declare class WadoImageParams {
+    frameNumber: string;
 }
 declare class WadoRsProxy {
     private _baseUrl;

@@ -1,7 +1,3 @@
-/// <reference path="query/querymodel.ts" />
-/// <reference path="query/queryview.ts" />
-/// <reference path="query/retrieveservice.ts" />
-/// <reference path="query/querycontroller.ts" />
 window.onload = function () {
     new app();
 };
@@ -11,12 +7,15 @@ var app = (function () {
     }
     app.prototype.init = function () {
         this._baseUrl = "https://dicomcloud.azurewebsites.net/";
+        //this._baseUrl = "https://localhost:44301/";
         //this._baseUrl = "http://dicomserver.co.uk:81/";
         //DICOMwebJS.ServerConfiguration.QidoPart = "qido"
         DICOMwebJS.ServerConfiguration.BaseServerUrl = this._baseUrl;
+        var rsProxy = new WadoRsProxy(DICOMwebJS.ServerConfiguration.getWadoRsUrl());
+        var uriProxy = new WadoUriProxy();
         var model = new QueryModel();
-        var queryView = new QueryView(document.getElementById("#content"), model, new RetrieveService(new WadoRsProxy(DICOMwebJS.ServerConfiguration.getWadoRsUrl())));
-        var queryController = new QueryController(model, new QidoRsProxy(DICOMwebJS.ServerConfiguration.getQidoUrl()));
+        var queryView = new QueryView(document.getElementById("#content"), model, new RetrieveService(rsProxy));
+        var queryController = new QueryController(queryView, model, new QidoRsProxy(DICOMwebJS.ServerConfiguration.getQidoUrl()), rsProxy, uriProxy);
         //new TestClientProxies().StoreFile();
         this.initStore();
     };
