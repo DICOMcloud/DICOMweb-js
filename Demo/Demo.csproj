@@ -140,19 +140,11 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
-    <Content Include="Query\QueryController.js" />
-    <Content Include="Query\QueryModel.js" />
-    <Content Include="Query\QueryView.js" />
-    <Content Include="Query\RetrieveService.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="LESS\bootswatch-flatly.less" />
     <Content Include="LESS\flatly-variables.less" />
     <None Include="Properties\PublishProfiles\DICOMwebDemo.pubxml" />
-    <Content Include="Query\QueryController.js.map" />
-    <Content Include="Query\QueryModel.js.map" />
-    <Content Include="Query\QueryView.js.map" />
-    <Content Include="Query\RetrieveService.js.map" />
     <Content Include="Scripts\DICOMwebJS.js" />
     <Content Include="Scripts\DICOMwebJS.Proxies.js" />
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
@@ -170,10 +162,6 @@
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\typings\libs\html.js" />
     <Content Include="Scripts\_references.js" />
-    <Content Include="Types\ILiteEvent.js" />
-    <Content Include="Types\RsFramesEventArgs.js" />
-    <Content Include="Types\RsInstanceEventArgs.js" />
-    <Content Include="Types\WadoUriEventArgs.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -195,10 +183,6 @@
     <Content Include="Views\Demo\_StudyView.cshtml" />
     <Content Include="Views\Demo\_Toolbar.cshtml" />
     <Content Include="Views\Shared\_Scripts.cshtml" />
-    <Content Include="Types\ILiteEvent.js.map" />
-    <Content Include="Types\RsFramesEventArgs.js.map" />
-    <Content Include="Types\RsInstanceEventArgs.js.map" />
-    <Content Include="Types\WadoUriEventArgs.js.map" />
     <Content Include="Views\Demo\_ItemDetailsToolbar.cshtml" />
   </ItemGroup>
   <ItemGroup>
@@ -223,7 +207,9 @@
     <TypeScriptCompile Include="Scripts\typings\jquery\jquery.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\libs\ace.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\libs\html.ts" />
+    <TypeScriptCompile Include="Types\CodeRenderer.ts" />
     <TypeScriptCompile Include="Types\ILiteEvent.ts" />
+    <TypeScriptCompile Include="Types\ModelDialog.ts" />
     <TypeScriptCompile Include="Types\RsFramesEventArgs.ts" />
     <TypeScriptCompile Include="Types\RsInstanceEventArgs.ts" />
     <TypeScriptCompile Include="Types\WadoUriEventArgs.ts" />
@@ -236,6 +222,21 @@
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <TypeScriptTarget>ES5</TypeScriptTarget>
+    <TypeScriptJSXEmit>None</TypeScriptJSXEmit>
+    <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
+    <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
+    <TypeScriptModuleKind>None</TypeScriptModuleKind>
+    <TypeScriptRemoveComments>False</TypeScriptRemoveComments>
+    <TypeScriptOutFile>cloudPacs.App.js</TypeScriptOutFile>
+    <TypeScriptOutDir />
+    <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
+    <TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
+    <TypeScriptSourceMap>True</TypeScriptSourceMap>
+    <TypeScriptMapRoot />
+    <TypeScriptSourceRoot />
+  </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />

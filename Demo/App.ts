@@ -42,11 +42,9 @@ class app {
             proxy.StoreInstance(arrayBuffer, (xhr: XMLHttpRequest) => {
 
                if (xhr.getResponseHeader("content-type").indexOf("application/json") >= 0) {
-                  var $dlg: any = $("#modal-alert");
+                  var dlg = new ModalDialog("#modal-alert");
 
-                  $dlg.find(".modal-title").text("JSON Store Response");
-                  $dlg.modal("show");
-                  $dlg.find(".modal-body").text(xhr.response);
+                  dlg.showJson("JSON Store Response", JSON.parse(xhr.response));
                }
                else {
                   alert(xhr.status);

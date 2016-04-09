@@ -1,4 +1,5 @@
-﻿class RsFramesEventArgs extends RsInstanceEventArgs
+﻿/// <reference path="rsinstanceeventargs.ts" />
+class RsFramesEventArgs extends RsInstanceEventArgs
 {
    constructor(instance: InstanceParams, mediaType: string, frames: string) {
       super(instance, mediaType);

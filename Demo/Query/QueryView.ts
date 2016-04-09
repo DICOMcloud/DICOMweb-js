@@ -1,31 +1,31 @@
 ﻿
-class QueryView {
+class QueryView
+{
    //these will be replaced by some event dispatcher, 
    //keep it simple for now
-   public RetrieveInstanceEvent: (mediaType: string) => any = null;
+   public RetrieveInstanceEvent: (mediaType:string) => any = null;
 
 
    private _parent: HTMLElement;
    private _model: QueryModel;
-   private _retrieveService: RetrieveService;
-   private _$studyItemTemplate: JQuery;
-   private _$seriesItemTemplate: JQuery;
-   private _$instanceItemTemplate: JQuery;
+   private _retrieveService : RetrieveService;
+   private _$studyItemTemplate: JQuery; 
+   private _$seriesItemTemplate: JQuery; 
+   private _$instanceItemTemplate: JQuery; 
    private _$selectedStudyView: JQuery;
    private _$studiesView: JQuery;
    private _$seriesView: JQuery;
    private _$instanceView: JQuery;
 
    //EVENTS
-   private _onInstanceMetadata = new LiteEvent<RsInstanceEventArgs>();
+   private _onInstanceMetadata = new LiteEvent<RsInstanceEventArgs> ();
    private _onInstance = new LiteEvent<RsInstanceEventArgs>();
    private _onFrames = new LiteEvent<RsFramesEventArgs>();
    private _onWadoUri = new LiteEvent<WadoUriEventArgs>();
 
    private _ViewClassName = {
       $SeriesQuery: ".series-query", $StudyQuery: ".studies-query", $InstanceQuery: ".instance-query",
-      SeriesQuery: "series-query", StudyQuery: "studies-query", InstanceQuery: "instance-query"
-   };
+      SeriesQuery: "series-query", StudyQuery: "studies-query", InstanceQuery: "instance-query" };
 
    constructor(parentElement: HTMLElement, model: QueryModel, retrieveService: RetrieveService) {
       this._parent = parentElement;
@@ -45,13 +45,15 @@ class QueryView {
    public get instanceMetaDataRequest() { return this._onInstanceMetadata; }
    public get instanceRequest() { return this._onInstance; }
    public get framesRequest() { return this._onFrames; }
-   public get wadoUriRequest() { return this._onWadoUri; }
-
-   public showError() {
+   public get wadoUriRequest() { return this._onWadoUri;}
+   
+   public showError()
+   {
       alert("error");
    }
 
-   public clearInstanceMetadata() {
+   public clearInstanceMetadata()
+   {
       var editor;
       var editorSession;
 
@@ -61,7 +63,8 @@ class QueryView {
       editorSession = editor.getSession();
       editorSession.setValue("");
    }
-   public showInstanceMetadata(data: any, args: RsInstanceEventArgs) {
+   public showInstanceMetadata(data: any, args: RsInstanceEventArgs)
+   {
       //$(".pacs-metadata-viewer").text(JSON.stringify(objectInstance, null, "\t"));
       if (args.MediaType == MimeTypes.Json) { this.renderJson($(".pacs-metadata-viewer"), data); }
       if (args.MediaType == MimeTypes.xmlDicom) { this.renderXml($(".pacs-metadata-viewer"), this.bin2String(data)); }
@@ -103,7 +106,8 @@ class QueryView {
       return String.fromCharCode.apply(String, array);
    }
 
-   private registerEvents() {
+   private registerEvents()
+   {
       this._model.StudiesChangedEvent = () => {
          this.renderStudies();
       };
@@ -152,7 +156,7 @@ class QueryView {
          }
       });
 
-      $("*[data-rs-xml]").on("click", (ev: JQueryEventObject) => {
+      $("*[data-rs-xml]").on("click", (ev:JQueryEventObject) => {
          this._retrieveService.getObjectAsXml(this._model.selectedInstance(), (objectInstance: any) => {
             //$(".pacs-metadata-viewer").text(JSON.stringify(objectInstance, null, "\t"));
             this.renderXml($(".pacs-metadata-viewer"), this.bin2String(objectInstance));
@@ -213,10 +217,10 @@ class QueryView {
          ev.preventDefault();
          return false;
       });
-
+      
    }
-
-   private StudiesChangedHandler() {
+    
+   private StudiesChangedHandler(){
       this.renderStudies();
    }
 
@@ -230,16 +234,18 @@ class QueryView {
       this.renderInstances();
    }
 
-   private renderStudies() {
+   private renderStudies()
+   {
       $(this._ViewClassName.$StudyQuery).html("");
 
       this._model.Studies.forEach((value: StudyParams, index: number, array: StudyParams[]) => {
-         var $studyItem: JQuery = this.createStudyItem(value, index);
-
+         var $studyItem :JQuery = this.createStudyItem(value,index);
+         
          $studyItem.appendTo($(this._ViewClassName.$StudyQuery));
 
          //TODO: a hack, needs to be designed in the UI
-         if ($(this._ViewClassName.$StudyQuery).children(".col-sm-4").length % 3 == 0) {
+         if ($(this._ViewClassName.$StudyQuery).children(".col-sm-4").length % 3 == 0)
+         {
             $("<div class='clearfix visible-sm-block' ></div>").appendTo($(this._ViewClassName.$StudyQuery));
          }
       });
@@ -262,25 +268,26 @@ class QueryView {
    private renderInstances() {
       this._$instanceView.html("");
 
-      this._model.Instances.forEach((value: InstanceParams, index: number, array: InstanceParams[]) => {
-         var $instanceItem: JQuery = this.createInstanceItem(value, index);
+       this._model.Instances.forEach((value: InstanceParams, index: number, array: InstanceParams[]) => {
+           var $instanceItem: JQuery = this.createInstanceItem(value, index);
 
-         $instanceItem.appendTo(this._$instanceView);
+           $instanceItem.appendTo(this._$instanceView);
       });
 
-      $("#instanceCollapse").collapse("show");
+       $("#instanceCollapse").collapse("show");
 
    }
 
-   private buildQueryControl() {
+   private buildQueryControl()
+   {
       $("#searchButton").click((args: JQueryEventObject) => {
          args.preventDefault();
-         var queryModel: StudyParams = this._model.StudyQueryParams;
+         var queryModel :StudyParams = this._model.StudyQueryParams;
          queryModel.PatientId = $("#patientIdInput").val();
          queryModel.PatientName = $("#patientNameInput").val();
          queryModel.StudyDate = $("#studyDateInput").val();
          queryModel.StudyID = $("#studyIdInput").val();
-
+         
          this._model.StudyQueryParams = queryModel;
 
          return false;
@@ -288,13 +295,15 @@ class QueryView {
       });
    }
 
-   private createViewTemplates() {
+   private createViewTemplates()
+   {
       this.createStudyTemplate();
       this.createSeriesTemplate();
       this.createInstanceTemplate();
    }
 
-   private createStudyTemplate() {
+   private createStudyTemplate()
+   {
       var ajaxSettings: JQueryAjaxSettings = {};
 
       ajaxSettings.url = "/Demo/_StudyItem/";
@@ -309,7 +318,8 @@ class QueryView {
       $.ajax(ajaxSettings);
    }
 
-   private createSeriesTemplate() {
+   private createSeriesTemplate()
+   {
       $.get("/Demo/_SeriesItem/", (data: any, textStatus: string, jqXHR: JQueryXHR) => {
          this._$seriesItemTemplate = $(data);
       }, "html");
@@ -320,14 +330,15 @@ class QueryView {
          this._$instanceItemTemplate = $(data);
       }, "html");
    }
-
-   private getContentView($parentView: JQuery, viewId: string): JQuery {
+   
+   private getContentView ( $parentView :JQuery, viewId:string ):JQuery
+   {
       var targetItemId = $parentView.find("*[data-target]").attr("data-target");
-
+      
       if (targetItemId) {
          var $seriesView: JQuery;
 
-         $parentView.find("*[data-target]").attr("data-target", "#" + viewId);
+         $parentView.find("*[data-target]").attr("data-target", "#" + viewId );
 
          $seriesView = $parentView.find(targetItemId);
 
@@ -339,12 +350,14 @@ class QueryView {
       return null;
    }
 
-   private createStudyItem(study: StudyParams, index: number): JQuery {
+   private createStudyItem(study: StudyParams, index: number): JQuery
+   {
       var $item = this._$studyItemTemplate.clone();
       var patientName = "";
-
-
-      if (study.PatientName) {
+      
+               
+      if (study.PatientName)
+      {
          patientName = study.PatientName.Alphabetic;
       }
 
@@ -355,10 +368,10 @@ class QueryView {
       $item.find("*[data-pacs-studyDesc]").text(study.StudyDescription);
 
       this.registerStudyEvents(study, $item, index);
-
+      
       return $item;
    }
-
+   
    private createSeriesItem(series: SeriesParams, index: number): JQuery {
       var $item = this._$seriesItemTemplate.clone();
 
@@ -368,8 +381,8 @@ class QueryView {
 
       return $item;
    }
-
-   private createInstanceItem(instance: InstanceParams, index: number): JQuery {
+   
+   private createInstanceItem(instance: InstanceParams, index: number): JQuery{
       var $item = this._$instanceItemTemplate.clone();
 
       $item.find("*[data-pacs-InstanceNum]").text(instance.InstanceNumber);
@@ -379,15 +392,17 @@ class QueryView {
 
       return $item;
    }
-
-   private updateSeriesItem(series: SeriesParams, $item: JQuery) {
+   
+   private updateSeriesItem(series: SeriesParams, $item: JQuery)
+   {
       $item.find("*[data-pacs-seriesNum]").text(series.SeriesNumber);
       $item.find("*[data-pacs-modality]").text(series.Modality);
       $item.find("*[data-pacs-seriesDesc]").text(series.SeriesDescription);
-      $item.find("*[data-pacs-seriesDate]").text(series.SeriesDate);
+      $item.find("*[data-pacs-seriesDate]").text(series.SeriesDate);      
    }
 
-   private registerStudyEvents(study: StudyParams, $item: JQuery, index: number) {
+   private registerStudyEvents(study: StudyParams, $item: JQuery, index: number)
+   {
       $item.on("click", (ev: JQueryEventObject) => {
          this._model.SelectedStudyIndex = index;
 
@@ -417,7 +432,7 @@ class QueryView {
       });
    }
 
-   private registerSeriesEvents(series: SeriesParams, $item: JQuery, index: number) {
+   private registerSeriesEvents(series: SeriesParams, $item: JQuery, index:number) {
       $item.find(".panel-body").on("click", (ev: Event) => {
          this._model.SelectedSeriesIndex = index;
 
@@ -438,7 +453,7 @@ class QueryView {
 
       $item.find("*[data-pacs-viewQidoSeries]").on("click", (ev: JQueryEventObject) => {
          this.ViewJsonDlg(series.DicomSourceProvider.getSourceDataset(), "Series QIDO Response");
-
+         
          ev.preventDefault();
          return false;
       });
@@ -459,33 +474,31 @@ class QueryView {
          ev.preventDefault();
          return false;
       });
-   }
+  }
 
-   private geFramsList(): string {
+   private geFramsList() : string
+   {
       var frameNumber: string;
 
       frameNumber = $("*[data-rs-frames-input]").val();
 
-      if (frameNumber) {
-         return frameNumber;
+      if (frameNumber)
+      {
+         return frameNumber ;
       }
 
       return "1";
    }
 
-   private geUriFrame(): string {
+   private geUriFrame(): string
+   {
       return $("*[data-uri-frame-input]").val();
    }
 
    private ViewJsonDlg(data: any, caption: string) {
-      var $dlg: any = $("#modal-alert");
-      var $contentElement = $dlg.find(".modal-body");
+      var dlg = new ModalDialog("#modal-alert");
 
-      $dlg.find(".modal-title").text(caption);
-
-      this.renderJson($contentElement, data);
-
-      $dlg.modal("show");
+      dlg.showJson(caption, data);
    }
 
    private renderJson($contentElement: JQuery, data: any) {
@@ -515,7 +528,6 @@ class QueryView {
       editorSession.setMode("ace/mode/html");
 
       editor.resize();
-
    }
 
 }

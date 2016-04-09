@@ -35,7 +35,7 @@ var app = (function () {
                         var $dlg = $("#modal-alert");
                         $dlg.find(".modal-title").text("JSON Store Response");
                         $dlg.modal("show");
-                        $dlg.find(".modal-body").text(xhr.response);
+                        $dlg.find(".modal-body-content").text(xhr.response);
                     }
                     else {
                         alert(xhr.status);
@@ -78,4 +78,3 @@ $(document).ready(function () {
         }
     });
 });
-//# sourceMappingURL=App.js.map
