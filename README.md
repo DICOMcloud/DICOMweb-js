@@ -10,7 +10,7 @@ Check the [demo page here](http://dicomwebdemo.azurewebsites.net/)
 
 ## DICOM Server
 The DICOM Server used by the demo is still under development and I am currently working on supporting missing features. This is a new DICOM Web server implementation and detailed feature support will be provided soon.
-
+[Source code on Github](https://github.com/Zaid-Safadi/DICOMcloud)
 You can check the [web server API here](https://dicomcloud.azurewebsites.net/Help/)
 ## Building the code
 This is an ASP.NET demo so you will need Visual Studio to build the code, you can download the VS2015 community edition or VS code. 
