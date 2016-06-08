@@ -126,6 +126,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\ServersViewModel.cs" />
     <Compile Include="Models\MimeTypes.cs" />
     <Compile Include="Models\ToolbarViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -144,6 +145,7 @@
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="LESS\bootswatch-flatly.less" />
     <Content Include="LESS\flatly-variables.less" />
+    <None Include="Properties\PublishProfiles\dicomwebdemo-dev - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\DICOMwebDemo.pubxml" />
     <Content Include="Scripts\DICOMwebJS.js" />
     <Content Include="Scripts\DICOMwebJS.Proxies.js" />
@@ -162,7 +164,9 @@
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\typings\libs\html.js" />
     <Content Include="Scripts\_references.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>

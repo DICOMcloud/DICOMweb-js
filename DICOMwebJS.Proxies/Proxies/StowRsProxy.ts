@@ -1,5 +1,5 @@
 ﻿class StowRsProxy {
-   BaseUrl: string = "";
+   public BaseUrl: string = "";
    constructor(baseUrl: string) {
       this.BaseUrl = baseUrl;
    }
