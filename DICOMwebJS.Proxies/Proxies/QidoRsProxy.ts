@@ -1,6 +1,6 @@
 ﻿class QidoRsProxy
 {
-    BaseUrl: string = "";
+    public BaseUrl: string = "";
     constructor(baseUrl: string)
     {
         this.BaseUrl = baseUrl;

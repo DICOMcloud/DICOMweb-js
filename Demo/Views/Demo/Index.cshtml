@@ -1,4 +1,6 @@
-﻿@{
+﻿@model List<SelectListItem>
+
+@{
     Layout = "../Shared/_Layout.cshtml";
 }
 
@@ -6,7 +8,17 @@
     ViewBag.Title = "Demo";
 }
 
-<p><a href="https://github.com/Zaid-Safadi/dicom-webJS">https://github.com/Zaid-Safadi/dicom-webJS</a> </p>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col col-sm-6">
+            <a href="https://github.com/Zaid-Safadi/dicom-webJS">https://github.com/Zaid-Safadi/dicom-webJS</a> 
+        </div>
+        <div class="col col-sm-6">
+            @Html.Label( "serverList", "Server List:" )
+            @Html.DropDownList( "serverList", Model, new{@class = "form-control"} )
+        </div>
+    </div>
+</div>
 
 <ul class="nav nav-tabs" role="tablist">
     <li role="presentation" class="active">
@@ -44,4 +56,13 @@
 @section scripts
 {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.01/ace.js"></script>
+
+    @if ( ViewBag.serverUrl != null )
+    {
+    <script>
+        var serverUrl = "@ViewBag.serverUrl";
+    </script>
+    }
+
+
 }
