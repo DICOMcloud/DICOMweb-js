@@ -66,7 +66,6 @@ class QueryView
    public showInstanceMetadata(data: any, args: RsInstanceEventArgs)
    {
       //$(".pacs-metadata-viewer").text(JSON.stringify(objectInstance, null, "\t"));
-
       if (args.MediaType == MimeTypes.Json) { this.renderJson($(".pacs-metadata-viewer"), data); }
       if (args.MediaType == MimeTypes.xmlDicom) { this.renderXml($(".pacs-metadata-viewer"), this.bin2String(data)); }
    }
@@ -251,9 +250,7 @@ class QueryView
          }
       });
 
-      if (!$("#studyCollapse").hasClass("in")) {
-         $("#studyCollapse").collapse("show");
-      }
+      $("#studiesCollapse").collapse("show");
    }
 
    private renderSeries() {
@@ -270,7 +267,6 @@ class QueryView
 
    private renderInstances() {
       this._$instanceView.html("");
-      this.renderJson($(".pacs-metadata-viewer"), "");
 
        this._model.Instances.forEach((value: InstanceParams, index: number, array: InstanceParams[]) => {
            var $instanceItem: JQuery = this.createInstanceItem(value, index);
@@ -504,7 +500,6 @@ class QueryView
 
       dlg.showJson(caption, data);
    }
-
 
    private renderJson($contentElement: JQuery, data: any) {
       var editor;

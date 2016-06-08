@@ -1,14 +1,6 @@
 ﻿
 class WadoRsProxy{
    private _baseUrl: string;
-
-   public get BaseUrl() {
-      return this._baseUrl;
-   }
-   public set BaseUrl(value: string) {
-      this._baseUrl = value;
-   }
-
    public constructor(baseUrl: string) {
       this._baseUrl = baseUrl;
    }

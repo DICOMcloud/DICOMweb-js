@@ -366,19 +366,8 @@ var StowRsProxy = (function () {
     return StowRsProxy;
 })();
 var WadoUriProxy = (function () {
-    function WadoUriProxy(baseUrl) {
-        this._baseUrl = baseUrl;
+    function WadoUriProxy() {
     }
-    Object.defineProperty(WadoUriProxy.prototype, "BaseUrl", {
-        get: function () {
-            return this._baseUrl;
-        },
-        set: function (value) {
-            this._baseUrl = value;
-        },
-        enumerable: true,
-        configurable: true
-    });
     WadoUriProxy.prototype.getDicomInstance = function (instanceData, anonymize, imageParams, successCallback, failureCallback) {
         this.getObjectInstance(instanceData, MimeTypes.DICOM, imageParams, successCallback, failureCallback);
     };
@@ -406,7 +395,7 @@ var WadoUriProxy = (function () {
         xhr.send(null);
     };
     WadoUriProxy.prototype.createUrl = function (instanceData, mimeType, imageParams) {
-        var url = this.BaseUrl;
+        var url = DICOMwebJS.ServerConfiguration.getWadoUriUrl();
         url += WadoUriProxy._QueryParamsFormatted.format(instanceData.studyUID, instanceData.seriesUID, instanceData.instanceUID);
         if (mimeType) {
             url += "&contentType=" + mimeType;
@@ -433,16 +422,6 @@ var WadoRsProxy = (function () {
     function WadoRsProxy(baseUrl) {
         this._baseUrl = baseUrl;
     }
-    Object.defineProperty(WadoRsProxy.prototype, "BaseUrl", {
-        get: function () {
-            return this._baseUrl;
-        },
-        set: function (value) {
-            this._baseUrl = value;
-        },
-        enumerable: true,
-        configurable: true
-    });
     WadoRsProxy.prototype.getStudyMetadata = function (studyInstanceUid, successCallback, failureCallback) {
         var url = this._baseUrl + "/studies/" + studyInstanceUid + "/metadata";
         $.get(url, successCallback, "json");

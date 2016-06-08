@@ -2,39 +2,28 @@
    new app();
 };
 
-declare var serverUrl: string;
-
 class app {
+   private _baseUrl: string;
 
    constructor() {
       this.init();
    }
 
    private init(): void {
-      if (typeof(serverUrl) != "undefined") {
-         DICOMwebJS.ServerConfiguration.BaseServerUrl = serverUrl;
-      }
-      else {
-         DICOMwebJS.ServerConfiguration.BaseServerUrl = $("#serverList").val();
-      }
-      
-      var model = new QueryModel();
+      this._baseUrl = "https://dicomcloud.azurewebsites.net/";
+      //this._baseUrl = "https://localhost:44301/";
+      //this._baseUrl = "http://dicomserver.co.uk:81/";
+      //DICOMwebJS.ServerConfiguration.QidoPart = "qido"
+      DICOMwebJS.ServerConfiguration.BaseServerUrl = this._baseUrl;
       var rsProxy = new WadoRsProxy(DICOMwebJS.ServerConfiguration.getWadoRsUrl());
-      var uriProxy = new WadoUriProxy(DICOMwebJS.ServerConfiguration.getWadoUriUrl());
-      var qidoProxy = new QidoRsProxy(DICOMwebJS.ServerConfiguration.getQidoUrl());
+      var uriProxy = new WadoUriProxy();
+      var model = new QueryModel();
       var queryView = new QueryView(document.getElementById("#content"), model, new RetrieveService(rsProxy));
-      var queryController = new QueryController(queryView, model, qidoProxy, rsProxy, uriProxy);
+      var queryController = new QueryController(queryView, model, new QidoRsProxy(DICOMwebJS.ServerConfiguration.getQidoUrl()), rsProxy, uriProxy);
 
       //new TestClientProxies().StoreFile();
 
       this.initStore();
-
-      $($("#serverList")).change(function () {
-         DICOMwebJS.ServerConfiguration.BaseServerUrl = $("#serverList").val();
-         rsProxy.BaseUrl =  DICOMwebJS.ServerConfiguration.getWadoRsUrl();
-         uriProxy.BaseUrl = DICOMwebJS.ServerConfiguration.getWadoUriUrl();
-         qidoProxy.BaseUrl = DICOMwebJS.ServerConfiguration.getQidoUrl();
-      });
    }
 
    public initStore() {

@@ -79,9 +79,6 @@ declare class StowRsProxy {
 declare class WadoUriProxy {
     private _xhr;
     private static _QueryParamsFormatted;
-    private _baseUrl;
-    constructor(baseUrl: string);
-    BaseUrl: string;
     getDicomInstance(instanceData: CommonDicomInstanceParams, anonymize: boolean, imageParams: WadoImageParams, successCallback: (buffer: any) => void, failureCallback: (error: ErrorEvent) => void): void;
     getJpegImage(instanceData: CommonDicomInstanceParams, imageParams: WadoImageParams, successCallback: (buffer: any) => void, failureCallback: (error: ErrorEvent) => void): void;
     getUncompressedImage(instanceData: CommonDicomInstanceParams, imageParams: WadoImageParams, successCallback: (buffer: ArrayBuffer) => void, failureCallback: (error: ErrorEvent) => void): void;
@@ -98,19 +95,14 @@ declare class WadoImageParams {
 }
 declare class WadoRsProxy {
     private _baseUrl;
-    BaseUrl: string;
     constructor(baseUrl: string);
+    getObjectInstanceMetadata(studyInstanceUid: string, seriesInstanceUid: string, sopInstanceUID: string, successCallback: (data: any, textStatus: string, jqXHR: JQueryXHR) => any, dataType?: string): void;
+    getObjectUncompressed(studyInstanceUid: string, seriesInstanceUid: string, sopInstanceUID: string, successCallback: (data: any, textStatus: string) => any, failureCallback: (ev: Event) => void): void;
+    getObjectDicom(studyInstanceUid: string, seriesInstanceUid: string, sopInstanceUID: string, successCallback: (data: any, textStatus: string) => any, failureCallback: (ev: Event) => void): void;
     getStudyMetadata(studyInstanceUid: string, successCallback: (data: any, textStatus: string, jqXHR: JQueryXHR) => any, failureCallback: (ev: Event) => void): void;
-    getStudy(studyInstanceUid: string, mediaType: string, successCallback: (data: any, textStatus: string) => any, failureCallback: (ev: Event) => void): void;
-    getObjectInstanceMetadata(studyInstanceUid: string, seriesInstanceUid: string, sopInstanceUID: string, mediaType: string, successCallback: (data: any, textStatus: string, jqXHR: JQueryXHR) => any, failureCallback?: (ev: Event) => void): void;
-    getObjectInstance(studyInstanceUid: string, seriesInstanceUid: string, sopInstanceUID: string, mediaType: string, successCallback: (data: any, textStatus?: string, jqXHR?: JQueryXHR) => any, failureCallback: (ev: Event) => void): void;
-    getFrame(studyInstanceUid: string, seriesInstanceUid: string, sopInstanceUID: string, frameList: string, mediaType: string, successCallback: (data: any, textStatus?: string, jqXHR?: JQueryXHR) => any, failureCallback: (ev: Event) => void): void;
-    getFrameUncompressed(studyInstanceUid: string, seriesInstanceUid: string, sopInstanceUID: string, frameList: string, successCallback: (data: any, textStatus?: string, jqXHR?: JQueryXHR) => any, failureCallback: (ev: Event) => void): void;
-    getObjectUncompressed(studyInstanceUid: string, seriesInstanceUid: string, sopInstanceUID: string, successCallback: (data: any, textStatus?: string, jqXHR?: JQueryXHR) => any, failureCallback: (ev: Event) => void): void;
-    getObjectDicom(studyInstanceUid: string, seriesInstanceUid: string, sopInstanceUID: string, successCallback: (data: any, textStatus?: string, jqXHR?: JQueryXHR) => any, failureCallback: (ev: Event) => void): void;
-    getStudyDicom(studyInstanceUid: string, successCallback: (data: any, textStatus?: string, jqXHR?: JQueryXHR) => any, failureCallback: (ev: Event) => void): void;
-    getStudyUncompressed(studyInstanceUid: string, successCallback: (data: any, textStatus?: string, jqXHR?: JQueryXHR) => any, failureCallback: (ev: Event) => void): void;
-    getDICOMMultipart(urlRsPart: string, acceptDataType: string, successCallback: (data: any, textStatus?: string, jqXHR?: JQueryXHR) => any, failureCallback: (ev: Event) => void): void;
+    getStudyDicom(studyInstanceUid: string, successCallback: (data: any, textStatus: string) => any, failureCallback: (ev: Event) => void): void;
+    getStudyUncompressed(studyInstanceUid: string, successCallback: (data: any, textStatus: string) => any, failureCallback: (ev: Event) => void): void;
+    getDICOMMultipart(urlRsPart: string, acceptDataType: string, successCallback: (data: any, textStatus: string) => any, failureCallback: (ev: Event) => void): void;
 }
 interface String {
     format(...arguments: string[]): string;

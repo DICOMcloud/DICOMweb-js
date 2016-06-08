@@ -2,20 +2,6 @@
 {
     private _xhr: XMLHttpRequest;
     private static _QueryParamsFormatted: string = "?RequestType=wado&studyUID={0}&seriesUID={1}&objectUID={2}"
-    private _baseUrl: string;
-
-    constructor(baseUrl: string)
-    {
-       this._baseUrl = baseUrl;
-    }
-
-    public get BaseUrl() {
-       return this._baseUrl;
-    }
-    public set BaseUrl(value: string)
-    {
-       this._baseUrl = value;
-    }
 
     //returns the DICOM DS 
     getDicomInstance(instanceData: CommonDicomInstanceParams, anonymize: boolean, imageParams: WadoImageParams, successCallback: (buffer: any) => void, failureCallback: (error: ErrorEvent) => void) { 
@@ -63,7 +49,7 @@
    } 
 
    private createUrl(instanceData: CommonDicomInstanceParams,mimeType: string,imageParams: WadoImageParams): string {
-      var url = this.BaseUrl;
+      var url = DICOMwebJS.ServerConfiguration.getWadoUriUrl();
 
        url += WadoUriProxy._QueryParamsFormatted.format(instanceData.studyUID, instanceData.seriesUID, instanceData.instanceUID);
 
