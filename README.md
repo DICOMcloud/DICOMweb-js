@@ -6,7 +6,7 @@ The code provide a basic library for sending DICOM Web requests and parsing JSON
 ## Demo Code
 The demo uses the library to connect to a DICOM Web server and initiate qido-rs for querying (studies, series and object instances), wado-RS for retrieving  (study, series, object instance) and stow-rs for storing DICOM format images.
 
-Check the [demo page here](http://dicomwebdemo.azurewebsites.net/)
+Check the [demo page here](http://dicomweb.azurewebsites.net/)
 
 ## DICOM Server
 The DICOM Server used by the demo is still under development and I am currently working on supporting missing features. This is a new DICOM Web server implementation and detailed feature support will be provided soon.
