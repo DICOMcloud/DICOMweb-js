@@ -86,7 +86,7 @@ declare class WadoUriProxy {
     getJpegImage(instanceData: CommonDicomInstanceParams, imageParams: WadoImageParams, successCallback: (buffer: any) => void, failureCallback: (error: ErrorEvent) => void): void;
     getUncompressedImage(instanceData: CommonDicomInstanceParams, imageParams: WadoImageParams, successCallback: (buffer: ArrayBuffer) => void, failureCallback: (error: ErrorEvent) => void): void;
     getObjectInstance(instanceData: CommonDicomInstanceParams, mimeType: string, imageParams: WadoImageParams, successCallback: (buffer: any) => void, failureCallback: (error: Event) => void): void;
-    private createUrl(instanceData, mimeType, imageParams);
+    createUrl(instanceData: CommonDicomInstanceParams, mimeType: string, imageParams: WadoImageParams): string;
 }
 declare class CommonDicomInstanceParams {
     studyUID: string;

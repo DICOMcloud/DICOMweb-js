@@ -1,4 +1,6 @@
-﻿
+﻿/// <reference path="../scripts/typings/libs/ace.d.ts" />
+/// <reference path="../scripts/typings/libs/html.ts" />
+
 class QueryView
 {
    //these will be replaced by some event dispatcher, 
@@ -23,6 +25,8 @@ class QueryView
    private _onFrames = new LiteEvent<RsFramesEventArgs>();
    private _onWadoUri = new LiteEvent<WadoUriEventArgs>();
 
+   private _onViewInstance = new LiteEvent<WadoUriEventArgs>();
+
    private _ViewClassName = {
       $SeriesQuery: ".series-query", $StudyQuery: ".studies-query", $InstanceQuery: ".instance-query",
       SeriesQuery: "series-query", StudyQuery: "studies-query", InstanceQuery: "instance-query" };
@@ -45,7 +49,9 @@ class QueryView
    public get instanceMetaDataRequest() { return this._onInstanceMetadata; }
    public get instanceRequest() { return this._onInstance; }
    public get framesRequest() { return this._onFrames; }
-   public get wadoUriRequest() { return this._onWadoUri;}
+   public get wadoUriRequest() { return this._onWadoUri; }
+
+   public get instanceViewRequest() { return this._onViewInstance; }
    
    public showError()
    {
@@ -74,7 +80,7 @@ class QueryView
    public download(data: any) {
       //http://stackoverflow.com/questions/16086162/handle-file-download-from-ajax-post/23797348#23797348
       var filename = "dicom.txt";
-      var blob = new Blob([data], { type: "application/octec-stream" });
+      var blob = new Blob([data], { type: "application/octet-stream" });
       if (typeof window.navigator.msSaveBlob !== 'undefined') {
          // IE workaround for "HTML7007: One or more blob URLs were revoked by closing the blob for which they were created. These URLs will no longer resolve as the data backing the URL has been freed."
          window.navigator.msSaveBlob(blob, filename);
@@ -475,6 +481,12 @@ class QueryView
       $item.find("*[data-pacs-viewQidoInstance]").on("click", (ev: JQueryEventObject) => {
          this.ViewJsonDlg(instance.DicomSourceProvider.getSourceDataset(), "Qido Instance ");
 
+         ev.preventDefault();
+         return false;
+      });
+
+      $item.find("*[data-pacs-viewInstanceViewer]").on("click", (ev: JQueryEventObject) => {
+         this._onViewInstance.trigger(new WadoUriEventArgs(instance, MimeTypes.DICOM, ""));
          ev.preventDefault();
          return false;
       });

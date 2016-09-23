@@ -24,10 +24,49 @@ class app {
       var qidoProxy = new QidoRsProxy(DICOMwebJS.ServerConfiguration.getQidoUrl());
       var queryView = new QueryView(document.getElementById("#content"), model, new RetrieveService(rsProxy));
       var queryController = new QueryController(queryView, model, qidoProxy, rsProxy, uriProxy);
+      //var viewer = this.initViewer();
 
-      //new TestClientProxies().StoreFile();
+
+      queryView.instanceViewRequest.on((args) => {
+         let instance: CommonDicomInstanceParams = {
+            studyUID: args.InstanceParams.StudyInstanceUid,
+            seriesUID: args.InstanceParams.SeriesInstanceUID,
+            instanceUID: args.InstanceParams.SopInstanceUid
+         };
+
+         let imageParam: WadoImageParams = { frameNumber: args.Frame };
+         var instanceUrl = uriProxy.createUrl(instance, args.MediaType, imageParam);
+         var dlg = new ModalDialog("#image-viewer");
+
+         dlg.dilaogClosed.on((dlgName) => {
+            //viewer.reset();
+         });
+         //dlg.show(args.InstanceParams.PatientName.Alphabetic);
+         // load dicom data
+         //$('#wadoURL').val(instanceUrl);
+         //viewer.loadURLs([instanceUrl]);
+
+         $('.nav-tabs a[href="#_ViewerView"]').tab('show');
+
+         var element = $('#dicomImage').get(0);
+
+         cornerstone.enable(element);
+
+         cornerstone.resize(element, true);
+
+         $(window).resize(function () {
+            cornerstone.resize(element, true);
+         })
+         loadAndViewImage(instanceUrl);
+      });
+
 
       this.initStore();
+      window.onerror = function (message, url, lineNumber) {
+         //save error and send to server for example.
+         alert(message + "\n" + url + "\n" + lineNumber);
+         return true;
+      };  
 
       $($("#serverList")).change(function () {
          DICOMwebJS.ServerConfiguration.BaseServerUrl = $("#serverList").val();
@@ -36,6 +75,22 @@ class app {
          qidoProxy.BaseUrl = DICOMwebJS.ServerConfiguration.getQidoUrl();
       });
    }
+
+   //public initViewer() {
+   //   // base function to get elements
+   //   dwv.gui.getElement = dwv.gui.base.getElement;
+   //   dwv.gui.displayProgress = function (percent) { };
+
+   //   // create the dwv app
+   //   var viewer = new dwv.App();
+   //   // initialise with the id of the container div
+   //   viewer.init({
+   //      "containerDivId": "dwv",
+   //      "tools": ["WindowLevel"], // or try "ZoomAndPan"
+   //   });
+
+   //   return viewer;
+   //}
 
    public initStore() {
 
@@ -51,14 +106,13 @@ class app {
             var proxy = new StowRsProxy(url);
 
             proxy.StoreInstance(arrayBuffer, (xhr: XMLHttpRequest) => {
-
+               var dlg = new ModalDialog("#modal-alert");
+               
                if (xhr.getResponseHeader("content-type").indexOf("application/json") >= 0) {
-                  var dlg = new ModalDialog("#modal-alert");
-
                   dlg.showJson("JSON Store Response", JSON.parse(xhr.response));
                }
                else {
-                  alert(xhr.status);
+                  dlg.showXml("XML Store Response", xhr.response);
                }
             },
                (error: ErrorEvent) => {

@@ -87,4 +87,8 @@ padding-top:30px;
 
 .pacs-metadata-viewer{
    height:450px;
+}
+
+#dwv > .layerContainer {
+margin:auto;
 } 

@@ -11,8 +11,8 @@ namespace Demo.Models
         public static string xmlDicom = "application/dicom+xml";
         public static string Jpeg = "image/jpeg";
         public static string WebP = "image/webp";
-        public static string Json = "application/json";
-        public static string UncompressedData = "application/octec-stream";
+        public static string Json = "application/dicom+json";
+        public static string UncompressedData = "application/octet-stream";
         public static string PlainText = "text/plain";
         public static string MultipartRelated = "multipart/related";
     }

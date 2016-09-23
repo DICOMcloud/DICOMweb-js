@@ -26,14 +26,27 @@ namespace CloudPacs.Demo
             bundles.Add(new ScriptBundle("~/bundles/dicomweb").Include(
                         "~/Scripts/DICOMweb*"));
 
-             bundles.Add(new ScriptBundle("~/bundles/app")
-            .Include( "~/cloudPacs.App.js"));
+            //bundles.Add ( new ScriptBundle ( "~/bundles/dwv" ).Include (
+            //            "~/Scripts/j2k/*.js",
+            //            "~/Scripts/dwv-0.16.0.min.js" ));
+
+            bundles.Add ( new ScriptBundle("~/bundles/cornerstornViewer").Include (
+            "~/cornerstoneViewer/js/cornerstone.js",    
+            "~/cornerstoneViewer/js/*.js",
+                "~/cornerstoneViewer/wadoViewer.js" 
+            )) ;
+
+             bundles.Add(new ScriptBundle("~/bundles/app").Include(
+                        "~/cloudPacs.App.js" ));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       //"~/Content/flatly-bootstrap.css",
                       "~/Content/site.css",
                       "~/Content/jquery.json-viewer.css" ) );
+
+            bundles.Add(new StyleBundle("~/Content/csViewer").Include(
+                      "~/cornerstoneViewer/css/cornerstone.min.css"));
         }
     }
 }

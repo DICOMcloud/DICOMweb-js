@@ -8,17 +8,15 @@
     ViewBag.Title = "Demo";
 }
 
-<div class="container-fluid">
-    <div class="row">
-        <div class="col col-sm-6">
-            <a href="https://github.com/Zaid-Safadi/dicom-webJS">https://github.com/Zaid-Safadi/dicom-webJS</a> 
-        </div>
-        <div class="col col-sm-6">
-            @Html.Label( "serverList", "Server List:" )
-            @Html.DropDownList( "serverList", Model, new{@class = "form-control"} )
-        </div>
-    </div>
-</div>
+@section navbar_Header_Content
+{   
+    <li>
+        <div> 
+            @Html.Label( "serverList", "Server List:", new {@style="display:inline-block;padding-top:15px;color:white"})
+            @Html.DropDownList( "serverList", Model, new{@class = "form-control", @style = "width:auto;display:inline-block"} )
+        </div>    
+    </li>
+}
 
 <ul class="nav nav-tabs" role="tablist">
     <li role="presentation" class="active">
@@ -27,10 +25,18 @@
     <li role="presentation">
         <a href="#_StoreView" aria-controls="_StoreView" role="tab" data-toggle="tab">Store</a>
     </li>
+    <li role="presentation">
+        <a href="#_ViewerView" aria-controls="_Viewer" role="tab" data-toggle="tab">Viewer</a>
+    </li>
 </ul>
 
 <div class="tab-content clearfix">
     <div role="tabpanel" class="tab-pane active" id="_QueryFieldsView">
+        <div class="alert alert-info alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            Click the "Search" button to query the <a href="https://github.com/Zaid-Safadi/DICOMcloud">DICOMcloud WADO server</a> using DIOCM <strong>QIDO-RS</strong> service. 
+            Click on a study from the studies panel to query for series and then instances. You can view an instance by clicking on the <strong>"View"</strong> button.
+        </div>
         <div class="col-sm-3">
             @Html.Partial("_QueryFieldsView")
         </div>
@@ -41,16 +47,20 @@
     <div role="tabpanel" class="tab-pane" id="_StoreView">
         @Html.Partial("_StoreView")
     </div>
+    <div role="tabpanel" class="tab-pane" id="_ViewerView">
+        @Html.Partial("_cornerstoneViewer" );
+
+    </div>
 </div>
 
 
 
 @Html.Partial("_AlertDlg")
-
+@Html.Partial("_ImageViewer")
 
 @section styles
 {
-
+    @Styles.Render("~/Content/csViewer" )
 }
 
 @section scripts

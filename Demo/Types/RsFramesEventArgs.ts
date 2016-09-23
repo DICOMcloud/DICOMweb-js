@@ -1,4 +1,5 @@
-﻿/// <reference path="rsinstanceeventargs.ts" />
+﻿/// <reference path="../scripts/typings/dicomwebjs/dicomwebjs.proxies.d.ts" />
+/// <reference path="rsinstanceeventargs.ts" />
 class RsFramesEventArgs extends RsInstanceEventArgs
 {
    constructor(instance: InstanceParams, mediaType: string, frames: string) {

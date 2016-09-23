@@ -1,8 +1,12 @@
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 var DICOMwebJS;
 (function (DICOMwebJS) {
     var ServerConfiguration;
     (function (ServerConfiguration) {
-        ServerConfiguration.BaseServerUrl;
         ServerConfiguration.WadoUriPart = "api/wadouri";
         ServerConfiguration.WadoRsPart = "wadors";
         ServerConfiguration.StowPart = "stowrs";
@@ -32,18 +36,12 @@ var MimeTypes = (function () {
     MimeTypes.xmlDicom = "application/dicom+xml";
     MimeTypes.Jpeg = "image/jpeg";
     MimeTypes.WebP = "image/webp";
-    MimeTypes.Json = "application/json";
-    MimeTypes.UncompressedData = "application/octec-stream";
+    MimeTypes.Json = "application/dicom+json";
+    MimeTypes.UncompressedData = "application/octet-stream";
     MimeTypes.PlainText = "text/plain";
     MimeTypes.MultipartRelated = "multipart/related";
     return MimeTypes;
-})();
-var __extends = this.__extends || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
-};
+}());
 var QidoRsProxy = (function () {
     function QidoRsProxy(baseUrl) {
         this.BaseUrl = "";
@@ -95,7 +93,7 @@ var QidoRsProxy = (function () {
         $.ajax(ajaxSettings);
     };
     return QidoRsProxy;
-})();
+}());
 var QueryOptions = (function () {
     function QueryOptions() {
         this._fuzzy = false;
@@ -133,12 +131,12 @@ var QueryOptions = (function () {
         configurable: true
     });
     return QueryOptions;
-})();
+}());
 var queryParams = (function () {
     function queryParams() {
     }
     return queryParams;
-})();
+}());
 var PatientParams = (function (_super) {
     __extends(PatientParams, _super);
     function PatientParams(elementsProvider) {
@@ -165,7 +163,7 @@ var PatientParams = (function (_super) {
         configurable: true
     });
     return PatientParams;
-})(DicomModuleBase);
+}(DicomModuleBase));
 var StudyParams = (function (_super) {
     __extends(StudyParams, _super);
     function StudyParams(elementsProvider) {
@@ -222,7 +220,7 @@ var StudyParams = (function (_super) {
         configurable: true
     });
     return StudyParams;
-})(PatientParams);
+}(PatientParams));
 var SeriesParams = (function (_super) {
     __extends(SeriesParams, _super);
     function SeriesParams() {
@@ -279,7 +277,7 @@ var SeriesParams = (function (_super) {
         configurable: true
     });
     return SeriesParams;
-})(StudyParams);
+}(StudyParams));
 var InstanceParams = (function (_super) {
     __extends(InstanceParams, _super);
     function InstanceParams() {
@@ -306,7 +304,7 @@ var InstanceParams = (function (_super) {
         configurable: true
     });
     return InstanceParams;
-})(SeriesParams);
+}(SeriesParams));
 var StowRsProxy = (function () {
     function StowRsProxy(baseUrl) {
         this.BaseUrl = "";
@@ -314,12 +312,8 @@ var StowRsProxy = (function () {
         this.BaseUrl = baseUrl;
     }
     Object.defineProperty(StowRsProxy.prototype, "returnJson", {
-        get: function () {
-            return this._returnJson;
-        },
-        set: function (value) {
-            this._returnJson = value;
-        },
+        get: function () { return this._returnJson; },
+        set: function (value) { this._returnJson = value; },
         enumerable: true,
         configurable: true
     });
@@ -364,7 +358,7 @@ var StowRsProxy = (function () {
         return uint8array;
     };
     return StowRsProxy;
-})();
+}());
 var WadoUriProxy = (function () {
     function WadoUriProxy(baseUrl) {
         this._baseUrl = baseUrl;
@@ -418,17 +412,17 @@ var WadoUriProxy = (function () {
     };
     WadoUriProxy._QueryParamsFormatted = "?RequestType=wado&studyUID={0}&seriesUID={1}&objectUID={2}";
     return WadoUriProxy;
-})();
+}());
 var CommonDicomInstanceParams = (function () {
     function CommonDicomInstanceParams() {
     }
     return CommonDicomInstanceParams;
-})();
+}());
 var WadoImageParams = (function () {
     function WadoImageParams() {
     }
     return WadoImageParams;
-})();
+}());
 var WadoRsProxy = (function () {
     function WadoRsProxy(baseUrl) {
         this._baseUrl = baseUrl;
@@ -463,13 +457,14 @@ var WadoRsProxy = (function () {
         this.getDICOMMultipart("/studies/" + studyInstanceUid + "/series/" + seriesInstanceUid + "/instances/" + sopInstanceUID + "/", mediaType, successCallback, failureCallback);
     };
     WadoRsProxy.prototype.getFrame = function (studyInstanceUid, seriesInstanceUid, sopInstanceUID, frameList, mediaType, successCallback, failureCallback) {
-        this.getDICOMMultipart("/studies/" + studyInstanceUid + "/series/" + seriesInstanceUid + "/instances/" + sopInstanceUID + "/frames/" + frameList, mediaType, successCallback, failureCallback);
+        this.getDICOMMultipart("/studies/" + studyInstanceUid + "/series/" + seriesInstanceUid + "/instances/" + sopInstanceUID +
+            "/frames/" + frameList, mediaType, successCallback, failureCallback);
     };
     WadoRsProxy.prototype.getFrameUncompressed = function (studyInstanceUid, seriesInstanceUid, sopInstanceUID, frameList, successCallback, failureCallback) {
-        this.getFrame(studyInstanceUid, seriesInstanceUid, sopInstanceUID, frameList, "application/octec-stream", successCallback, failureCallback);
+        this.getFrame(studyInstanceUid, seriesInstanceUid, sopInstanceUID, frameList, "application/octet-stream", successCallback, failureCallback);
     };
     WadoRsProxy.prototype.getObjectUncompressed = function (studyInstanceUid, seriesInstanceUid, sopInstanceUID, successCallback, failureCallback) {
-        this.getObjectInstance(studyInstanceUid, seriesInstanceUid, sopInstanceUID, "application/octec-stream", successCallback, failureCallback);
+        this.getObjectInstance(studyInstanceUid, seriesInstanceUid, sopInstanceUID, "application/octet-stream", successCallback, failureCallback);
     };
     WadoRsProxy.prototype.getObjectDicom = function (studyInstanceUid, seriesInstanceUid, sopInstanceUID, successCallback, failureCallback) {
         this.getObjectInstance(studyInstanceUid, seriesInstanceUid, sopInstanceUID, "application/dicom", successCallback, failureCallback);
@@ -478,7 +473,7 @@ var WadoRsProxy = (function () {
         this.getStudy(studyInstanceUid, "application/dicom", successCallback, failureCallback);
     };
     WadoRsProxy.prototype.getStudyUncompressed = function (studyInstanceUid, successCallback, failureCallback) {
-        this.getStudy(studyInstanceUid, "application/octec-stream", successCallback, failureCallback);
+        this.getStudy(studyInstanceUid, "application/octet-stream", successCallback, failureCallback);
     };
     WadoRsProxy.prototype.getDICOMMultipart = function (urlRsPart, acceptDataType, successCallback, failureCallback) {
         var url = this._baseUrl + urlRsPart;
@@ -499,7 +494,7 @@ var WadoRsProxy = (function () {
         xhr.send(null);
     };
     return WadoRsProxy;
-})();
+}());
 String.prototype.format = function () {
     var args = arguments;
     return this.replace(/\{\{|\}\}|\{(\d+)\}/g, function (m, n) {

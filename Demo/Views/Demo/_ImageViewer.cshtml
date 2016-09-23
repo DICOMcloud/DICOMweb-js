@@ -1,0 +1,31 @@
+﻿<div class="modal" id="image-viewer"
+     tabindex="-1" role="dialog"
+     aria-labelledby="modal-sample-label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="modal-sample-label"></h4>
+            </div>
+            <div class="model-body" >
+                <div class="model-body-content" style="">
+                    <!-- DWV 
+                    <div id="dwv">
+                            <div class="layerContainer" style="margin:auto">
+                                <canvas class="imageLayer"></canvas>
+                            </div>
+                    </div>-->
+                    
+                    
+                    @*@Html.Partial("_cornerstoneViewer");*@
+                </div>
+            </div>
+            <div class="modal-footer">
+                <span class="info text-info"><a href="https://github.com/ivmartel/dwv" target="_blank">DWV viewer @@ https://github.com/ivmartel/dwv</a></span>
+                <button type="button" class="btn btn-info"
+                        data-dismiss="modal">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

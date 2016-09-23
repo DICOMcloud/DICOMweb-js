@@ -132,11 +132,26 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="appgui.js" />
+    <Content Include="applauncher.js" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\flatly-bootstrap.min.css" />
     <Content Include="Content\flatly-bootstrap.css" />
     <Content Include="Content\jquery.json-viewer.css" />
+    <Content Include="cornerstoneViewer\css\cornerstone.min.css" />
+    <Content Include="cornerstoneViewer\js\cornerstone.js" />
+    <Content Include="cornerstoneViewer\js\cornerstone.min.js" />
+    <Content Include="cornerstoneViewer\js\cornerstoneMath.js" />
+    <Content Include="cornerstoneViewer\js\cornerstoneTools.js" />
+    <Content Include="cornerstoneViewer\js\cornerstoneWADOImageLoader.js" />
+    <Content Include="cornerstoneViewer\js\dicomParser.js" />
+    <Content Include="cornerstoneViewer\js\dicomParser.min.js" />
+    <Content Include="cornerstoneViewer\js\libCharLS.js" />
+    <Content Include="cornerstoneViewer\js\libopenjpeg.js" />
+    <Content Include="cornerstoneViewer\js\uids.js" />
+    <Content Include="cornerstoneViewer\wadoViewer.js" />
+    <Content Include="dwv-0.16.0.min.js" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -188,6 +203,8 @@
     <Content Include="Views\Demo\_Toolbar.cshtml" />
     <Content Include="Views\Shared\_Scripts.cshtml" />
     <Content Include="Views\Demo\_ItemDetailsToolbar.cshtml" />
+    <Content Include="Views\Demo\_ImageViewer.cshtml" />
+    <Content Include="Views\Shared\_cornerstoneViewer.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -210,6 +227,7 @@
     <TypeScriptCompile Include="Scripts\typings\DICOMwebJS\DICOMwebJS.Proxies.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\jquery\jquery.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\libs\ace.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\libs\viewers.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\libs\html.ts" />
     <TypeScriptCompile Include="Types\CodeRenderer.ts" />
     <TypeScriptCompile Include="Types\ILiteEvent.ts" />
@@ -227,12 +245,11 @@
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <TypeScriptTarget>ES5</TypeScriptTarget>
+    <TypeScriptTarget>ES6</TypeScriptTarget>
     <TypeScriptJSXEmit>None</TypeScriptJSXEmit>
     <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
     <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
-    <TypeScriptModuleKind>
-    </TypeScriptModuleKind>
+    <TypeScriptModuleKind>CommonJS</TypeScriptModuleKind>
     <TypeScriptRemoveComments>False</TypeScriptRemoveComments>
     <TypeScriptOutFile>cloudPacs.App.js</TypeScriptOutFile>
     <TypeScriptOutDir />

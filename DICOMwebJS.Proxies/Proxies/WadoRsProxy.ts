@@ -105,7 +105,7 @@ class WadoRsProxy{
       successCallback: (data: any, textStatus?: string, jqXHR?: JQueryXHR) => any,
       failureCallback: (ev: Event) => void
    ) {
-      this.getFrame(studyInstanceUid, seriesInstanceUid, sopInstanceUID, frameList, "application/octec-stream",
+      this.getFrame(studyInstanceUid, seriesInstanceUid, sopInstanceUID, frameList, "application/octet-stream",
          successCallback,
          failureCallback);
    }
@@ -120,7 +120,7 @@ class WadoRsProxy{
    )
    {
       this.getObjectInstance(studyInstanceUid, seriesInstanceUid, sopInstanceUID,
-                             "application/octec-stream", successCallback, failureCallback);
+                             "application/octet-stream", successCallback, failureCallback);
    }
 
    public getObjectDicom
@@ -159,7 +159,7 @@ class WadoRsProxy{
    )
    {
       this.getStudy(studyInstanceUid,
-         "application/octec-stream",
+         "application/octet-stream",
          successCallback,
          failureCallback);
    }
