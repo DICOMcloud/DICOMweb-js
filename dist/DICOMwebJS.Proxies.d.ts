@@ -100,17 +100,17 @@ declare class WadoRsProxy {
     private _baseUrl;
     BaseUrl: string;
     constructor(baseUrl: string);
-    getStudyMetadata(studyInstanceUid: string, successCallback: (data: any, textStatus: string, jqXHR: JQueryXHR) => any, failureCallback: (ev: Event) => void): void;
-    getStudy(studyInstanceUid: string, mediaType: string, successCallback: (data: any, textStatus: string) => any, failureCallback: (ev: Event) => void): void;
-    getObjectInstanceMetadata(studyInstanceUid: string, seriesInstanceUid: string, sopInstanceUID: string, mediaType: string, successCallback: (data: any, textStatus: string, jqXHR: JQueryXHR) => any, failureCallback?: (ev: Event) => void): void;
-    getObjectInstance(studyInstanceUid: string, seriesInstanceUid: string, sopInstanceUID: string, mediaType: string, successCallback: (data: any, textStatus?: string, jqXHR?: JQueryXHR) => any, failureCallback: (ev: Event) => void): void;
-    getFrame(studyInstanceUid: string, seriesInstanceUid: string, sopInstanceUID: string, frameList: string, mediaType: string, successCallback: (data: any, textStatus?: string, jqXHR?: JQueryXHR) => any, failureCallback: (ev: Event) => void): void;
-    getFrameUncompressed(studyInstanceUid: string, seriesInstanceUid: string, sopInstanceUID: string, frameList: string, successCallback: (data: any, textStatus?: string, jqXHR?: JQueryXHR) => any, failureCallback: (ev: Event) => void): void;
-    getObjectUncompressed(studyInstanceUid: string, seriesInstanceUid: string, sopInstanceUID: string, successCallback: (data: any, textStatus?: string, jqXHR?: JQueryXHR) => any, failureCallback: (ev: Event) => void): void;
-    getObjectDicom(studyInstanceUid: string, seriesInstanceUid: string, sopInstanceUID: string, successCallback: (data: any, textStatus?: string, jqXHR?: JQueryXHR) => any, failureCallback: (ev: Event) => void): void;
-    getStudyDicom(studyInstanceUid: string, successCallback: (data: any, textStatus?: string, jqXHR?: JQueryXHR) => any, failureCallback: (ev: Event) => void): void;
-    getStudyUncompressed(studyInstanceUid: string, successCallback: (data: any, textStatus?: string, jqXHR?: JQueryXHR) => any, failureCallback: (ev: Event) => void): void;
-    getDICOMMultipart(urlRsPart: string, acceptDataType: string, successCallback: (data: any, textStatus?: string, jqXHR?: JQueryXHR) => any, failureCallback: (ev: Event) => void): void;
+    getStudy(studyInstanceUid: string, mediaType: string, transferSyntax?: string): JQueryPromise<{}>;
+    getSeries(studyInstanceUid: string, seriesInstanceUid: string, mediaType: string, transferSyntax?: string): JQueryPromise<{}>;
+    getObjectInstance(studyInstanceUid: string, seriesInstanceUid: string, sopInstanceUID: string, mediaType: string, transferSyntax?: string): JQueryPromise<{}>;
+    getStudyMetadata(studyInstanceUid: string, mediaType?: string, transferSyntax?: string): JQueryPromise<{}>;
+    getSeriesMetadata(studyInstanceUid: string, seriesInstanceUid: string, mediaType?: string, transferSyntax?: string): JQueryPromise<{}>;
+    getObjectInstanceMetadata(studyInstanceUid: string, seriesInstanceUid: string, sopInstanceUid: string, mediaType: string, transferSyntax?: string): JQueryPromise<{}>;
+    getMetadata(urlParts: string, mediaType?: string, transferSyntax?: string): JQueryPromise<{}>;
+    getFrame(studyInstanceUid: string, seriesInstanceUid: string, sopInstanceUID: string, frameList: string, mediaType: string, transferSyntax?: string): JQueryPromise<{}>;
+    getBinaryDICOMMultipart(urlRsPart: string, acceptDataType: string, transferSyntax?: string): JQueryPromise<{}>;
+    getMultipart(urlRsPart: string, acceptDataType: string, transferSyntax?: string): JQueryPromise<{}>;
+    get(urlRsPart: string, acceptHeader: string, transferSyntax?: string): JQueryPromise<{}>;
 }
 interface String {
     format(...arguments: string[]): string;

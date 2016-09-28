@@ -437,61 +437,105 @@ var WadoRsProxy = (function () {
         enumerable: true,
         configurable: true
     });
-    WadoRsProxy.prototype.getStudyMetadata = function (studyInstanceUid, successCallback, failureCallback) {
-        var url = this._baseUrl + "/studies/" + studyInstanceUid + "/metadata";
-        $.get(url, successCallback, "json");
+    WadoRsProxy.prototype.getStudy = function (studyInstanceUid, mediaType, transferSyntax) {
+        if (transferSyntax === void 0) { transferSyntax = null; }
+        return this.getBinaryDICOMMultipart("/studies/" + studyInstanceUid + "/", mediaType, transferSyntax);
     };
-    WadoRsProxy.prototype.getStudy = function (studyInstanceUid, mediaType, successCallback, failureCallback) {
-        this.getDICOMMultipart("/studies/" + studyInstanceUid + "/", mediaType, successCallback, failureCallback);
+    WadoRsProxy.prototype.getSeries = function (studyInstanceUid, seriesInstanceUid, mediaType, transferSyntax) {
+        if (transferSyntax === void 0) { transferSyntax = null; }
+        return this.getBinaryDICOMMultipart("/studies/" + studyInstanceUid + "/" + "series" + "/", mediaType, transferSyntax);
     };
-    WadoRsProxy.prototype.getObjectInstanceMetadata = function (studyInstanceUid, seriesInstanceUid, sopInstanceUID, mediaType, successCallback, failureCallback) {
-        var url = this._baseUrl + "/studies/" + studyInstanceUid + "/series/" + seriesInstanceUid + "/instances/" + sopInstanceUID + "/metadata";
-        if (!mediaType || mediaType == MimeTypes.Json) {
-            $.get(url, successCallback, "json");
+    WadoRsProxy.prototype.getObjectInstance = function (studyInstanceUid, seriesInstanceUid, sopInstanceUID, mediaType, transferSyntax) {
+        if (transferSyntax === void 0) { transferSyntax = null; }
+        return this.getBinaryDICOMMultipart("/studies/" + studyInstanceUid + "/series/" + seriesInstanceUid + "/instances/" + sopInstanceUID + "/", mediaType, transferSyntax);
+    };
+    WadoRsProxy.prototype.getStudyMetadata = function (studyInstanceUid, mediaType, transferSyntax) {
+        if (mediaType === void 0) { mediaType = null; }
+        if (transferSyntax === void 0) { transferSyntax = null; }
+        var urlParts = "/studies/" + studyInstanceUid + "/metadata";
+        return this.getMetadata(urlParts, mediaType, transferSyntax);
+    };
+    WadoRsProxy.prototype.getSeriesMetadata = function (studyInstanceUid, seriesInstanceUid, mediaType, transferSyntax) {
+        if (mediaType === void 0) { mediaType = null; }
+        if (transferSyntax === void 0) { transferSyntax = null; }
+        var urlParts = "/studies/" + studyInstanceUid + "/series/" + seriesInstanceUid + "/metadata";
+        return this.getMetadata(urlParts, mediaType, transferSyntax);
+    };
+    WadoRsProxy.prototype.getObjectInstanceMetadata = function (studyInstanceUid, seriesInstanceUid, sopInstanceUid, mediaType, transferSyntax) {
+        if (transferSyntax === void 0) { transferSyntax = null; }
+        var urlParts = "/studies/" + studyInstanceUid + "/series/" + seriesInstanceUid + "/instances/" + sopInstanceUid + "/metadata";
+        return this.getMetadata(urlParts, mediaType, transferSyntax);
+    };
+    WadoRsProxy.prototype.getMetadata = function (urlParts, mediaType, transferSyntax) {
+        if (mediaType === void 0) { mediaType = null; }
+        if (transferSyntax === void 0) { transferSyntax = null; }
+        if (mediaType === null || typeof (mediaType) === "undefined") {
+            mediaType = MimeTypes.Json;
+        }
+        if (mediaType == MimeTypes.Json) {
+            return this.get(urlParts, mediaType, transferSyntax);
         }
         else if (mediaType == MimeTypes.xmlDicom) {
-            this.getDICOMMultipart("/studies/" + studyInstanceUid + "/series/" + seriesInstanceUid + "/instances/" + sopInstanceUID + "/", mediaType, successCallback, failureCallback);
+            return this.getMultipart(urlParts, mediaType, transferSyntax);
+        }
+        else {
+            throw "Invalid mediaType for metadata request";
         }
     };
-    WadoRsProxy.prototype.getObjectInstance = function (studyInstanceUid, seriesInstanceUid, sopInstanceUID, mediaType, successCallback, failureCallback) {
-        this.getDICOMMultipart("/studies/" + studyInstanceUid + "/series/" + seriesInstanceUid + "/instances/" + sopInstanceUID + "/", mediaType, successCallback, failureCallback);
+    WadoRsProxy.prototype.getFrame = function (studyInstanceUid, seriesInstanceUid, sopInstanceUID, frameList, mediaType, transferSyntax) {
+        if (transferSyntax === void 0) { transferSyntax = null; }
+        return this.getBinaryDICOMMultipart("/studies/" + studyInstanceUid + "/series/" + seriesInstanceUid + "/instances/" + sopInstanceUID +
+            "/frames/" + frameList, mediaType);
     };
-    WadoRsProxy.prototype.getFrame = function (studyInstanceUid, seriesInstanceUid, sopInstanceUID, frameList, mediaType, successCallback, failureCallback) {
-        this.getDICOMMultipart("/studies/" + studyInstanceUid + "/series/" + seriesInstanceUid + "/instances/" + sopInstanceUID +
-            "/frames/" + frameList, mediaType, successCallback, failureCallback);
-    };
-    WadoRsProxy.prototype.getFrameUncompressed = function (studyInstanceUid, seriesInstanceUid, sopInstanceUID, frameList, successCallback, failureCallback) {
-        this.getFrame(studyInstanceUid, seriesInstanceUid, sopInstanceUID, frameList, "application/octet-stream", successCallback, failureCallback);
-    };
-    WadoRsProxy.prototype.getObjectUncompressed = function (studyInstanceUid, seriesInstanceUid, sopInstanceUID, successCallback, failureCallback) {
-        this.getObjectInstance(studyInstanceUid, seriesInstanceUid, sopInstanceUID, "application/octet-stream", successCallback, failureCallback);
-    };
-    WadoRsProxy.prototype.getObjectDicom = function (studyInstanceUid, seriesInstanceUid, sopInstanceUID, successCallback, failureCallback) {
-        this.getObjectInstance(studyInstanceUid, seriesInstanceUid, sopInstanceUID, "application/dicom", successCallback, failureCallback);
-    };
-    WadoRsProxy.prototype.getStudyDicom = function (studyInstanceUid, successCallback, failureCallback) {
-        this.getStudy(studyInstanceUid, "application/dicom", successCallback, failureCallback);
-    };
-    WadoRsProxy.prototype.getStudyUncompressed = function (studyInstanceUid, successCallback, failureCallback) {
-        this.getStudy(studyInstanceUid, "application/octet-stream", successCallback, failureCallback);
-    };
-    WadoRsProxy.prototype.getDICOMMultipart = function (urlRsPart, acceptDataType, successCallback, failureCallback) {
+    WadoRsProxy.prototype.getBinaryDICOMMultipart = function (urlRsPart, acceptDataType, transferSyntax) {
+        if (transferSyntax === void 0) { transferSyntax = null; }
+        var deffered = $.Deferred();
         var url = this._baseUrl + urlRsPart;
         var xhr = new XMLHttpRequest();
+        var acceptHeader = "multipart/related; type=\"" + acceptDataType + "\"";
+        if (transferSyntax) {
+            acceptHeader += ";transfer-syntax=" + transferSyntax;
+        }
         xhr.overrideMimeType("application/octet-stream");
         xhr.open("GET", url, true);
         xhr.responseType = "arraybuffer";
-        xhr.setRequestHeader("accept", "multipart/related; type=\"" + acceptDataType + "\"");
+        xhr.setRequestHeader("accept", acceptHeader);
         xhr.onreadystatechange = function () {
             if (xhr.readyState == 4 && xhr.status == 200) {
                 var buffer = new Uint8Array(xhr.response);
-                successCallback(buffer, xhr.statusText);
+                deffered.resolve(buffer, xhr.statusText);
             }
         };
         xhr.onerror = function (error) {
-            failureCallback(error);
+            deffered.reject(error);
         };
         xhr.send(null);
+        return deffered.promise();
+    };
+    WadoRsProxy.prototype.getMultipart = function (urlRsPart, acceptDataType, transferSyntax) {
+        if (transferSyntax === void 0) { transferSyntax = null; }
+        return this.get(urlRsPart, "multipart/related; type=\"" + acceptDataType + "\"", transferSyntax);
+    };
+    WadoRsProxy.prototype.get = function (urlRsPart, acceptHeader, transferSyntax) {
+        if (transferSyntax === void 0) { transferSyntax = null; }
+        var deffered = $.Deferred();
+        var url = this._baseUrl + urlRsPart;
+        var xhr = new XMLHttpRequest();
+        if (transferSyntax) {
+            acceptHeader += ";transfer-syntax=" + transferSyntax;
+        }
+        xhr.open("GET", url, true);
+        xhr.setRequestHeader("accept", acceptHeader);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                deffered.resolve(xhr.response, xhr.statusText);
+            }
+        };
+        xhr.onerror = function (error) {
+            deffered.reject(error);
+        };
+        xhr.send(null);
+        return deffered.promise();
     };
     return WadoRsProxy;
 }());
