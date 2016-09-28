@@ -3,9 +3,14 @@
 <div class="panel-group">
     <div class="panel panel-default study-view clearfix">
         <div class="panel-heading studies-title clearfix">
-            <h3 class="panel-title">
-                <a data-toggle="collapse" href="#studyCollapse">Studies</a>
-            </h3>
+            <a data-toggle="collapse" href="#studyCollapse">
+                
+                <h3 class="panel-title">
+                    <span>Studies</span>
+                    <span class="study-overview"></span>
+                    <span class="badge pull-right" data-pacs-study-count>0</span>
+                </h3>
+            </a>
         </div>
 
         <div id="studyCollapse" class="panel-collapse collapse in">
@@ -15,9 +20,12 @@
 
     <div class="panel panel-default series-view clearfix">
         <div class="panel-heading series-title clearfix">
-            <h3 class="panel-title pull-left">
-                <a data-toggle="collapse" href="#seriesCollapse">Series</a>
-            </h3>
+            <a data-toggle="collapse" href="#seriesCollapse">
+                <h3 class="panel-title">
+                    Series
+                    <span class="badge pull-right" data-pacs-series-count>0</span>
+                </h3>
+            </a>
         </div>
         <div id="seriesCollapse" class="panel-collapse collapse in">
             <div class="panel-body series-query"></div>
@@ -26,9 +34,12 @@
     
     <div class="panel panel-default instance-view clearfix">
         <div class="panel-heading instance-title clearfix">
-            <h3 class="panel-title">
-                <a data-toggle="collapse" href="#instanceCollapse">Instances</a>
-            </h3>
+            <a data-toggle="collapse" href="#instanceCollapse">
+                <h3 class="panel-title">
+                    Instances
+                    <span class="badge pull-right" data-pacs-instance-count>0</span>
+                </h3>
+            </a>
         </div>
 
         <div id="instanceCollapse" class="panel-collapse collapse in">
@@ -45,7 +56,7 @@
             </div>
         </div>
 
-        <div class="panel-body instance-metadata">
+        <div class="panel-body instance-metadata" style="display:none">
             <div class="pacs-metadata-viewer"></div>
         </div>
         <div class="panel-footer">

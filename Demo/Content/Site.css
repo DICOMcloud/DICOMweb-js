@@ -77,14 +77,42 @@ max-height:400px;
 padding-top:30px;
 }
 
-.thumbnail {
-   cursor:pointer;
-}
-.thumbnail:hover,.thumbnail.selected {
-   background-color:#E1DBF3;
-   
+.study-view , .series-view, .instance-view{
+border:0;
 }
 
+.study-view  [class^="col-"] {
+padding-left:5px;
+padding-right:5px;
+}
+
+.thumbnail {
+   cursor:pointer;
+
+   font-size:12px;
+   margin-bottom:10px;
+   /*margin-right:5px;*/
+}
+.thumbnail:hover > .panel-body,.thumbnail.selected > .panel-body{
+   background-color:#E1DBF3;   
+}
+
+.panel-body .thumbnail {
+padding:0;
+}
+
+.thumbnail .panel-body {
+   height:150px;
+   padding-top:10px;
+   padding-bottom:10px;
+}
+.thumbnail .panel-footer {
+ padding:0;
+}
+.thumbnail hr {
+margin-top:5px;
+margin-bottom:10px;
+}
 .pacs-metadata-viewer{
    height:450px;
 }

@@ -22,8 +22,9 @@ class app {
       var rsProxy = new WadoRsProxy(DICOMwebJS.ServerConfiguration.getWadoRsUrl());
       var uriProxy = new WadoUriProxy(DICOMwebJS.ServerConfiguration.getWadoUriUrl());
       var qidoProxy = new QidoRsProxy(DICOMwebJS.ServerConfiguration.getQidoUrl());
-      var queryView = new QueryView(document.getElementById("#content"), model, new RetrieveService(rsProxy));
-      var queryController = new QueryController(queryView, model, qidoProxy, rsProxy, uriProxy);
+      var rsService = new RetrieveService(rsProxy);
+      var queryView = new QueryView(document.getElementById("#content"), model, rsService );
+      var queryController = new QueryController(queryView, model, qidoProxy, rsService, uriProxy);
       //var viewer = this.initViewer();
 
 

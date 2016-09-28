@@ -28,13 +28,13 @@ namespace Demo.Models
                 if ( null == _instance )
                 {
                     _instance = new ToolbarViewModel ( ) ;
-                    ToolbarGroup metadataGroup = new ToolbarGroup ( ) { Name="WADO-RS-Metadata" }; 
+                    //ToolbarGroup metadataGroup = new ToolbarGroup ( ) { Name="WADO-RS-Metadata" }; 
                     ToolbarGroup instanceGroup = new ToolbarGroup ( ) { Name="WADO-RS-Instance*" }; 
                     ToolbarGroup framesGroup   = new ToolbarGroup ( ) { Name="WADO-RS-Frames*" }; 
                     ToolbarGroup WadoUriGroup  = new ToolbarGroup ( ) { Name="WADO-URI" }; 
                                     
-                    metadataGroup.Add ( new ToolbarLink ( "{..}", "data-rs-metadata", MimeTypes.Json )) ;
-                    metadataGroup.Add ( new ToolbarLink ( "XML", "data-rs-metadata", MimeTypes.xmlDicom )) ;
+                    //metadataGroup.Add ( new ToolbarLink ( "{..}", "data-rs-metadata", MimeTypes.Json )) ;
+                    //metadataGroup.Add ( new ToolbarLink ( "XML", "data-rs-metadata", MimeTypes.xmlDicom )) ;
 
                     instanceGroup.Add ( new ToolbarLink ( "DICOM", "data-rs-instance", MimeTypes.DICOM )) ;
                     instanceGroup.Add ( new ToolbarLink ( "Uncompressed", "data-rs-instance", MimeTypes.UncompressedData )) ;
@@ -47,7 +47,7 @@ namespace Demo.Models
                     WadoUriGroup.Add ( new ToolbarInput ( "single frame number (optional)", "text", "data-uri-frame-input" )) ;
                     WadoUriGroup.Add ( new ToolbarLink ( "DICOM", "data-uri-instance", MimeTypes.DICOM )) ;
 
-                    _instance.Add ( metadataGroup ) ;
+                    //_instance.Add ( metadataGroup ) ;
                     _instance.Add ( instanceGroup ) ;
                     _instance.Add ( framesGroup ) ;
                     _instance.Add (WadoUriGroup ) ;

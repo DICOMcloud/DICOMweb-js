@@ -2,7 +2,7 @@
    _queryService: QidoRsProxy;
    _queryModel: QueryModel;
    _queryView: QueryView;
-   _retrieveService: WadoRsProxy;
+   _retrieveService: RetrieveService;
    _wadoUriService : WadoUriProxy;
 
    constructor
@@ -10,7 +10,7 @@
       queryView: QueryView,
       queryModel: QueryModel,
       queryService: QidoRsProxy,
-      retrieveService: WadoRsProxy,
+      retrieveService: RetrieveService,
       wadoUriService: WadoUriProxy
    ) {
       this._queryView = queryView;
@@ -24,35 +24,22 @@
    private registerEvents()
    {
       this._queryView.instanceMetaDataRequest.on((args) => {
-         this._retrieveService.getObjectInstanceMetadata(args.InstanceParams.StudyInstanceUid,
-            args.InstanceParams.SeriesInstanceUID,
-            args.InstanceParams.SopInstanceUid,
-            args.MediaType,
-            (data: any, textStatus: string, jqXHR: JQueryXHR) => {
+         this._retrieveService.getObjectInstanceMetadata(args.InstanceParams,
+            (data: any) => {
                this._queryView.showInstanceMetadata(data, args);
-            });
+            }, args.MediaType);
       });
 
       this._queryView.instanceRequest.on((args) => {
-         this._retrieveService.getObjectInstance(args.InstanceParams.StudyInstanceUid,
-            args.InstanceParams.SeriesInstanceUID,
-            args.InstanceParams.SopInstanceUid,
-            args.MediaType,
-            (data: any, textStatus: string, jqXHR: JQueryXHR) => {
+         this._retrieveService.getObjectInstance(args.InstanceParams,  args.MediaType,
+            (data: any) => {
                this._queryView.download(data);
-            },
-            (ev) => {
-               this._queryView.showError();
             });
       });
 
       this._queryView.framesRequest.on((args) => {
-         this._retrieveService.getFrame(args.InstanceParams.StudyInstanceUid,
-            args.InstanceParams.SeriesInstanceUID,
-            args.InstanceParams.SopInstanceUid,
-            args.FrameList,
-            args.MediaType,
-            (data, textStatus, xhr) => {
+         this._retrieveService.getFrameUncompressed(args.InstanceParams, args.FrameList,
+            (data ) => {
                this._queryView.download(data);
             },
             (ev)=>{

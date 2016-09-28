@@ -1,9 +1,10 @@
-﻿<div class="col-sm-4 thumbnail tile tile-medium tile-teal">
+﻿<div class="col-xs-6 col-sm-4 col-md-3 thumbnail">
     <div class="panel-body">
         <div class="xcol-md-3">
             <strong><span>Series #:</span></strong>
             <strong><span data-pacs-seriesNum="true"></span></strong>
         </div>
+        <hr />
         <div class="xcol-md-2">
             <span>Modality:</span>
             <span data-pacs-modality="true"></span>
@@ -18,12 +19,28 @@
         </div>
     </div>
 
-    <div class="xtile-toolbar panel-footer">
+    <div class="panel-footer">
         <div class="btn-group btn-group-justified" role="group">
-            <a href="#" role="button" data-pacs-viewQidoSeries class="btn btn-default btn-sm">Qido Series {..}</a>
-            <a href="#" role="button" data-pacs-seriesJson="true" class="btn btn-default btn-sm">RS-Series {..}</a>
+            <div class="btn-group dropup" ">
+                <a href="#" data-pacs-viewQidoSeries role="button" class="btn btn-default btn-sm" Xdata-toggle="dropdown" Xaria-haspopup="true" Xaria-expanded="false">
+                    QIDO-RS {..}
+                    @*<span class="caret"></span>*@
+                </a>
+                @*<ul class="dropdown-menu">
+                    <li><a href="#" data-pacs-viewQidoSeries>JSON</a></li>
+                    <li><a href="#">DIOCM+XML</a></li>
+                </ul>*@
+            </div>
+            <div class="btn-group dropup" ">
+                <a href="#" role="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">RS-Series 
+                    <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a href="#" data-pacs-series-json>JSON</a></li>
+                    <li><a href="#" data-pacs-series-xml>DIOCM+XML</a></li>
+                </ul>
+            </div>
         </div>
     </div>
 </div>
 
-    

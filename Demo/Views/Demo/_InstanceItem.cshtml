@@ -1,4 +1,4 @@
-﻿<div class="col-sm-4 thumbnail tile tile-medium tile-teal">
+﻿<div class="col-xs-6 col-sm-4 col-md-3 thumbnail">
     <div class="panel-body">
         <div class="xcol-md-3">
             <strong><span>Instance Number:</span></strong>
@@ -9,8 +9,38 @@
             <span data-pacs-SopInstanceUid="true"></span>
         </div>
     </div>
-    <div class="xtile-toolbar panel-footer">
-        <a href="#" role="button" data-pacs-viewQidoInstance class="btn btn-default btn-sm">Qido Instance {..}</a>
-        <a href="#" role="button" data-pacs-viewInstanceViewer class="btn btn-default btn-sm">View</a>
+
+    @*<div class="btn-toolbar" role="toolbar" aria-label="...">
+        <a href="#" role="button" data-pacs-viewQidoInstance class="btn-group">{..}</a>
+        <a href="#" role="button" data-pacs-viewInstanceViewer class="btn-group">View</a>
+    </div>*@
+
+    <div class="panel-footer">
+        <div class="btn-group btn-group-justified" role="group">
+            <div class="btn-group">
+                <a href="#" type="button" role="button" data-pacs-viewInstanceViewer class="btn btn-default btn-sm">View</a>
+            </div>
+            <div class="btn-group">
+                <a href="#" data-pacs-viewQidoInstance type="button" role="button" class="btn btn-default btn-sm Xdropdown-toggle" Xdata-toggle="dropdown" Xaria-haspopup="true" Xaria-expanded="false">
+                    QIDO-RS {..}
+                    @*<span class="caret"></span>*@
+                </a>
+                @*<ul class="dropdown-menu">
+                    <li><a href="#" data-pacs-viewQidoStudy>JSON</a></li>
+                    <li><a href="#">DIOCM+XML</a></li>
+            </ul>*@
+            </div>
+            <div class="btn-group dropup">
+                <a href="#" type="button" role="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    RS-Meta
+                    <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a href="#" data-pacs-instance-json>JSON</a></li>
+                    <li><a href="#" data-pacs-instance-xml>XML</a></li>
+                </ul>
+            </div>
+        </div>
     </div>
+
 </div>

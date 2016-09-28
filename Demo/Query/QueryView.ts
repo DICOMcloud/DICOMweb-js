@@ -71,10 +71,8 @@ class QueryView
    }
    public showInstanceMetadata(data: any, args: RsInstanceEventArgs)
    {
-      //$(".pacs-metadata-viewer").text(JSON.stringify(objectInstance, null, "\t"));
-
       if (args.MediaType == MimeTypes.Json) { this.renderJson($(".pacs-metadata-viewer"), data); }
-      if (args.MediaType == MimeTypes.xmlDicom) { this.renderXml($(".pacs-metadata-viewer"), this.bin2String(data)); }
+      if (args.MediaType == MimeTypes.xmlDicom) { this.renderXml($(".pacs-metadata-viewer"), data); }
    }
 
    public download(data: any) {
@@ -131,10 +129,15 @@ class QueryView
       this._model.SelectedStudyChangedEvent.on(() => {
          var index = this._model.SelectedStudyIndex;
 
-         this._$studiesView.children(".thumbnail").removeClass("selected");
+         this._$studiesView.find(".thumbnail").removeClass("selected");
 
          if (index != -1) {
-            this._$studiesView.children(".thumbnail").eq(index).addClass("selected");
+            this._$studiesView.find(".thumbnail").eq(index).addClass("selected");
+            $(".study-overview").text("| (Patient: " + this._model.Studies[index].PatientName.Alphabetic + ")");
+         }
+         else
+         {
+            $(".study-overview").text("");
          }
       });
 
@@ -163,26 +166,25 @@ class QueryView
          }
       });
 
-      $("*[data-rs-xml]").on("click", (ev:JQueryEventObject) => {
-         this._retrieveService.getObjectAsXml(this._model.selectedInstance(), (objectInstance: any) => {
-            //$(".pacs-metadata-viewer").text(JSON.stringify(objectInstance, null, "\t"));
-            this.renderXml($(".pacs-metadata-viewer"), this.bin2String(objectInstance));
-         });
-         ev.preventDefault();
-         return false;
-      });
+      //$("*[data-rs-xml]").on("click", (ev:JQueryEventObject) => {
+      //   this._retrieveService.getObjectInstanceMetadata(this._model.selectedInstance(), (objectInstance: any) => {
+      //      this.renderXml($(".pacs-metadata-viewer"), this.bin2String(objectInstance));
+      //   }, MimeTypes.xmlDicom);
+      //   ev.preventDefault();
+      //   return false;
+      //});
 
-      $("*[data-rs-metadata]").on("click", (ev: JQueryEventObject) => {
-         var instance = this._model.selectedInstance();
+      //$("*[data-rs-metadata]").on("click", (ev: JQueryEventObject) => {
+      //   var instance = this._model.selectedInstance();
 
-         if (instance) {
-            var args = new RsInstanceEventArgs(instance, $(ev.target).attr("data-pacs-args"));
-            this._onInstanceMetadata.trigger(args);
-         }
+      //   if (instance) {
+      //      var args = new RsInstanceEventArgs(instance, $(ev.target).attr("data-pacs-args"));
+      //      this._onInstanceMetadata.trigger(args);
+      //   }
 
-         ev.preventDefault();
-         return false;
-      });
+      //   ev.preventDefault();
+      //   return false;
+      //});
 
       $("*[data-rs-instance]").on("click", (ev: JQueryEventObject) => {
          var instance = this._model.selectedInstance();
@@ -250,16 +252,14 @@ class QueryView
          
          $studyItem.appendTo($(this._ViewClassName.$StudyQuery));
 
-         //TODO: a hack, needs to be designed in the UI
-         if ($(this._ViewClassName.$StudyQuery).children(".col-sm-4").length % 3 == 0)
-         {
-            $("<div class='clearfix visible-sm-block' ></div>").appendTo($(this._ViewClassName.$StudyQuery));
-         }
       });
 
       if (!$("#studyCollapse").hasClass("in")) {
          $("#studyCollapse").collapse("show");
       }
+
+      $("*[data-pacs-study-count]").text(this._model.Studies.length);
+
    }
 
    private renderSeries() {
@@ -272,6 +272,8 @@ class QueryView
       });
 
       $("#seriesCollapse").collapse("show");
+
+      $("*[data-pacs-series-count]").text(this._model.Series.length);
    }
 
    private renderInstances() {
@@ -286,6 +288,7 @@ class QueryView
 
        $("#instanceCollapse").collapse("show");
 
+       $("*[data-pacs-instance-count]").text(this._model.Instances.length);
    }
 
    private buildQueryControl()
@@ -305,6 +308,7 @@ class QueryView
       });
    }
 
+   //TODO: zaid-move this to the app
    private createViewTemplates()
    {
       this.createStudyTemplate();
@@ -413,7 +417,7 @@ class QueryView
 
    private registerStudyEvents(study: StudyParams, $item: JQuery, index: number)
    {
-      $item.on("click", (ev: JQueryEventObject) => {
+      $item.find(".panel-body").on("click", (ev: JQueryEventObject) => {
          this._model.SelectedStudyIndex = index;
 
          $("#studyCollapse").collapse("hide");
@@ -423,7 +427,7 @@ class QueryView
          return false;
       });
 
-      $item.find("*[data-pacs-studyJson]").on("click", (ev: JQueryEventObject) => {
+      $item.find("*[data-pacs-study-json]").on("click", (ev: JQueryEventObject) => {
 
          this._retrieveService.getStudyAsJson(study, (studyInstances: any) => {
             this.ViewJsonDlg(studyInstances, "(" + studyInstances.length + ") Study Instances Response");
@@ -433,10 +437,19 @@ class QueryView
          return false;
       });
 
+      $item.find("*[data-pacs-study-xml]").on("click", (ev: JQueryEventObject) => {
+
+         this._retrieveService.getStudyAsXml(study, (studyInstances: any) => {
+            this.ViewXmlDlg(studyInstances, "Multipart DICOM+XML Study Instances Response");
+         });
+
+         ev.preventDefault();
+         return false;
+      });
+
       $item.find("*[data-pacs-viewQidoStudy]").on("click", (ev: JQueryEventObject) => {
          this.ViewJsonDlg(study.DicomSourceProvider.getSourceDataset(), "Study QIDO Response");
-
-
+         
          ev.preventDefault();
          return false;
       });
@@ -452,10 +465,20 @@ class QueryView
          return false;
       });
 
-      $item.find("*[data-pacs-seriesJson]").on("click", (ev: JQueryEventObject) => {
-         this._retrieveService.getStudyAsJson(series, (seriesInstances: any) => {
+      $item.find("*[data-pacs-series-json]").on("click", (ev: JQueryEventObject) => {
+         this._retrieveService.getSeries(series, (seriesInstances: any) => {
             this.ViewJsonDlg(seriesInstances, "(" + seriesInstances.length + ") Series Instances Response");
-         });
+         }, MimeTypes.Json);
+
+         ev.preventDefault();
+         return false;
+      });
+
+      $item.find("*[data-pacs-series-xml]").on("click", (ev: JQueryEventObject) => {
+
+         this._retrieveService.getSeries(series, (seriesInstances: any) => {
+            this.ViewXmlDlg(seriesInstances, "Multipart DICOM+XML Study Instances Response");
+         }, MimeTypes.xmlDicom);
 
          ev.preventDefault();
          return false;
@@ -484,6 +507,26 @@ class QueryView
          ev.preventDefault();
          return false;
       });
+
+      $item.find("*[data-pacs-instance-json]").on("click", (ev: JQueryEventObject) => {
+         this._retrieveService.getObjectInstanceMetadata(instance, (instanceJson: any) => {
+            this.ViewJsonDlg(instanceJson, "Instance Response");
+         }, MimeTypes.Json );
+
+         ev.preventDefault();
+         return false;
+      });
+
+      $item.find("*[data-pacs-instance-xml]").on("click", (ev: JQueryEventObject) => {
+
+         this._retrieveService.getObjectInstanceMetadata(instance, (instanceXml: any) => {
+            this.ViewXmlDlg(instanceXml, "Multipart DICOM+XML Instance Response");
+         }, MimeTypes.xmlDicom);
+
+         ev.preventDefault();
+         return false;
+      });
+
 
       $item.find("*[data-pacs-viewInstanceViewer]").on("click", (ev: JQueryEventObject) => {
          this._onViewInstance.trigger(new WadoUriEventArgs(instance, MimeTypes.DICOM, ""));
@@ -515,6 +558,13 @@ class QueryView
       var dlg = new ModalDialog("#modal-alert");
 
       dlg.showJson(caption, data);
+   }
+
+   private ViewXmlDlg(data: any, caption: string)
+   {
+      var dlg = new ModalDialog("#modal-alert");
+
+      dlg.showXml(caption, data);
    }
 
 

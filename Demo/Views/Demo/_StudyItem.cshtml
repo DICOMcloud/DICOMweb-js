@@ -1,30 +1,52 @@
-﻿<div class="col-sm-4 thumbnail tile tile-medium tile-teal">
-    <div class="panel-body" >
+﻿<div class="col-xs-6 col-sm-4 col-md-3 thumbnail">
+    <div class="panel-body">
         <div class="xcol-md-3">
-            <strong><span>Patient:</span></strong>
             <strong><span data-pacs-patientName="true"></span></strong>
         </div>
-        <div class="xcol-md-1">
-            <span>Accession #:</span>
-            <span data-pacs-accessionNumber="true"></span>
-        </div>
+        <hr/>
         <div class="xcol-md-2">
             <span>Date:</span>
             <span data-pacs-studyDate="true"></span>
-        </div>
-        <div class="xcol-md-1">
-            <span>Study ID:</span>
-            <span data-pacs-studyID="true"></span>
         </div>
         <div class="xcol-md-3">
             <span>Description:</span>
             <a data-pacs-studyDesc="true"></a>
         </div>
+        <div class="xcol-md-1">
+            <span>Study ID:</span>
+            <span data-pacs-studyID="true"></span>
+        </div>
+        <div class="xcol-md-1">
+            <span>Accession #:</span>
+            <span data-pacs-accessionNumber="true"></span>
+        </div>
     </div>
-    <div class="xtile-toolbar panel-footer">
+    <div class="panel-footer">
         <div class="btn-group btn-group-justified" role="group">
-            <a href="#" role="button" data-pacs-viewQidoStudy class="btn btn-default btn-sm">Qido Study {..}</a>
-            <a href="#" role="button" data-pacs-studyJson="true" class="btn btn-default btn-sm">RS-Studies {..}</a>
+            <div class="btn-group dropup">
+                <a href="#" data-pacs-viewQidoStudy type="button" role="button" class="btn btn-default btn-sm Xdropdown-toggle" Xdata-toggle="dropdown" Xaria-haspopup="true" Xaria-expanded="false">
+                    QIDO-RS {..}
+                    @*<span class="caret"></span>*@
+                </a>
+                @*<ul class="dropdown-menu">
+                    <li><a href="#" data-pacs-viewQidoStudy>JSON</a></li>
+                    <li><a href="#">DIOCM+XML</a></li>
+                </ul>*@
+            </div>
+            <div class="btn-group dropup"  >
+                <a href="#" type="button" role="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    RS-Meta
+                    <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a href="#" data-pacs-study-json="true">JSON</a></li>
+                    <li><a href="#" data-pacs-study-xml>XML</a></li>
+                </ul>
+                    @*<div class="btn-group btn-group-justified" role="group">
+                <a href="#" role="button" data-pacs-viewQidoStudy class="btn btn-default btn-sm">Qido Study {..}</a>
+                <a href="#" role="button" data-pacs-studyJson class="btn btn-default btn-sm">RS-Studies {..}</a>
+            </div>*@
+            </div>
         </div>
     </div>
 </div>
