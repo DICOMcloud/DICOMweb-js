@@ -72,9 +72,16 @@
            url += "&contentType=" + mimeType;
        }
 
-       if (imageParams.frameNumber )
+       if (imageParams )
        {
-          url += "&frameNumber=" + imageParams.frameNumber;
+          if (imageParams.frameNumber) {
+             url += "&frameNumber=" + imageParams.frameNumber;
+          }
+
+          if (imageParams.transferSyntax)
+          {
+             url += "&transferSyntax=" + imageParams.transferSyntax;
+          }
        }
 
        //TODO: implement all other parameters....
@@ -103,5 +110,5 @@ class WadoImageParams
    //string WindowWidth           { get; set; }
    //string PresentationUID       { get; set; }
    //string presentationSeriesUID { get; set; }
-   //string TransferSyntax        { get; set; }
+   transferSyntax: string;
 }

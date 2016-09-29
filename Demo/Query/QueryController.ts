@@ -54,7 +54,7 @@
             instanceUID: args.InstanceParams.SopInstanceUid
          };
 
-         let imageParam: WadoImageParams = { frameNumber: args.Frame };
+         let imageParam: WadoImageParams = { frameNumber: args.Frame, transferSyntax:null };
          this._wadoUriService.getDicomInstance(instance, false, imageParam,
             (data) => {
                this._queryView.download(data);

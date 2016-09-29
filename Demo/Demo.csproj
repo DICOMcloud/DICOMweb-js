@@ -148,7 +148,7 @@
     <Content Include="cornerstoneViewer\js\libCharLS.js" />
     <Content Include="cornerstoneViewer\js\libopenjpeg.js" />
     <Content Include="cornerstoneViewer\js\uids.js" />
-    <Content Include="cornerstoneViewer\wadoViewer.js" />
+    <TypeScriptCompile Include="cornerstoneViewer\wadoViewer.ts" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />

@@ -1,32 +1,66 @@
-﻿/// <reference path="js/cornerstoneWADOImageLoader.js" />
+﻿
 
-    cornerstoneWADOImageLoader.configure({
-        beforeSend: function(xhr) {
-            // Add custom headers here (e.g. auth tokens)
-            //xhr.setRequestHeader('x-auth-token', 'my auth token');
-        }
-    });
+    //cornerstoneWADOImageLoader.configure({
+    //    beforeSend: function(xhr) {
+    //        // Add custom headers here (e.g. auth tokens)
+    //        //xhr.setRequestHeader('x-auth-token', 'my auth token');
+    //    }
+    //});
 
-var loaded = false;
+class WadoViewer
+{ 
+   private _loaded: Boolean = false;
+   private _uriProxy: WadoUriProxy;
+   private _loadedInstance: InstanceParams;
 
-function loadAndViewImage(imageId) {
+   constructor(uriProx: WadoUriProxy)
+   {
+      this._uriProxy = uriProx;
+   }
+
+
+
+   public loadInstance(instance: InstanceParams, transferSyntax: string = null)
+   {
+      let dicomInstance: CommonDicomInstanceParams = {
+         studyUID: instance.StudyInstanceUid,
+         seriesUID: instance.SeriesInstanceUID,
+         instanceUID: instance.SopInstanceUid
+      };
+
+      let imageParam: WadoImageParams = { frameNumber: null, transferSyntax:transferSyntax };
+      var instanceUrl = this._uriProxy.createUrl(dicomInstance, MimeTypes.DICOM, imageParam);
+
+      //add this "wadouri:" so it loads the wado uri loader, 
+      //the loader trims this prefix from the url
+      this.loadAndViewImage("wadouri:" + instanceUrl);
+
+      this._loadedInstance = instance;
+   }
+
+   public loadedInstance(): InstanceParams
+   {
+      return this._loadedInstance;
+   }
+
+ private loadAndViewImage(imageId:string) {
     var element = $('#dicomImage').get(0);
     try {
         var start = new Date().getTime();
-        cornerstone.loadAndCacheImage(imageId).then(function(image) {
+        cornerstone.loadAndCacheImage(imageId).then( (image:any)=> {
             console.log(image);
             var viewport = cornerstone.getDefaultViewportForImage(element, image);
             //$('#toggleModalityLUT').attr("checked",viewport.modalityLUT !== undefined);
             //$('#toggleVOILUT').attr("checked",viewport.voiLUT !== undefined);
             cornerstone.displayImage(element, image, viewport);
-            if(loaded === false) {
+            if(this._loaded === false) {
                 cornerstoneTools.mouseInput.enable(element);
                 cornerstoneTools.mouseWheelInput.enable(element);
                 cornerstoneTools.wwwc.activate(element, 1); // ww/wc is the default tool for left mouse button
                 cornerstoneTools.pan.activate(element, 2); // pan is the default tool for middle mouse button
                 cornerstoneTools.zoom.activate(element, 4); // zoom is the default tool for right mouse button
                 cornerstoneTools.zoomWheel.activate(element); // zoom is the default tool for middle mouse wheel
-                loaded = true;
+                this._loaded = true;
             }
 
             function getTransferSyntax() {
@@ -89,34 +123,4 @@ function loadAndViewImage(imageId) {
         alert(err);
     }
 }
-
-$(document).ready(function () {
-    var element = $('#dicomImage').get(0);
-    //$('#toggleModalityLUT').on('click', function() {
-    //    var applyModalityLUT = $('#toggleModalityLUT').is(":checked");
-    //    console.log('applyModalityLUT=', applyModalityLUT);
-    //    var image = cornerstone.getImage(element);
-    //    var viewport = cornerstone.getViewport(element);
-    //    if(applyModalityLUT) {
-    //        viewport.modalityLUT = image.modalityLUT;
-    //    } else {
-    //        viewport.modalityLUT = undefined;
-    //    }
-    //    cornerstone.setViewport(element, viewport);
-    //});
-
-    //$('#toggleVOILUT').on('click', function() {
-    //    var applyVOILUT = $('#toggleVOILUT').is(":checked");
-    //    console.log('applyVOILUT=', applyVOILUT);
-    //    var image = cornerstone.getImage(element);
-    //    var viewport = cornerstone.getViewport(element);
-    //    if(applyVOILUT) {
-    //        viewport.voiLUT = image.voiLUT;
-    //    } else {
-    //        viewport.voiLUT = undefined;
-    //    }
-    //    cornerstone.setViewport(element, viewport);
-    //});
-
-
-});
+}

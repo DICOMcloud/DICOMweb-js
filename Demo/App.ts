@@ -25,29 +25,12 @@ class app {
       var rsService = new RetrieveService(rsProxy);
       var queryView = new QueryView(document.getElementById("#content"), model, rsService );
       var queryController = new QueryController(queryView, model, qidoProxy, rsService, uriProxy);
-      //var viewer = this.initViewer();
+      var viewer = new WadoViewer(uriProxy);
 
 
       queryView.instanceViewRequest.on((args) => {
-         let instance: CommonDicomInstanceParams = {
-            studyUID: args.InstanceParams.StudyInstanceUid,
-            seriesUID: args.InstanceParams.SeriesInstanceUID,
-            instanceUID: args.InstanceParams.SopInstanceUid
-         };
-
-         let imageParam: WadoImageParams = { frameNumber: args.Frame };
-         var instanceUrl = uriProxy.createUrl(instance, args.MediaType, imageParam);
-         var dlg = new ModalDialog("#image-viewer");
-
-         dlg.dilaogClosed.on((dlgName) => {
-            //viewer.reset();
-         });
-         //dlg.show(args.InstanceParams.PatientName.Alphabetic);
-         // load dicom data
-         //$('#wadoURL').val(instanceUrl);
-         //viewer.loadURLs([instanceUrl]);
-
-         $('.nav-tabs a[href="#_ViewerView"]').tab('show');
+         
+         $('.nav-tabs a[href="#_ViewerView"]').tab('show') ;
 
          var element = $('#dicomImage').get(0);
 
@@ -58,9 +41,20 @@ class app {
          $(window).resize(function () {
             cornerstone.resize(element, true);
          })
-         loadAndViewImage(instanceUrl);
+
+         viewer.loadInstance(args.InstanceParams);
       });
 
+
+      $("#SelectedTransferSyntax").change(function () {
+         var loadedInstance = viewer.loadedInstance();
+
+         if (null != loadedInstance)
+         {
+            viewer.loadInstance(loadedInstance, $("#SelectedTransferSyntax").val());
+         }
+
+      });
 
       this.initStore();
       window.onerror = function (message, url, lineNumber) {
@@ -69,7 +63,7 @@ class app {
          return true;
       };  
 
-      $($("#serverList")).change(function () {
+      $("#serverList").change(function () {
          DICOMwebJS.ServerConfiguration.BaseServerUrl = $("#serverList").val();
          rsProxy.BaseUrl =  DICOMwebJS.ServerConfiguration.getWadoRsUrl();
          uriProxy.BaseUrl = DICOMwebJS.ServerConfiguration.getWadoUriUrl();

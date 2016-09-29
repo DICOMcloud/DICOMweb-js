@@ -7,7 +7,6 @@
 /// <reference path="../cornerstoneviewer/js/libcharls.js" />
 /// <reference path="../cornerstoneviewer/js/libopenjpeg.js" />
 /// <reference path="../cornerstoneviewer/js/uids.js" />
-/// <reference path="../cornerstoneviewer/wadoviewer.js" />
 /// <reference path="bootstrap.js" />
 /// <reference path="dicomwebjs.js" />
 /// <reference path="dicomwebjs.proxies.js" />

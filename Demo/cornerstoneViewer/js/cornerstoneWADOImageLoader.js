@@ -1647,7 +1647,7 @@ var JpegImage = (function jpegImage() {
         }
         handleData(data);
       } else {
-        var xhr = new XMLHttpRequest();
+          var xhr = new XMLHttpRequest();
         xhr.open("GET", path, true);
         xhr.responseType = "arraybuffer";
         xhr.onload = (function () {

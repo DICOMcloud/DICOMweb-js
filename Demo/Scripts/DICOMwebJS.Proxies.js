@@ -405,8 +405,13 @@ var WadoUriProxy = (function () {
         if (mimeType) {
             url += "&contentType=" + mimeType;
         }
-        if (imageParams.frameNumber) {
-            url += "&frameNumber=" + imageParams.frameNumber;
+        if (imageParams) {
+            if (imageParams.frameNumber) {
+                url += "&frameNumber=" + imageParams.frameNumber;
+            }
+            if (imageParams.transferSyntax) {
+                url += "&transferSyntax=" + imageParams.transferSyntax;
+            }
         }
         return url;
     };
