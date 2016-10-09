@@ -27,6 +27,11 @@
       xhr.setRequestHeader("Content-Type", 'multipart/related; boundary="' + boundary + '";type="' + MimeTypes.DICOM + '"' );
       xhr.setRequestHeader("accept", acceptHeader); //server also supports XML
 
+      if (DICOMwebJS.ServerConfiguration.IncludeAuthorizationHeader)
+      {
+         xhr.setRequestHeader("Authorization", DICOMwebJS.ServerConfiguration.SecurityToken );
+      }
+
       xhr.onreadystatechange = function (data) {
          if (xhr.readyState == 4) {
             successCallback(xhr)

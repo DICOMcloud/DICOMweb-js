@@ -1,21 +1,34 @@
 ﻿
 
-    //cornerstoneWADOImageLoader.configure({
-    //    beforeSend: function(xhr) {
-    //        // Add custom headers here (e.g. auth tokens)
-    //        //xhr.setRequestHeader('x-auth-token', 'my auth token');
-    //    }
-    //});
+    cornerstoneWADOImageLoader.configure({
+        beforeSend: function(xhr) {
+            // Add custom headers here (e.g. auth tokens)
+            //xhr.setRequestHeader('x-auth-token', 'my auth token');
+
+           if (DICOMwebJS.ServerConfiguration.IncludeAuthorizationHeader)
+           {
+              xhr.setRequestHeader("Authorization", DICOMwebJS.ServerConfiguration.SecurityToken);
+           }
+        }
+    });
 
 class WadoViewer
 { 
    private _loaded: Boolean = false;
    private _uriProxy: WadoUriProxy;
    private _loadedInstance: InstanceParams;
+   private _viewerElement: HTMLElement;
 
-   constructor(uriProx: WadoUriProxy)
+   constructor(element:HTMLElement, uriProx: WadoUriProxy)
    {
+      this._viewerElement = element;
       this._uriProxy = uriProx;
+
+      cornerstone.enable(element);
+
+      $(window).resize(function () {
+         cornerstone.resize(element, true);
+      })
    }
 
 
@@ -36,6 +49,8 @@ class WadoViewer
       this.loadAndViewImage("wadouri:" + instanceUrl);
 
       this._loadedInstance = instance;
+
+      cornerstone.resize(this._viewerElement, true);
    }
 
    public loadedInstance(): InstanceParams
@@ -44,7 +59,9 @@ class WadoViewer
    }
 
  private loadAndViewImage(imageId:string) {
-    var element = $('#dicomImage').get(0);
+    var element = this._viewerElement;
+
+
     try {
         var start = new Date().getTime();
         cornerstone.loadAndCacheImage(imageId).then( (image:any)=> {

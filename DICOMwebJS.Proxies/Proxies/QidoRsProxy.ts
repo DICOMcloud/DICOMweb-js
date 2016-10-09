@@ -70,6 +70,10 @@
           }
        };
 
+       if (DICOMwebJS.ServerConfiguration.IncludeAuthorizationHeader) {
+          ajaxSettings.headers = { 'Authorization': DICOMwebJS.ServerConfiguration.SecurityToken };
+       }
+
        $.ajax(ajaxSettings);
     }
 }

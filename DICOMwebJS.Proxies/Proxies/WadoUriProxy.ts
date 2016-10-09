@@ -59,6 +59,11 @@
        xhr.onerror = function (error) {
            failureCallback(error);
        };
+
+       if (DICOMwebJS.ServerConfiguration.IncludeAuthorizationHeader) {
+          xhr.setRequestHeader("Authorization", DICOMwebJS.ServerConfiguration.SecurityToken);
+       }
+
        xhr.send(null);
    } 
 

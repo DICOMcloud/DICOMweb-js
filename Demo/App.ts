@@ -6,6 +6,8 @@ declare var serverUrl: string;
 
 class app {
 
+   private __AUTHENTICATION_COOKIE:string = "__dicomwebclient"
+
    constructor() {
       this.init();
    }
@@ -25,22 +27,15 @@ class app {
       var rsService = new RetrieveService(rsProxy);
       var queryView = new QueryView(document.getElementById("#content"), model, rsService );
       var queryController = new QueryController(queryView, model, qidoProxy, rsService, uriProxy);
-      var viewer = new WadoViewer(uriProxy);
+      var element = $('#dicomImage').get(0);
+      var viewer = new WadoViewer(element, uriProxy);
 
+
+      this.initAuthentication();
 
       queryView.instanceViewRequest.on((args) => {
          
          $('.nav-tabs a[href="#_ViewerView"]').tab('show') ;
-
-         var element = $('#dicomImage').get(0);
-
-         cornerstone.enable(element);
-
-         cornerstone.resize(element, true);
-
-         $(window).resize(function () {
-            cornerstone.resize(element, true);
-         })
 
          viewer.loadInstance(args.InstanceParams);
       });
@@ -87,7 +82,35 @@ class app {
    //   return viewer;
    //}
 
-   public initStore() {
+   private initAuthentication() {
+      var token = this.getAuthenticationToken();
+
+
+      if (token)
+      {
+         DICOMwebJS.ServerConfiguration.IncludeAuthorizationHeader = true;
+
+         DICOMwebJS.ServerConfiguration.SecurityToken = token;
+      }
+   }
+
+   private getAuthenticationToken()
+   {
+      var name = this.__AUTHENTICATION_COOKIE;
+
+      //http://stackoverflow.com/questions/14573223/set-cookie-and-get-cookie-with-javascript
+      //function readCookie(name) {
+         var nameEQ = name + "=";
+         var ca = document.cookie.split(';');
+         for (var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+         }
+         return null;
+      //}
+   }
+   private initStore() {
 
       $("#addFileButton").click((e) => {
          e.preventDefault();

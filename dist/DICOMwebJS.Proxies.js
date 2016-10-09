@@ -11,6 +11,8 @@ var DICOMwebJS;
         ServerConfiguration.WadoRsPart = "wadors";
         ServerConfiguration.StowPart = "stowrs";
         ServerConfiguration.QidoPart = "qidors";
+        ServerConfiguration.IncludeAuthorizationHeader = false;
+        ServerConfiguration.SecurityToken = "";
         function getWadoUriUrl() {
             return DICOMwebJS.ServerConfiguration.BaseServerUrl + DICOMwebJS.ServerConfiguration.WadoUriPart;
         }
@@ -90,6 +92,9 @@ var QidoRsProxy = (function () {
                 query.error(textStatus, errorThrown);
             }
         };
+        if (DICOMwebJS.ServerConfiguration.IncludeAuthorizationHeader) {
+            ajaxSettings.headers = { 'Authorization': DICOMwebJS.ServerConfiguration.SecurityToken };
+        }
         $.ajax(ajaxSettings);
     };
     return QidoRsProxy;
@@ -329,6 +334,9 @@ var StowRsProxy = (function () {
         xhr.open(method, url, true);
         xhr.setRequestHeader("Content-Type", 'multipart/related; boundary="' + boundary + '";type="' + MimeTypes.DICOM + '"');
         xhr.setRequestHeader("accept", acceptHeader);
+        if (DICOMwebJS.ServerConfiguration.IncludeAuthorizationHeader) {
+            xhr.setRequestHeader("Authorization", DICOMwebJS.ServerConfiguration.SecurityToken);
+        }
         xhr.onreadystatechange = function (data) {
             if (xhr.readyState == 4) {
                 successCallback(xhr);
@@ -397,6 +405,9 @@ var WadoUriProxy = (function () {
         xhr.onerror = function (error) {
             failureCallback(error);
         };
+        if (DICOMwebJS.ServerConfiguration.IncludeAuthorizationHeader) {
+            xhr.setRequestHeader("Authorization", DICOMwebJS.ServerConfiguration.SecurityToken);
+        }
         xhr.send(null);
     };
     WadoUriProxy.prototype.createUrl = function (instanceData, mimeType, imageParams) {
@@ -514,6 +525,9 @@ var WadoRsProxy = (function () {
         xhr.onerror = function (error) {
             deffered.reject(error);
         };
+        if (DICOMwebJS.ServerConfiguration.IncludeAuthorizationHeader) {
+            xhr.setRequestHeader("Authorization", DICOMwebJS.ServerConfiguration.SecurityToken);
+        }
         xhr.send(null);
         return deffered.promise();
     };
@@ -539,6 +553,9 @@ var WadoRsProxy = (function () {
         xhr.onerror = function (error) {
             deffered.reject(error);
         };
+        if (DICOMwebJS.ServerConfiguration.IncludeAuthorizationHeader) {
+            xhr.setRequestHeader("Authorization", DICOMwebJS.ServerConfiguration.SecurityToken);
+        }
         xhr.send(null);
         return deffered.promise();
     };

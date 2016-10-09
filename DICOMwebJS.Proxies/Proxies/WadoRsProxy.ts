@@ -163,6 +163,11 @@ class WadoRsProxy{
       xhr.onerror = function (error) {
          deffered.reject(error);
       };
+
+      if (DICOMwebJS.ServerConfiguration.IncludeAuthorizationHeader) {
+         xhr.setRequestHeader("Authorization", DICOMwebJS.ServerConfiguration.SecurityToken);
+      }
+
       xhr.send(null);
 
       return deffered.promise();
@@ -204,6 +209,11 @@ class WadoRsProxy{
       xhr.onerror = function (error) {
          deffered.reject(error);
       };
+
+      if (DICOMwebJS.ServerConfiguration.IncludeAuthorizationHeader) {
+         xhr.setRequestHeader("Authorization", DICOMwebJS.ServerConfiguration.SecurityToken);
+      }
+
       xhr.send(null);
 
       return deffered.promise();

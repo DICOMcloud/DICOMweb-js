@@ -320,7 +320,7 @@ class QueryView
    {
       var ajaxSettings: JQueryAjaxSettings = {};
 
-      ajaxSettings.url = "/Demo/_StudyItem/";
+      ajaxSettings.url = window.location.pathname + "_StudyItem/";
       ajaxSettings.success = (data: any, textStatus: string, jqXHR: JQueryXHR) => {
          this._$studyItemTemplate = $(data);
       };
@@ -334,13 +334,13 @@ class QueryView
 
    private createSeriesTemplate()
    {
-      $.get("/Demo/_SeriesItem/", (data: any, textStatus: string, jqXHR: JQueryXHR) => {
+      $.get(window.location.pathname + "_SeriesItem/", (data: any, textStatus: string, jqXHR: JQueryXHR) => {
          this._$seriesItemTemplate = $(data);
       }, "html");
    }
 
    private createInstanceTemplate() {
-      $.get("/Demo/_InstanceItem/", (data: any, textStatus: string, jqXHR: JQueryXHR) => {
+      $.get(window.location.pathname + "_InstanceItem/", (data: any, textStatus: string, jqXHR: JQueryXHR) => {
          this._$instanceItemTemplate = $(data);
       }, "html");
    }

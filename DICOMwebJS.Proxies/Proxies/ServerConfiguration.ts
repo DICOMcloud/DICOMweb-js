@@ -6,6 +6,9 @@
         export var StowPart: string = "stowrs";
         export var QidoPart: string = "qidors";
 
+        export var IncludeAuthorizationHeader: boolean = false;
+        export var SecurityToken: string = "";
+
         export function getWadoUriUrl(): string {
            return DICOMwebJS.ServerConfiguration.BaseServerUrl + DICOMwebJS.ServerConfiguration.WadoUriPart;
         }

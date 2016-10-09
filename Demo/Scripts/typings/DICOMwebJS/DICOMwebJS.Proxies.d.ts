@@ -5,6 +5,8 @@ declare module DICOMwebJS {
         var WadoRsPart: string;
         var StowPart: string;
         var QidoPart: string;
+        var IncludeAuthorizationHeader: boolean;
+        var SecurityToken: string;
         function getWadoUriUrl(): string;
         function getWadoRsUrl(): string;
         function getStowUrl(): string;

@@ -270,3 +270,4 @@ ModelManifest.xml
 /DICOMwebJS/DICOMwebJS.js.map
 /DICOMwebJS/DICOMwebJS.js
 /DICOMwebJS/DICOMwebJS.d.ts
+*.bak

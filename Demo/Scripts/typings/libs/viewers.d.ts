@@ -23,10 +23,16 @@ interface CornerstoneTools
    zoomWheel: any; // zoom is the default tool for middle mouse wheel
 }
 
+interface CornerstoneWADOImageLoader
+{
+   configure(options: any);
+}
+
 declare var dwv: DWV;
 
 declare var cornerstone: Cornerstone;
 declare var cornerstoneTools: CornerstoneTools;
+declare var cornerstoneWADOImageLoader: CornerstoneWADOImageLoader;
 declare var uids: Object;
 
 
