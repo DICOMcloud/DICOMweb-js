@@ -37,16 +37,22 @@ namespace Demo
                                                 } ).ToArray ( ) ) ) ;
         }
 
+        [Route("_StudyItem")]
+        [Route("dicomwebjs/_StudyItem")]
         public ActionResult _StudyItem()
         {
             return PartialView();
         }
 
+        [Route("_SeriesItem")]
+        [Route("dicomwebjs/_SeriesItem")]
         public ActionResult _SeriesItem()
         {
             return PartialView();
         }
 
+        [Route("_InstanceItem")]
+        [Route("dicomwebjs/_InstanceItem")]
         public ActionResult _InstanceItem()
         {
             return PartialView();
