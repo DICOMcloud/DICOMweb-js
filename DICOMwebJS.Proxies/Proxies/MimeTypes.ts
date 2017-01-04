@@ -8,4 +8,9 @@
     public static UncompressedData: string = "application/octet-stream";
     public static PlainText: string = "text/plain";
     public static MultipartRelated: string = "multipart/related";
+
+    public static getMultiPartAcceptHeader(mimeType: string): string
+    {
+       return "multipart/related; type=\"" + mimeType + "\"";
+    }
 }

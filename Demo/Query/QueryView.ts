@@ -20,7 +20,10 @@ class QueryView
    private _$instanceView: JQuery;
 
    //EVENTS
-   private _onInstanceMetadata = new LiteEvent<RsInstanceEventArgs> ();
+   private _onQidoStudy = new LiteEvent<QidoRsEventArgs>();
+   private _onQidoSeries = new LiteEvent<QidoRsEventArgs>();
+   private _onQidoInstance = new LiteEvent<QidoRsEventArgs>();
+   private _onInstanceMetadata = new LiteEvent<RsInstanceEventArgs>();
    private _onInstance = new LiteEvent<RsInstanceEventArgs>();
    private _onFrames = new LiteEvent<RsFramesEventArgs>();
    private _onWadoUri = new LiteEvent<WadoUriEventArgs>();
@@ -46,6 +49,9 @@ class QueryView
       this.registerEvents();
    }
 
+   public get qidoStudy() { return this._onQidoStudy; }
+   public get qidoSeries() { return this._onQidoSeries; }
+   public get qidoInstance() { return this._onQidoInstance; }
    public get instanceMetaDataRequest() { return this._onInstanceMetadata; }
    public get instanceRequest() { return this._onInstance; }
    public get framesRequest() { return this._onFrames; }
@@ -165,26 +171,6 @@ class QueryView
             $(".instance-details").show();
          }
       });
-
-      //$("*[data-rs-xml]").on("click", (ev:JQueryEventObject) => {
-      //   this._retrieveService.getObjectInstanceMetadata(this._model.selectedInstance(), (objectInstance: any) => {
-      //      this.renderXml($(".pacs-metadata-viewer"), this.bin2String(objectInstance));
-      //   }, MimeTypes.xmlDicom);
-      //   ev.preventDefault();
-      //   return false;
-      //});
-
-      //$("*[data-rs-metadata]").on("click", (ev: JQueryEventObject) => {
-      //   var instance = this._model.selectedInstance();
-
-      //   if (instance) {
-      //      var args = new RsInstanceEventArgs(instance, $(ev.target).attr("data-pacs-args"));
-      //      this._onInstanceMetadata.trigger(args);
-      //   }
-
-      //   ev.preventDefault();
-      //   return false;
-      //});
 
       $("*[data-rs-instance]").on("click", (ev: JQueryEventObject) => {
          var instance = this._model.selectedInstance();
@@ -316,11 +302,18 @@ class QueryView
       this.createInstanceTemplate();
    }
 
+   private getTemplateRelativePath(templatePath: string): string
+   {
+      //take the relative path name and remove / if exists
+      return window.location.pathname.replace(/\/$/, "") + templatePath;
+   }
+
    private createStudyTemplate()
    {
       var ajaxSettings: JQueryAjaxSettings = {};
 
-      ajaxSettings.url = window.location.pathname + "_StudyItem/";
+
+      ajaxSettings.url     = this.getTemplateRelativePath("/_StudyItem/");
       ajaxSettings.success = (data: any, textStatus: string, jqXHR: JQueryXHR) => {
          this._$studyItemTemplate = $(data);
       };
@@ -334,13 +327,13 @@ class QueryView
 
    private createSeriesTemplate()
    {
-      $.get(window.location.pathname + "_SeriesItem/", (data: any, textStatus: string, jqXHR: JQueryXHR) => {
+      $.get(this.getTemplateRelativePath("/_SeriesItem/"), (data: any, textStatus: string, jqXHR: JQueryXHR) => {
          this._$seriesItemTemplate = $(data);
       }, "html");
    }
 
    private createInstanceTemplate() {
-      $.get(window.location.pathname + "_InstanceItem/", (data: any, textStatus: string, jqXHR: JQueryXHR) => {
+      $.get(this.getTemplateRelativePath("/_InstanceItem/"), (data: any, textStatus: string, jqXHR: JQueryXHR) => {
          this._$instanceItemTemplate = $(data);
       }, "html");
    }
@@ -400,7 +393,7 @@ class QueryView
       var $item = this._$instanceItemTemplate.clone();
 
       $item.find("*[data-pacs-InstanceNum]").text(instance.InstanceNumber);
-      $item.find("*[data-pacs-SopInstanceUid]").text(instance.SopInstanceUid);
+      //$item.find("*[data-pacs-SopInstanceUid]").text(instance.SopInstanceUid);
 
       this.registerInstanceEvents(instance, $item, index);
 
@@ -447,12 +440,24 @@ class QueryView
          return false;
       });
 
-      $item.find("*[data-pacs-viewQidoStudy]").on("click", (ev: JQueryEventObject) => {
-         this.ViewJsonDlg(study.DicomSourceProvider.getSourceDataset(), "Study QIDO Response");
-         
+      $item.find('*[data-pacs-viewQidoStudy="json"]').on("click", (ev: JQueryEventObject) => {
+         var args = new QidoRsEventArgs(MimeTypes.Json, study.StudyInstanceUid);
+
+         this._onQidoStudy.trigger(args);
+
          ev.preventDefault();
          return false;
       });
+
+      $item.find('*[data-pacs-viewQidoStudy="xml"]').on("click", (ev: JQueryEventObject) => {
+         var args = new QidoRsEventArgs(MimeTypes.xmlDicom, study.StudyInstanceUid);
+
+         this._onQidoStudy.trigger(args);
+
+         ev.preventDefault();
+         return false;
+      });
+
    }
 
    private registerSeriesEvents(series: SeriesParams, $item: JQuery, index:number) {
@@ -484,9 +489,20 @@ class QueryView
          return false;
       });
 
-      $item.find("*[data-pacs-viewQidoSeries]").on("click", (ev: JQueryEventObject) => {
-         this.ViewJsonDlg(series.DicomSourceProvider.getSourceDataset(), "Series QIDO Response");
-         
+      $item.find('*[data-pacs-viewQidoSeries="json"]').on("click", (ev: JQueryEventObject) => {
+         var args = new QidoRsEventArgs(MimeTypes.Json, series.StudyInstanceUid, series.SeriesInstanceUID);
+
+         this._onQidoSeries.trigger(args);
+
+         ev.preventDefault();
+         return false;
+      });
+
+      $item.find('*[data-pacs-viewQidoSeries="xml"]').on("click", (ev: JQueryEventObject) => {
+         var args = new QidoRsEventArgs(MimeTypes.xmlDicom, series.StudyInstanceUid, series.SeriesInstanceUID);
+
+         this._onQidoSeries.trigger(args);
+
          ev.preventDefault();
          return false;
       });
@@ -501,8 +517,19 @@ class QueryView
          return false;
       });
 
-      $item.find("*[data-pacs-viewQidoInstance]").on("click", (ev: JQueryEventObject) => {
-         this.ViewJsonDlg(instance.DicomSourceProvider.getSourceDataset(), "Qido Instance ");
+      $item.find('*[data-pacs-viewQidoInstance="json"]').on("click", (ev: JQueryEventObject) => {
+         var args = new QidoRsEventArgs(MimeTypes.Json, instance.StudyInstanceUid, instance.SeriesInstanceUID, instance.SopInstanceUid);
+
+         this._onQidoInstance.trigger(args);
+
+         ev.preventDefault();
+         return false;
+      });
+
+      $item.find('*[data-pacs-viewQidoInstance="xml"]').on("click", (ev: JQueryEventObject) => {
+         var args = new QidoRsEventArgs(MimeTypes.xmlDicom, instance.StudyInstanceUid, instance.SeriesInstanceUID, instance.SopInstanceUid);
+
+         this._onQidoInstance.trigger(args);
 
          ev.preventDefault();
          return false;
@@ -554,13 +581,13 @@ class QueryView
       return $("*[data-uri-frame-input]").val();
    }
 
-   private ViewJsonDlg(data: any, caption: string) {
+   public ViewJsonDlg(data: any, caption: string) {
       var dlg = new ModalDialog("#modal-alert");
 
       dlg.showJson(caption, data);
    }
 
-   private ViewXmlDlg(data: any, caption: string)
+   public ViewXmlDlg(data: any, caption: string)
    {
       var dlg = new ModalDialog("#modal-alert");
 

@@ -1,18 +1,16 @@
 ﻿/// <reference path="coderenderer.ts" />
-class ModalDialog
-{
+class ModalDialog {
    private _$dialogName: string;
    private _onDlgClose = new LiteEvent<string>();
 
 
    public get dilaogClosed() { return this._onDlgClose; }
 
-   constructor($dialogName:string ) {
+   constructor($dialogName: string) {
       this._$dialogName = $dialogName;
    }
 
-   public showJson(title: string, data: any)
-   {
+   public showJson(title: string, data: any) {
       var $dlg: any = $(this._$dialogName);
       var $contentElement = $dlg.find(".model-body-content");
 
@@ -32,6 +30,19 @@ class ModalDialog
       $dlg.find(".modal-title").text(title);
 
       CodeRenderer.renderXml($contentElement[0], data);
+
+      $dlg.modal("show");
+
+      this.onDialogClose($dlg);
+   }
+
+   public showText(title: string, data: string) {
+      var $dlg: any = $(this._$dialogName);
+      var $contentElement = $dlg.find(".model-body-content");
+
+      $dlg.find(".modal-title").text(title);
+
+      CodeRenderer.renderValue($contentElement[0], data);
 
       $dlg.modal("show");
 

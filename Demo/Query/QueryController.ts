@@ -23,6 +23,36 @@
 
    private registerEvents()
    {
+      this._queryView.qidoStudy.on((args:QidoRsEventArgs) => {
+         var query = new StudyParams();
+         var request = this.getQidoQueryParam(query, args.MediaType, "QIDO-RS Study");
+
+         query.StudyInstanceUid = args.StudyInstanceUID;
+
+         this._queryService.findStudies(request);
+      });
+
+      this._queryView.qidoSeries.on((args: QidoRsEventArgs) => {
+         var query = new SeriesParams();
+         var request = this.getQidoQueryParam(query, args.MediaType, "QIDO-RS Series");
+
+         query.StudyInstanceUid  = args.StudyInstanceUID;
+         query.SeriesInstanceUID = args.SeriesInstanceUID;
+
+         this._queryService.findSeries(request);
+      });
+
+      this._queryView.qidoInstance.on((args: QidoRsEventArgs) => {
+         var query = new InstanceParams();
+         var request = this.getQidoQueryParam(query, args.MediaType, "QIDO-RS Instance");
+
+         query.StudyInstanceUid  = args.StudyInstanceUID;
+         query.SeriesInstanceUID = args.SeriesInstanceUID;
+         query.SopInstanceUid    = args.SopInstanceUID;
+
+         this._queryService.findInstances(request);
+      });
+
       this._queryView.instanceMetaDataRequest.on((args) => {
          this._retrieveService.getObjectInstanceMetadata(args.InstanceParams,
             (data: any) => {
@@ -87,6 +117,7 @@
          query: this._queryModel.StudyQueryParams,
          returnValues: [],
          options: null,
+         acceptType: MimeTypes.Json,
          success: (data: any) => {
             this.onQueryStudies(data);
          },
@@ -105,6 +136,7 @@
          query: study,
          returnValues: [],
          options: null,
+         acceptType: MimeTypes.Json,
          success: (data: any) => {
             this.onQuerySeries(data);
          },
@@ -122,6 +154,7 @@
          query: series,
          returnValues: [],
          options: null,
+         acceptType: MimeTypes.Json,
          success: (data: any) => {
             this.onQueryInstances(data);
          },
@@ -170,6 +203,38 @@
       }
 
       this._queryModel.Instances = instances;      
+   }
+
+   private getQidoQueryParam(query:DicomModuleBase, mediaType: string, operation:string) : queryParams
+   {
+      var request: queryParams = {
+         query: query,
+         returnValues: [],
+         options: null,
+         acceptType: mediaType,
+         success : (data: any) => {
+            this.showDialog(operation, mediaType, data);
+         },
+         error : () => {
+            alert(operation + " Failed");
+         }
+      };
+
+      return request;
+   }
+
+   private showDialog(title: string, mediaType: string, data: any)
+   {
+      var title = title + " (" + mediaType + ")";
+      var dlg = new ModalDialog("#modal-alert");
+
+
+      if (mediaType == MimeTypes.Json) {
+         dlg.showJson(title, data)
+      }
+      else {
+         dlg.showXml(title, data);
+      }
    }
 
    onQueryError(textStatus: string, errorThrown: string)

@@ -23,14 +23,27 @@
     }
 
     private DoQuery(query: queryParams, path: string) {
-       var ajaxSettings: JQueryAjaxSettings = {};
+       var xhr = new XMLHttpRequest();
        var elements = query.query.DicomSourceProvider.getElements();
        var length = elements.length;
        var matches: string[] = [];
        var includes: string[] = [];
        var queryString = "";
        var methodUrl = this.BaseUrl + path;
+       var acceptHeader = "";
 
+
+       if (query.acceptType != null && query.acceptType.trim() !== "")
+       {
+          if (query.acceptType.trim() == MimeTypes.Json) {
+             acceptHeader = MimeTypes.Json;
+          }
+          else
+          {
+             //default by standard is multi-part XML
+             acceptHeader = MimeTypes.getMultiPartAcceptHeader(MimeTypes.xmlDicom);
+          }
+       }
 
        while (length--) {
           var element = elements[length];
@@ -55,26 +68,35 @@
        
        methodUrl += "?" + queryString;
 
-       ajaxSettings.url = methodUrl;
-       ajaxSettings.timeout = 20000;
-       ajaxSettings.success = (data: any, textStatus: string, jqXHR: JQueryXHR) => {
-          if (query.success)
-          {
-             query.success(data);
+       xhr.open("GET", methodUrl, true);
+       xhr.setRequestHeader("accept", acceptHeader);
+       xhr.timeout = 20000;
+
+       xhr.onreadystatechange = function () {
+          if (xhr.readyState == 4 && xhr.status == 200) {
+             if (query.success) {
+                var data = xhr.response;
+
+                if (acceptHeader === MimeTypes.Json)
+                {
+                   data = JSON.parse(data);
+                }
+                query.success(data);
+             }
           }
        };
-       ajaxSettings.error = (jqXHR: JQueryXHR, textStatus: string, errorThrown: string) => {
-          if (query.error)
-          {
-             query.error(textStatus, errorThrown);
+       
+       xhr.onerror = function (error){
+          if (query.error) {
+             query.error(xhr.statusText, error);
           }
        };
 
        if (DICOMwebJS.ServerConfiguration.IncludeAuthorizationHeader) {
-          ajaxSettings.headers = { 'Authorization': DICOMwebJS.ServerConfiguration.SecurityToken };
+          xhr.setRequestHeader("Authorization", DICOMwebJS.ServerConfiguration.SecurityToken);
        }
 
-       $.ajax(ajaxSettings);
+       xhr.send(null);
     }
 }
 
@@ -113,7 +135,8 @@ class queryParams
    public returnValues: DicomTag[];
    public options: QueryOptions;
    public success:Function;
-   public error: Function
+   public error: Function;
+   public acceptType: string 
 }
 
 

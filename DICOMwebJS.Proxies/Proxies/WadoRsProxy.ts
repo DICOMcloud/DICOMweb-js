@@ -140,7 +140,7 @@ class WadoRsProxy{
       var deffered = $.Deferred();
       var url = this._baseUrl + urlRsPart;
       var xhr = new XMLHttpRequest();
-      var acceptHeader = "multipart/related; type=\"" + acceptDataType + "\"";
+      var acceptHeader = MimeTypes.getMultiPartAcceptHeader( acceptDataType ) ;
 
       if (transferSyntax)
       {
@@ -180,7 +180,7 @@ class WadoRsProxy{
       transferSyntax: string = null
    ): JQueryPromise<{}>
    {
-      return this.get(urlRsPart, "multipart/related; type=\"" + acceptDataType + "\"", transferSyntax);
+      return this.get(urlRsPart, MimeTypes.getMultiPartAcceptHeader (acceptDataType), transferSyntax);
    }
 
    public get

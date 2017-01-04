@@ -11,6 +11,8 @@ var DICOMwebJS;
         ServerConfiguration.WadoRsPart = "wadors";
         ServerConfiguration.StowPart = "stowrs";
         ServerConfiguration.QidoPart = "qidors";
+        ServerConfiguration.IncludeAuthorizationHeader = false;
+        ServerConfiguration.SecurityToken = "";
         function getWadoUriUrl() {
             return DICOMwebJS.ServerConfiguration.BaseServerUrl + DICOMwebJS.ServerConfiguration.WadoUriPart;
         }
@@ -32,6 +34,9 @@ var DICOMwebJS;
 var MimeTypes = (function () {
     function MimeTypes() {
     }
+    MimeTypes.getMultiPartAcceptHeader = function (mimeType) {
+        return "multipart/related; type=\"" + mimeType + "\"";
+    };
     MimeTypes.DICOM = "application/dicom";
     MimeTypes.xmlDicom = "application/dicom+xml";
     MimeTypes.Jpeg = "image/jpeg";
@@ -57,13 +62,22 @@ var QidoRsProxy = (function () {
         this.DoQuery(query, "/instances");
     };
     QidoRsProxy.prototype.DoQuery = function (query, path) {
-        var ajaxSettings = {};
+        var xhr = new XMLHttpRequest();
         var elements = query.query.DicomSourceProvider.getElements();
         var length = elements.length;
         var matches = [];
         var includes = [];
         var queryString = "";
         var methodUrl = this.BaseUrl + path;
+        var acceptHeader = "";
+        if (query.acceptType != null && query.acceptType.trim() !== "") {
+            if (query.acceptType.trim() == MimeTypes.Json) {
+                acceptHeader = MimeTypes.Json;
+            }
+            else {
+                acceptHeader = MimeTypes.getMultiPartAcceptHeader(MimeTypes.xmlDicom);
+            }
+        }
         while (length--) {
             var element = elements[length];
             matches.push(element.Tag.StringValue + "=" + encodeURIComponent(element.toString()));
@@ -78,19 +92,29 @@ var QidoRsProxy = (function () {
         }
         queryString += includes.join("&");
         methodUrl += "?" + queryString;
-        ajaxSettings.url = methodUrl;
-        ajaxSettings.timeout = 20000;
-        ajaxSettings.success = function (data, textStatus, jqXHR) {
-            if (query.success) {
-                query.success(data);
+        xhr.open("GET", methodUrl, true);
+        xhr.setRequestHeader("accept", acceptHeader);
+        xhr.timeout = 20000;
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                if (query.success) {
+                    var data = xhr.response;
+                    if (acceptHeader === MimeTypes.Json) {
+                        data = JSON.parse(data);
+                    }
+                    query.success(data);
+                }
             }
         };
-        ajaxSettings.error = function (jqXHR, textStatus, errorThrown) {
+        xhr.onerror = function (error) {
             if (query.error) {
-                query.error(textStatus, errorThrown);
+                query.error(xhr.statusText, error);
             }
         };
-        $.ajax(ajaxSettings);
+        if (DICOMwebJS.ServerConfiguration.IncludeAuthorizationHeader) {
+            xhr.setRequestHeader("Authorization", DICOMwebJS.ServerConfiguration.SecurityToken);
+        }
+        xhr.send(null);
     };
     return QidoRsProxy;
 }());
@@ -327,8 +351,11 @@ var StowRsProxy = (function () {
         var request = this.gen_multipart(" ", boundary, MimeTypes.DICOM, fileBuffer);
         var xhr = new XMLHttpRequest();
         xhr.open(method, url, true);
-        xhr.setRequestHeader("Content-Type", 'multipart/related; boundary="' + boundary + '";type="' + MimeTypes.DICOM + '"');
+        xhr.setRequestHeader("Content-Type", MimeTypes.getMultiPartAcceptHeader(MimeTypes.DICOM) + '; boundary="' + boundary + '"');
         xhr.setRequestHeader("accept", acceptHeader);
+        if (DICOMwebJS.ServerConfiguration.IncludeAuthorizationHeader) {
+            xhr.setRequestHeader("Authorization", DICOMwebJS.ServerConfiguration.SecurityToken);
+        }
         xhr.onreadystatechange = function (data) {
             if (xhr.readyState == 4) {
                 successCallback(xhr);
@@ -397,6 +424,9 @@ var WadoUriProxy = (function () {
         xhr.onerror = function (error) {
             failureCallback(error);
         };
+        if (DICOMwebJS.ServerConfiguration.IncludeAuthorizationHeader) {
+            xhr.setRequestHeader("Authorization", DICOMwebJS.ServerConfiguration.SecurityToken);
+        }
         xhr.send(null);
     };
     WadoUriProxy.prototype.createUrl = function (instanceData, mimeType, imageParams) {
@@ -497,7 +527,7 @@ var WadoRsProxy = (function () {
         var deffered = $.Deferred();
         var url = this._baseUrl + urlRsPart;
         var xhr = new XMLHttpRequest();
-        var acceptHeader = "multipart/related; type=\"" + acceptDataType + "\"";
+        var acceptHeader = MimeTypes.getMultiPartAcceptHeader(acceptDataType);
         if (transferSyntax) {
             acceptHeader += ";transfer-syntax=" + transferSyntax;
         }
@@ -514,12 +544,15 @@ var WadoRsProxy = (function () {
         xhr.onerror = function (error) {
             deffered.reject(error);
         };
+        if (DICOMwebJS.ServerConfiguration.IncludeAuthorizationHeader) {
+            xhr.setRequestHeader("Authorization", DICOMwebJS.ServerConfiguration.SecurityToken);
+        }
         xhr.send(null);
         return deffered.promise();
     };
     WadoRsProxy.prototype.getMultipart = function (urlRsPart, acceptDataType, transferSyntax) {
         if (transferSyntax === void 0) { transferSyntax = null; }
-        return this.get(urlRsPart, "multipart/related; type=\"" + acceptDataType + "\"", transferSyntax);
+        return this.get(urlRsPart, MimeTypes.getMultiPartAcceptHeader(acceptDataType), transferSyntax);
     };
     WadoRsProxy.prototype.get = function (urlRsPart, acceptHeader, transferSyntax) {
         if (transferSyntax === void 0) { transferSyntax = null; }
@@ -539,6 +572,9 @@ var WadoRsProxy = (function () {
         xhr.onerror = function (error) {
             deffered.reject(error);
         };
+        if (DICOMwebJS.ServerConfiguration.IncludeAuthorizationHeader) {
+            xhr.setRequestHeader("Authorization", DICOMwebJS.ServerConfiguration.SecurityToken);
+        }
         xhr.send(null);
         return deffered.promise();
     };

@@ -22,6 +22,7 @@ declare class MimeTypes {
     static UncompressedData: string;
     static PlainText: string;
     static MultipartRelated: string;
+    static getMultiPartAcceptHeader(mimeType: string): string;
 }
 declare class QidoRsProxy {
     BaseUrl: string;
@@ -45,6 +46,7 @@ declare class queryParams {
     options: QueryOptions;
     success: Function;
     error: Function;
+    acceptType: string;
 }
 declare class PatientParams extends DicomModuleBase {
     constructor(elementsProvider?: any);

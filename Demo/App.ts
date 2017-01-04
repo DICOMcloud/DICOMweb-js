@@ -90,7 +90,7 @@ class app {
       {
          DICOMwebJS.ServerConfiguration.IncludeAuthorizationHeader = true;
 
-         DICOMwebJS.ServerConfiguration.SecurityToken = token;
+         DICOMwebJS.ServerConfiguration.SecurityToken = "Bearer " + token;
       }
    }
 

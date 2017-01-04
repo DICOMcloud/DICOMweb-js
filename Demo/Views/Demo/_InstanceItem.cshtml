@@ -4,31 +4,26 @@
             <strong><span>Instance Number:</span></strong>
             <strong><span data-pacs-InstanceNum="true"></span></strong>
         </div>
-        <div class="xcol-md-3">
+        @*<div class="xcol-md-3">
             <span>SOP Instance UI:</span>
             <span data-pacs-SopInstanceUid="true"></span>
-        </div>
+        </div>*@
     </div>
-
-    @*<div class="btn-toolbar" role="toolbar" aria-label="...">
-        <a href="#" role="button" data-pacs-viewQidoInstance class="btn-group">{..}</a>
-        <a href="#" role="button" data-pacs-viewInstanceViewer class="btn-group">View</a>
-    </div>*@
 
     <div class="panel-footer">
         <div class="btn-group btn-group-justified" role="group">
             <div class="btn-group">
                 <a href="#" type="button" role="button" data-pacs-viewInstanceViewer class="btn btn-default btn-sm">View</a>
             </div>
-            <div class="btn-group">
-                <a href="#" data-pacs-viewQidoInstance type="button" role="button" class="btn btn-default btn-sm Xdropdown-toggle" Xdata-toggle="dropdown" Xaria-haspopup="true" Xaria-expanded="false">
-                    QIDO-RS {..}
-                    @*<span class="caret"></span>*@
+            <div class="btn-group dropup">
+                <a href="#" type="button" role="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    QIDO-RS
+                    <span class="caret"></span>
                 </a>
-                @*<ul class="dropdown-menu">
-                    <li><a href="#" data-pacs-viewQidoStudy>JSON</a></li>
-                    <li><a href="#">DIOCM+XML</a></li>
-            </ul>*@
+                <ul class="dropdown-menu">
+                    <li><a href="#" data-pacs-viewQidoInstance="json">JSON</a></li>
+                    <li><a href="#" data-pacs-viewQidoInstance="xml">DIOCM XML</a></li>
+                </ul>
             </div>
             <div class="btn-group dropup">
                 <a href="#" type="button" role="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

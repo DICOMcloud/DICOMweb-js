@@ -10,7 +10,7 @@
         </div>
         <div class="xcol-md-3">
             <span>Description:</span>
-            <a data-pacs-studyDesc="true"></a>
+            <span data-pacs-studyDesc="true"></span>
         </div>
         <div class="xcol-md-1">
             <span>Study ID:</span>
@@ -22,16 +22,16 @@
         </div>
     </div>
     <div class="panel-footer">
-        <div class="btn-group btn-group-justified" role="group">
+        <div class="btn-group btn-group-justified" role="group" aria-label="...">
             <div class="btn-group dropup">
-                <a href="#" data-pacs-viewQidoStudy type="button" role="button" class="btn btn-default btn-sm Xdropdown-toggle" Xdata-toggle="dropdown" Xaria-haspopup="true" Xaria-expanded="false">
-                    QIDO-RS {..}
-                    @*<span class="caret"></span>*@
+                <a href="#" type="button" role="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    QIDO-RS
+                    <span class="caret"></span>
                 </a>
-                @*<ul class="dropdown-menu">
-                    <li><a href="#" data-pacs-viewQidoStudy>JSON</a></li>
-                    <li><a href="#">DIOCM+XML</a></li>
-                </ul>*@
+                <ul class="dropdown-menu">
+                    <li><a href="#" data-pacs-viewQidoStudy="json">JSON</a></li>
+                    <li><a href="#" data-pacs-viewQidoStudy="xml">DIOCM XML</a></li>
+                </ul>
             </div>
             <div class="btn-group dropup"  >
                 <a href="#" type="button" role="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -40,13 +40,18 @@
                 </a>
                 <ul class="dropdown-menu">
                     <li><a href="#" data-pacs-study-json="true">JSON</a></li>
-                    <li><a href="#" data-pacs-study-xml>XML</a></li>
+                    <li><a href="#" data-pacs-study-xml>DIOCM XML</a></li>
                 </ul>
-                    @*<div class="btn-group btn-group-justified" role="group">
-                <a href="#" role="button" data-pacs-viewQidoStudy class="btn btn-default btn-sm">Qido Study {..}</a>
-                <a href="#" role="button" data-pacs-studyJson class="btn btn-default btn-sm">RS-Studies {..}</a>
-            </div>*@
             </div>
+            @*<div class="btn-group dropup">
+                <a href="#" type="button" role="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    ...
+                    <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a href="#" data-pacs-deleteStudy>Delete</a></li>
+                </ul>
+            </div>*@
         </div>
     </div>
 </div>

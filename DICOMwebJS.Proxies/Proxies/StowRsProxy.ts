@@ -24,7 +24,7 @@
       var request = this.gen_multipart(" ",boundary, MimeTypes.DICOM, fileBuffer);
       var xhr = new XMLHttpRequest();
       xhr.open(method, url, true);
-      xhr.setRequestHeader("Content-Type", 'multipart/related; boundary="' + boundary + '";type="' + MimeTypes.DICOM + '"' );
+      xhr.setRequestHeader("Content-Type", MimeTypes.getMultiPartAcceptHeader ( MimeTypes.DICOM ) +  '; boundary="' + boundary + '"' );
       xhr.setRequestHeader("accept", acceptHeader); //server also supports XML
 
       if (DICOMwebJS.ServerConfiguration.IncludeAuthorizationHeader)
