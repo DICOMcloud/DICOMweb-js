@@ -13,7 +13,7 @@ The DICOM Server used by the demo is still under development and I am currently 
 
 [Source code on Github](https://github.com/Zaid-Safadi/DICOMcloud)
 
-You can check the [web server API here](https://dicomcloud.azurewebsites.net/Help/)
+You can check the [web server API here](https://dicomcloud.azurewebsites.net/)
 
 ## Building the code
 This is an ASP.NET demo so you will need Visual Studio to build the code, you can download the VS2015 community edition or VS code. 
