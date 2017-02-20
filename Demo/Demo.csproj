@@ -219,7 +219,6 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="App.ts" />
-    <TypeScriptCompile Include="file1.ts" />
     <TypeScriptCompile Include="Query\QueryController.ts" />
     <TypeScriptCompile Include="Query\QueryModel.ts" />
     <TypeScriptCompile Include="Query\QueryView.ts" />
