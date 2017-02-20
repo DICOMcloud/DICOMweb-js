@@ -1,7 +1,21 @@
 ﻿class StowRsProxy {
-   public BaseUrl: string = "";
-   constructor(baseUrl: string) {
-      this.BaseUrl = baseUrl;
+   public _baseUrl: string = "";
+
+   constructor(baseUrl: string = null) {
+      this._baseUrl = baseUrl;
+   }
+
+   public get BaseUrl() {
+      if (this._baseUrl === null) {
+         return DICOMwebJS.ServerConfiguration.getStowUrl();
+      }
+      else {
+         return this._baseUrl;
+      }
+   }
+
+   public set BaseUrl(value: string) {
+      this._baseUrl = value;
    }
 
    private _returnJson: boolean = true;

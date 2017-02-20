@@ -1,3 +1,9 @@
+declare class DelowRsProxy {
+    _baseUrl: string;
+    constructor(baseUrl?: string);
+    BaseUrl: string;
+    deleteStudy(studyUID: string): JQueryPromise<any>;
+}
 declare module DICOMwebJS {
     module ServerConfiguration {
         var BaseServerUrl: string;
@@ -5,12 +11,14 @@ declare module DICOMwebJS {
         var WadoRsPart: string;
         var StowPart: string;
         var QidoPart: string;
+        var DelowRsPart: string;
         var IncludeAuthorizationHeader: boolean;
         var SecurityToken: string;
         function getWadoUriUrl(): string;
         function getWadoRsUrl(): string;
         function getStowUrl(): string;
         function getQidoUrl(): string;
+        function getDelowRsUrl(): string;
     }
 }
 declare class MimeTypes {
@@ -25,8 +33,9 @@ declare class MimeTypes {
     static getMultiPartAcceptHeader(mimeType: string): string;
 }
 declare class QidoRsProxy {
+    _baseUrl: string;
+    constructor(baseUrl?: string);
     BaseUrl: string;
-    constructor(baseUrl: string);
     findStudies(query: queryParams): void;
     findSeries(query: queryParams): void;
     findInstances(query: queryParams): void;
@@ -73,8 +82,9 @@ declare class InstanceParams extends SeriesParams {
     InstanceNumber: string;
 }
 declare class StowRsProxy {
+    _baseUrl: string;
+    constructor(baseUrl?: string);
     BaseUrl: string;
-    constructor(baseUrl: string);
     private _returnJson;
     returnJson: boolean;
     StoreInstance(fileBuffer: ArrayBuffer, successCallback: (xhr: XMLHttpRequest) => void, failureCallback: (error: Event) => void): void;
@@ -83,8 +93,8 @@ declare class StowRsProxy {
 declare class WadoUriProxy {
     private _xhr;
     private static _QueryParamsFormatted;
-    private _baseUrl;
-    constructor(baseUrl: string);
+    _baseUrl: string;
+    constructor(baseUrl?: string);
     BaseUrl: string;
     getDicomInstance(instanceData: CommonDicomInstanceParams, anonymize: boolean, imageParams: WadoImageParams, successCallback: (buffer: any) => void, failureCallback: (error: ErrorEvent) => void): void;
     getJpegImage(instanceData: CommonDicomInstanceParams, imageParams: WadoImageParams, successCallback: (buffer: any) => void, failureCallback: (error: ErrorEvent) => void): void;
@@ -102,9 +112,9 @@ declare class WadoImageParams {
     transferSyntax: string;
 }
 declare class WadoRsProxy {
-    private _baseUrl;
+    _baseUrl: string;
+    constructor(baseUrl?: string);
     BaseUrl: string;
-    constructor(baseUrl: string);
     getStudy(studyInstanceUid: string, mediaType: string, transferSyntax?: string): JQueryPromise<{}>;
     getSeries(studyInstanceUid: string, seriesInstanceUid: string, mediaType: string, transferSyntax?: string): JQueryPromise<{}>;
     getObjectInstance(studyInstanceUid: string, seriesInstanceUid: string, sopInstanceUID: string, mediaType: string, transferSyntax?: string): JQueryPromise<{}>;

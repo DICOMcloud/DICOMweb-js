@@ -5,6 +5,7 @@
         export var WadoRsPart : string = "wadors";
         export var StowPart: string = "stowrs";
         export var QidoPart: string = "qidors";
+        export var DelowRsPart: string = "delowrs";
 
         export var IncludeAuthorizationHeader: boolean = false;
         export var SecurityToken: string = "";
@@ -23,6 +24,10 @@
 
         export function getQidoUrl(): string {
            return DICOMwebJS.ServerConfiguration.BaseServerUrl + DICOMwebJS.ServerConfiguration.QidoPart;
+        }
+
+        export function getDelowRsUrl(): string {
+           return DICOMwebJS.ServerConfiguration.BaseServerUrl + DICOMwebJS.ServerConfiguration.DelowRsPart;
         }
     }
 }

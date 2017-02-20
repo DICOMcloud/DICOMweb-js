@@ -27,6 +27,7 @@ class QueryView
    private _onInstance = new LiteEvent<RsInstanceEventArgs>();
    private _onFrames = new LiteEvent<RsFramesEventArgs>();
    private _onWadoUri = new LiteEvent<WadoUriEventArgs>();
+   private _onDeleteStudy = new LiteEvent<StudyEventArgs>();
 
    private _onViewInstance = new LiteEvent<WadoUriEventArgs>();
 
@@ -57,11 +58,18 @@ class QueryView
    public get framesRequest() { return this._onFrames; }
    public get wadoUriRequest() { return this._onWadoUri; }
 
+   public get deleteStudyRequest() { return this._onDeleteStudy; }
+
    public get instanceViewRequest() { return this._onViewInstance; }
    
-   public showError()
+   public showError(message?:string)
    {
-      alert("error");
+      
+      alert("Error\n\n" + message );
+   }
+
+   public showInfo(message:string) {
+      alert(message);
    }
 
    public clearInstanceMetadata()
@@ -98,7 +106,7 @@ class QueryView
             var a = document.createElement("a");
             // safari doesn't support this yet
             if (typeof a.download === 'undefined') {
-               window.location = downloadUrl;
+               window.location.assign(downloadUrl);
             } else {
                a.href = downloadUrl;
                a.download = filename;
@@ -108,7 +116,7 @@ class QueryView
                //document.body.removeChild(a);
             }
          } else {
-            window.location = downloadUrl;
+            window.location.assign(downloadUrl);
          }
       }
    }
@@ -453,6 +461,15 @@ class QueryView
          var args = new QidoRsEventArgs(MimeTypes.xmlDicom, study.StudyInstanceUid);
 
          this._onQidoStudy.trigger(args);
+
+         ev.preventDefault();
+         return false;
+      });
+
+      $item.find('*[data-pacs-deletestudy="true"]').on("click", (ev: JQueryEventObject) => {
+         var args = new StudyEventArgs(study);
+
+         this._onDeleteStudy.trigger(args);
 
          ev.preventDefault();
          return false;

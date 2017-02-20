@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Security.Claims;
 using System.Web;
 using System.Web.Mvc;
 using Demo.Models ;
@@ -14,6 +15,12 @@ namespace Demo
         // GET: Demo
         public ActionResult Index()
         {
+            
+            if( Authorize() && !HttpContext.User.Identity.IsAuthenticated)
+            {
+                return new HttpUnauthorizedResult ( ) ;
+            }
+        
             var serverUrl = ConfigurationManager.AppSettings["app:serverUrl"];
             
             
@@ -35,6 +42,11 @@ namespace Demo
                                                         return new KeyValuePair<string,string> ( x, x );
                                                     }
                                                 } ).ToArray ( ) ) ) ;
+        }
+
+        private bool Authorize ( )
+        {
+            return string.Compare (HttpContext.Request.QueryString["auth"], bool.TrueString, true) == 0 ;
         }
 
         [Route("_StudyItem")]

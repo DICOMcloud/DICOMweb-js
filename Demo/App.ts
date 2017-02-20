@@ -21,12 +21,13 @@ class app {
       }
       
       var model = new QueryModel();
-      var rsProxy = new WadoRsProxy(DICOMwebJS.ServerConfiguration.getWadoRsUrl());
-      var uriProxy = new WadoUriProxy(DICOMwebJS.ServerConfiguration.getWadoUriUrl());
-      var qidoProxy = new QidoRsProxy(DICOMwebJS.ServerConfiguration.getQidoUrl());
+      var rsProxy = new WadoRsProxy();
+      var uriProxy = new WadoUriProxy();
+      var qidoProxy = new QidoRsProxy();
       var rsService = new RetrieveService(rsProxy);
+      var delowProxy = new DelowRsProxy();
       var queryView = new QueryView(document.getElementById("#content"), model, rsService );
-      var queryController = new QueryController(queryView, model, qidoProxy, rsService, uriProxy);
+      var queryController = new QueryController(queryView, model, qidoProxy, rsService, uriProxy, delowProxy);
       var element = $('#dicomImage').get(0);
       var viewer = new WadoViewer(element, uriProxy);
 
@@ -60,9 +61,6 @@ class app {
 
       $("#serverList").change(function () {
          DICOMwebJS.ServerConfiguration.BaseServerUrl = $("#serverList").val();
-         rsProxy.BaseUrl =  DICOMwebJS.ServerConfiguration.getWadoRsUrl();
-         uriProxy.BaseUrl = DICOMwebJS.ServerConfiguration.getWadoUriUrl();
-         qidoProxy.BaseUrl = DICOMwebJS.ServerConfiguration.getQidoUrl();
       });
    }
 

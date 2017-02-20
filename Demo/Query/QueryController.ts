@@ -3,7 +3,8 @@
    _queryModel: QueryModel;
    _queryView: QueryView;
    _retrieveService: RetrieveService;
-   _wadoUriService : WadoUriProxy;
+   _wadoUriService: WadoUriProxy;
+   _delowRsProxy: DelowRsProxy;
 
    constructor
    (
@@ -11,13 +12,16 @@
       queryModel: QueryModel,
       queryService: QidoRsProxy,
       retrieveService: RetrieveService,
-      wadoUriService: WadoUriProxy
+      wadoUriService: WadoUriProxy,
+      delowRsProxy: DelowRsProxy
    ) {
       this._queryView = queryView;
       this._queryModel = queryModel;
       this._queryService = queryService;
       this._retrieveService = retrieveService;
       this._wadoUriService = wadoUriService;
+      this._delowRsProxy = delowRsProxy;
+
       this.registerEvents();
    }
 
@@ -95,6 +99,16 @@
          );
       });
    
+      this._queryView.deleteStudyRequest.on((args) => {
+         this._delowRsProxy.deleteStudy(args.StudyParams.StudyInstanceUid)
+            .done ( (response) => {
+            this._queryView.showInfo("Success");
+         })
+            .fail( (error) => {
+            this._queryView.showError(error);
+         });
+      });
+
       this._queryModel.StudyQueryChangedEvent = () => {
          this.queryStudies();
       };

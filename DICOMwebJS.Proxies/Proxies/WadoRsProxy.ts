@@ -1,16 +1,22 @@
 ﻿
 class WadoRsProxy{
-   private _baseUrl: string;
+   public _baseUrl: string = "";
+
+   constructor(baseUrl: string = null) {
+      this._baseUrl = baseUrl;
+   }
 
    public get BaseUrl() {
-      return this._baseUrl;
-   }
-   public set BaseUrl(value: string) {
-      this._baseUrl = value;
+      if (this._baseUrl === null) {
+         return DICOMwebJS.ServerConfiguration.getWadoRsUrl();
+      }
+      else {
+         return this._baseUrl;
+      }
    }
 
-   public constructor(baseUrl: string) {
-      this._baseUrl = baseUrl;
+   public set BaseUrl(value: string) {
+      this._baseUrl = value;
    }
 
    public getStudy
@@ -138,7 +144,7 @@ class WadoRsProxy{
    ): JQueryPromise<{}>
    {
       var deffered = $.Deferred();
-      var url = this._baseUrl + urlRsPart;
+      var url = this.BaseUrl + urlRsPart;
       var xhr = new XMLHttpRequest();
       var acceptHeader = MimeTypes.getMultiPartAcceptHeader( acceptDataType ) ;
 
@@ -191,7 +197,7 @@ class WadoRsProxy{
    ): JQueryPromise<{}>
    {
       var deffered = $.Deferred();
-      var url = this._baseUrl + urlRsPart;
+      var url = this.BaseUrl + urlRsPart;
       var xhr = new XMLHttpRequest();
 
 

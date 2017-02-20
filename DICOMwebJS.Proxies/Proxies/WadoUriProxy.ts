@@ -2,16 +2,21 @@
 {
     private _xhr: XMLHttpRequest;
     private static _QueryParamsFormatted: string = "?RequestType=wado&studyUID={0}&seriesUID={1}&objectUID={2}"
-    private _baseUrl: string;
+    public _baseUrl: string = "";
 
-    constructor(baseUrl: string)
-    {
+    constructor(baseUrl: string = null) {
        this._baseUrl = baseUrl;
     }
 
     public get BaseUrl() {
-       return this._baseUrl;
+       if (this._baseUrl === null) {
+          return DICOMwebJS.ServerConfiguration.getWadoUriUrl();
+       }
+       else {
+          return this._baseUrl;
+       }
     }
+
     public set BaseUrl(value: string)
     {
        this._baseUrl = value;
