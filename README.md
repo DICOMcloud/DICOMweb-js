@@ -1,3 +1,9 @@
+***
+# Announcement
+
+**The dicom-webJS project will be moved into its own GitHub Organization account. This repository is provided here for reference.**
+***
+
 # dicom-webJS
 dicom-webJS is an open source JS client for consuming DICOM Web Services - part 18
 
