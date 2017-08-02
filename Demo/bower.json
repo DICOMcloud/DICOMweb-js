@@ -1,0 +1,11 @@
+{
+  "name": "asp.net",
+  "private": true,
+  "dependencies": {
+    "cornerstone": "0.12.2",
+    "cornerstoneWADOImageLoader": "0.14.6",
+    "cornerstoneTools": "0.9.0",
+    "cornerstoneMath": "0.1.6",
+    "dicomParser": "1.7.5"
+  }
+}

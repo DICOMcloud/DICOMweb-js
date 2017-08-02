@@ -21,11 +21,13 @@ interface CornerstoneTools
    pan: any; // pan is the default tool for middle mouse button
    zoom: any; // zoom is the default tool for right mouse button
    zoomWheel: any; // zoom is the default tool for middle mouse wheel
+   wwwcTouchDrag: any;
 }
 
 interface CornerstoneWADOImageLoader
 {
    configure(options: any);
+   webWorkerManager: any;
 }
 
 declare var dwv: DWV;

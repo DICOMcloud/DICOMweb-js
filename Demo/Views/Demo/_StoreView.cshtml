@@ -19,7 +19,26 @@
         </div>
     </div>
     <div class="panel-footer">
-        <div class="text-danger">Do not store your personal DICOM images as they <strong>WILL NOT</strong> be anonymized and anyone can view them.</div>
+        <div class="text-info"><p> 
+            DICOM files will be anonymized by the DICOMcloud server according to the DICOM confidentiality Basic Profile with the following options:
+            <ol>
+                <li>
+                    Retain Patient Characteristics Option (e.g. Ethnic Group, Patient’s Age, Patient’s Sex, Size, Weight…)
+                </li>
+                <li>
+                    Retain UIDs (e.g. Study Instance UID, Series Instance UID, SOP Instance UID…)
+                </li>
+                <li>
+                    Retain Longitudinal Temporal information with Full Dates Options (e.g. Study Date/Time, Series Date/Time…)
+                </li>
+            </ol>
+            </p>
+        <p>
+            For more information about the DICOM confidentiality Basic Profile, you can refer to the DICOM spec 
+            <a href="http://dicom.nema.org/medical/dicom/current/output/html/part15.html#chapter_E"  target="_blank" title="Attribute Confidentiality Profiles">"Attribute Confidentiality Profiles"</a>
+        </p>
+        </div>
+        <div class="text-danger">Not: Information that is burned into the image pixel data will NOT be removed.</div>
         <div class="text-danger">Stored files might be deleted at any time without notice</div>
     </div>
 </div>

@@ -2,7 +2,6 @@
    webkitURL: any;
 }
 
-interface HTMLElement
-{
+interface HTMLElement {
    download: any;
 }

@@ -26,7 +26,7 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-    <TypeScriptToolsVersion>2.0</TypeScriptToolsVersion>
+    <TypeScriptToolsVersion>2.2</TypeScriptToolsVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -123,6 +123,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App_Start\BundleDemo.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
@@ -136,34 +137,21 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="cloudPacs.App.js" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
-    <Content Include="Content\flatly-bootstrap.min.css" />
-    <Content Include="Content\flatly-bootstrap.css" />
-    <Content Include="Content\jquery.json-viewer.css" />
-    <Content Include="cornerstoneViewer\css\cornerstone.min.css" />
-    <Content Include="cornerstoneViewer\js\cornerstone.js" />
-    <Content Include="cornerstoneViewer\js\cornerstone.min.js" />
-    <Content Include="cornerstoneViewer\js\cornerstoneMath.js" />
-    <Content Include="cornerstoneViewer\js\cornerstoneTools.js" />
-    <Content Include="cornerstoneViewer\js\cornerstoneWADOImageLoader.js" />
-    <Content Include="cornerstoneViewer\js\dicomParser.js" />
-    <Content Include="cornerstoneViewer\js\dicomParser.min.js" />
-    <Content Include="cornerstoneViewer\js\libCharLS.js" />
-    <Content Include="cornerstoneViewer\js\libopenjpeg.js" />
-    <Content Include="cornerstoneViewer\js\uids.js" />
-    <TypeScriptCompile Include="cornerstoneViewer\wadoViewer.ts" />
+    <Content Include="Content\cornerstone.min.css" />
+    <TypeScriptCompile Include="JSLib\wadoViewer.ts" />
+    <Content Include="JSLib\uids.js" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
-    <Content Include="Content\Site.css" />
+    <Content Include="Content\demo.css" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="bower.json" />
     <None Include="Properties\PublishProfiles\dicomwebdemo-dev - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\DICOMwebDemo.pubxml" />
     <Content Include="Scripts\DICOMwebJS.js" />
-    <Content Include="Scripts\DICOMwebJS.Proxies.js" />
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
     <Content Include="Scripts\jquery-2.1.4.js" />
     <Content Include="Scripts\jquery-2.1.4.min.js" />
@@ -177,7 +165,6 @@
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
-    <Content Include="Scripts\typings\libs\html.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -207,7 +194,9 @@
     <Content Include="Views\Shared\_cornerstoneViewer.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include=".bin\" />
     <Folder Include="App_Data\" />
+    <Folder Include="js\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
@@ -219,26 +208,25 @@
     <None Include="Project_Readme.html" />
   </ItemGroup>
   <ItemGroup>
-    <TypeScriptCompile Include="App.ts" />
-    <TypeScriptCompile Include="Query\QueryController.ts" />
-    <TypeScriptCompile Include="Query\QueryModel.ts" />
-    <TypeScriptCompile Include="Query\QueryView.ts" />
-    <TypeScriptCompile Include="Query\RetrieveService.ts" />
+    <TypeScriptCompile Include="JSLib\demo.ts" />
+    <TypeScriptCompile Include="JSLib\Query\QueryController.ts" />
+    <TypeScriptCompile Include="JSLib\Query\QueryModel.ts" />
+    <TypeScriptCompile Include="JSLib\Query\QueryView.ts" />
+    <TypeScriptCompile Include="JSLib\Query\RetrieveService.ts" />
     <TypeScriptCompile Include="Scripts\typings\bootstrap\bootstrap.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\DICOMwebJS\DICOMwebJS.d.ts" />
-    <TypeScriptCompile Include="Scripts\typings\DICOMwebJS\DICOMwebJS.Proxies.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\jquery\jquery.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\libs\ace.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\libs\viewers.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\libs\html.ts" />
-    <TypeScriptCompile Include="Types\CodeRenderer.ts" />
-    <TypeScriptCompile Include="Types\ILiteEvent.ts" />
-    <TypeScriptCompile Include="Types\ModelDialog.ts" />
-    <TypeScriptCompile Include="Types\QidoRsEventArgs.ts" />
-    <TypeScriptCompile Include="Types\RsFramesEventArgs.ts" />
-    <TypeScriptCompile Include="Types\RsInstanceEventArgs.ts" />
-    <TypeScriptCompile Include="Types\StudyEventArgs.ts" />
-    <TypeScriptCompile Include="Types\WadoUriEventArgs.ts" />
+    <TypeScriptCompile Include="JSLib\Types\CodeRenderer.ts" />
+    <TypeScriptCompile Include="JSLib\Types\ILiteEvent.ts" />
+    <TypeScriptCompile Include="JSLib\Types\ModelDialog.ts" />
+    <TypeScriptCompile Include="JSLib\Types\QidoRsEventArgs.ts" />
+    <TypeScriptCompile Include="JSLib\Types\RsFramesEventArgs.ts" />
+    <TypeScriptCompile Include="JSLib\Types\RsInstanceEventArgs.ts" />
+    <TypeScriptCompile Include="JSLib\Types\StudyEventArgs.ts" />
+    <TypeScriptCompile Include="JSLib\Types\WadoUriEventArgs.ts" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
@@ -334,6 +322,21 @@ xcopy "$(ProjectDir)../dist\*.js" "$(ProjectDir)Scripts\*.js"  /i /d /y</PreBuil
     <TypeScriptOutFile>cloudPacs.App.js</TypeScriptOutFile>
     <TypeScriptOutDir />
     <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
+    <TypeScriptMapRoot />
+    <TypeScriptSourceRoot />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <TypeScriptTarget>ES5</TypeScriptTarget>
+    <TypeScriptJSXEmit>None</TypeScriptJSXEmit>
+    <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
+    <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
+    <TypeScriptModuleKind>CommonJS</TypeScriptModuleKind>
+    <TypeScriptRemoveComments>True</TypeScriptRemoveComments>
+    <TypeScriptOutFile />
+    <TypeScriptOutDir />
+    <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
+    <TypeScriptNoEmitOnError>False</TypeScriptNoEmitOnError>
+    <TypeScriptSourceMap>True</TypeScriptSourceMap>
     <TypeScriptMapRoot />
     <TypeScriptSourceRoot />
   </PropertyGroup>

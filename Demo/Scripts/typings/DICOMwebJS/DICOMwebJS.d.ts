@@ -1,3 +1,142 @@
+declare class DelowRsProxy {
+    _baseUrl: string;
+    constructor(baseUrl?: string);
+    BaseUrl: string;
+    deleteStudy(studyUID: string): JQueryPromise<any>;
+}
+declare class MimeTypes {
+    static DICOM: string;
+    static xmlDicom: string;
+    static Jpeg: string;
+    static WebP: string;
+    static Json: string;
+    static UncompressedData: string;
+    static PlainText: string;
+    static MultipartRelated: string;
+    static getMultiPartAcceptHeader(mimeType: string): string;
+}
+declare class DicomModuleBase {
+    DicomSourceProvider: IDicomDatasetService;
+    constructor(dicomProvider?: IDicomDatasetService);
+    getUInt16(tagValue: number, valueIndex?: number, defaultValue?: number): number;
+    setUInt16(tagValue: number, value: number, valueIndex?: number): void;
+    setString(tagValue: number, value: string, valueIndex?: number): void;
+    getString(tagValue: number, valueIndex?: number, defaultValue?: string): string;
+    setValue(tagValue: number, value: any, valueIndex?: number): void;
+    getValue(tagValue: number, valueIndex?: number, defaultValue?: string): any;
+}
+declare class QidoRsProxy {
+    _baseUrl: string;
+    constructor(baseUrl?: string);
+    BaseUrl: string;
+    findStudies(query: queryParams): void;
+    findSeries(query: queryParams): void;
+    findInstances(query: queryParams): void;
+    private DoQuery(query, path);
+}
+declare class QueryOptions {
+    private _fuzzy;
+    fuzzyMatching: boolean;
+    private _limit;
+    limit: number;
+    private _offset;
+    offset: number;
+}
+declare class queryParams {
+    query: DicomModuleBase;
+    returnValues: DicomTag[];
+    options: QueryOptions;
+    success: Function;
+    error: Function;
+    acceptType: string;
+}
+declare class PatientParams extends DicomModuleBase {
+    constructor(elementsProvider?: any);
+    PatientId: string;
+    PatientName: PersonName;
+}
+declare class StudyParams extends PatientParams {
+    constructor(elementsProvider?: DicomDatasetService);
+    StudyInstanceUid: string;
+    StudyDate: string;
+    StudyID: string;
+    AccessionNumber: string;
+    StudyDescription: string;
+}
+declare class SeriesParams extends StudyParams {
+    Modality: string;
+    SeriesNumber: string;
+    SeriesInstanceUID: string;
+    SeriesDescription: string;
+    SeriesDate: string;
+}
+declare class InstanceParams extends SeriesParams {
+    SopInstanceUid: string;
+    InstanceNumber: string;
+}
+declare module DICOMwebJS {
+    module ServerConfiguration {
+        var BaseServerUrl: string;
+        var WadoUriPart: string;
+        var WadoRsPart: string;
+        var StowPart: string;
+        var QidoPart: string;
+        var DelowRsPart: string;
+        var IncludeAuthorizationHeader: boolean;
+        var SecurityToken: string;
+        function getWadoUriUrl(): string;
+        function getWadoRsUrl(): string;
+        function getStowUrl(): string;
+        function getQidoUrl(): string;
+        function getDelowRsUrl(): string;
+    }
+}
+declare class StowRsProxy {
+    _baseUrl: string;
+    constructor(baseUrl?: string);
+    BaseUrl: string;
+    private _returnJson;
+    returnJson: boolean;
+    StoreInstance(fileBuffer: ArrayBuffer, successCallback: (xhr: XMLHttpRequest) => void, failureCallback: (xhr: XMLHttpRequest) => void): void;
+    private gen_multipart(title, boundary, mimetype, byteBuffer);
+}
+declare class WadoRsProxy {
+    _baseUrl: string;
+    constructor(baseUrl?: string);
+    BaseUrl: string;
+    getStudy(studyInstanceUid: string, mediaType: string, transferSyntax?: string): JQueryPromise<{}>;
+    getSeries(studyInstanceUid: string, seriesInstanceUid: string, mediaType: string, transferSyntax?: string): JQueryPromise<{}>;
+    getObjectInstance(studyInstanceUid: string, seriesInstanceUid: string, sopInstanceUID: string, mediaType: string, transferSyntax?: string): JQueryPromise<{}>;
+    getStudyMetadata(studyInstanceUid: string, mediaType?: string, transferSyntax?: string): JQueryPromise<{}>;
+    getSeriesMetadata(studyInstanceUid: string, seriesInstanceUid: string, mediaType?: string, transferSyntax?: string): JQueryPromise<{}>;
+    getObjectInstanceMetadata(studyInstanceUid: string, seriesInstanceUid: string, sopInstanceUid: string, mediaType: string, transferSyntax?: string): JQueryPromise<{}>;
+    getMetadata(urlParts: string, mediaType?: string, transferSyntax?: string): JQueryPromise<{}>;
+    getFrame(studyInstanceUid: string, seriesInstanceUid: string, sopInstanceUID: string, frameList: string, mediaType: string, transferSyntax?: string): JQueryPromise<{}>;
+    getBinaryDICOMMultipart(urlRsPart: string, acceptDataType: string, transferSyntax?: string): JQueryPromise<{}>;
+    getMultipart(urlRsPart: string, acceptDataType: string, transferSyntax?: string): JQueryPromise<{}>;
+    get(urlRsPart: string, acceptHeader: string, transferSyntax?: string): JQueryPromise<{}>;
+}
+declare class WadoUriProxy {
+    private _xhr;
+    private static _QueryParamsFormatted;
+    _baseUrl: string;
+    constructor(baseUrl?: string);
+    BaseUrl: string;
+    getDicomInstance(instanceData: CommonDicomInstanceParams, anonymize: boolean, imageParams: WadoImageParams, successCallback: (buffer: any) => void, failureCallback: (error: ErrorEvent) => void): void;
+    getJpegImage(instanceData: CommonDicomInstanceParams, imageParams: WadoImageParams, successCallback: (buffer: any) => void, failureCallback: (error: ErrorEvent) => void): void;
+    getUncompressedImage(instanceData: CommonDicomInstanceParams, imageParams: WadoImageParams, successCallback: (buffer: ArrayBuffer) => void, failureCallback: (error: ErrorEvent) => void): void;
+    getObjectInstance(instanceData: CommonDicomInstanceParams, mimeType: string, imageParams: WadoImageParams, successCallback: (buffer: any) => void, failureCallback: (error: Event) => void): void;
+    createUrl(instanceData: CommonDicomInstanceParams, mimeType: string, imageParams: WadoImageParams): string;
+}
+declare class CommonDicomInstanceParams {
+    studyUID: string;
+    seriesUID: string;
+    instanceUID: string;
+}
+declare class WadoImageParams {
+    frameNumber: string;
+    transferSyntax: string;
+}
 declare class DicomElement {
     Tag: DicomTag;
     VR: string;
@@ -12,16 +151,6 @@ declare class DicomElement {
     toString(): string;
     private get(index, defaultValue);
     private getStringValue();
-}
-declare class DicomModuleBase {
-    DicomSourceProvider: IDicomDatasetService;
-    constructor(dicomProvider?: IDicomDatasetService);
-    getUInt16(tagValue: number, valueIndex?: number, defaultValue?: number): number;
-    setUInt16(tagValue: number, value: number, valueIndex?: number): void;
-    setString(tagValue: number, value: string, valueIndex?: number): void;
-    getString(tagValue: number, valueIndex?: number, defaultValue?: string): string;
-    setValue(tagValue: number, value: any, valueIndex?: number): void;
-    getValue(tagValue: number, valueIndex?: number, defaultValue?: string): any;
 }
 interface DicomElementArray extends Array<DicomElement> {
     [index: number]: DicomElement;
@@ -3680,7 +3809,7 @@ declare class ImagePixelMacroIod {
     constructor(dicomProvider: IDicomDatasetService);
     SamplesPerPixel: number;
     PhotometricInterpretation: string;
-    Rows: number;
+    readonly Rows: number;
     Rowse: number;
     Columns: number;
     BitsAllocated: number;
@@ -3695,4 +3824,7 @@ declare class ImagePixelMacroIod {
 }
 interface PersonName {
     Alphabetic: string;
+}
+interface String {
+    format(...arguments: string[]): string;
 }

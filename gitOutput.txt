@@ -1,0 +1,910 @@
+commit f61cbdb0cb1015950c09f7848ddf42439a13b708
+Author:     zaid al-safadi <zsafadi11@gmail.com>
+AuthorDate: Mon Feb 20 17:35:00 2017 -0500
+Commit:     zaid al-safadi <zsafadi11@gmail.com>
+CommitDate: Mon Feb 20 17:35:00 2017 -0500
+
+    Add generated demo output script file so it is included during publishing
+
+M	Demo/Demo.csproj
+A	Demo/cloudPacs.App.js
+
+commit c5a8cda8d1d31a60a608132c43a369dc4224a305
+Author:     zaid al-safadi <zsafadi11@gmail.com>
+AuthorDate: Mon Feb 20 17:22:11 2017 -0500
+Commit:     zaid al-safadi <zsafadi11@gmail.com>
+CommitDate: Mon Feb 20 17:22:11 2017 -0500
+
+    delete file
+
+M	Demo/Demo.csproj
+
+commit 97a54e6c5d8b7b13ad2865ccd9341d6594835e36
+Author:     zaid al-safadi <zsafadi11@gmail.com>
+AuthorDate: Mon Feb 20 17:18:59 2017 -0500
+Commit:     zaid al-safadi <zsafadi11@gmail.com>
+CommitDate: Mon Feb 20 17:18:59 2017 -0500
+
+    Include missing file and Fix build error
+
+A	Demo/Types/StudyEventArgs.ts
+
+commit cdf194a1a41dfb32e8fac1387177fe7b24a59844
+Author:     zaid al-safadi <zsafadi11@gmail.com>
+AuthorDate: Sun Feb 19 23:26:01 2017 -0500
+Commit:     zaid al-safadi <zsafadi11@gmail.com>
+CommitDate: Sun Feb 19 23:26:25 2017 -0500
+
+    Upgrade projects to Typescript v2.0. Close Issue #9
+
+M	DICOMwebJS.Proxies/DICOMwebJS.Proxies.csproj
+M	DICOMwebJS.Proxies/packages.config
+M	DICOMwebJS/DICOMwebJS.csproj
+A	DICOMwebJS/packages.config
+M	Demo/Demo.csproj
+M	Demo/packages.config
+
+commit 1366e1f461f0e8ddfa942452b27b03414cf7a720
+Author:     zaid al-safadi <zsafadi11@gmail.com>
+AuthorDate: Sun Feb 19 23:24:30 2017 -0500
+Commit:     zaid al-safadi <zsafadi11@gmail.com>
+CommitDate: Sun Feb 19 23:24:30 2017 -0500
+
+    Support Delete Study to DICOMcloud server. Issue #8
+
+A	DICOMwebJS.Proxies/Proxies/DelowRsProxy.ts
+M	DICOMwebJS.Proxies/Proxies/QidoRsProxy.ts
+M	DICOMwebJS.Proxies/Proxies/ServerConfiguration.ts
+M	DICOMwebJS.Proxies/Proxies/StowRsProxy.ts
+M	DICOMwebJS.Proxies/Proxies/WadoRsProxy.ts
+M	DICOMwebJS.Proxies/Proxies/WadoUriProxy.ts
+M	DICOMwebJS.Proxies/Scripts/typings/DICOMwebJS/DICOMwebJS.Proxies.d.ts
+M	Demo/App.ts
+M	Demo/Controllers/DemoController.cs
+D	Demo/LESS/bootswatch-flatly.less
+D	Demo/LESS/flatly-variables.less
+M	Demo/Query/QueryController.ts
+M	Demo/Query/QueryView.ts
+M	Demo/Scripts/DICOMwebJS.Proxies.js
+M	Demo/Scripts/typings/DICOMwebJS/DICOMwebJS.Proxies.d.ts
+M	Demo/Views/Demo/_StudyItem.cshtml
+M	dist/DICOMwebJS.Proxies.d.ts
+M	dist/DICOMwebJS.Proxies.js
+M	dist/DICOMwebJS.Proxies.js.map
+
+commit 8a017d221dff86cf62c4bdd049559d56fb2bccef
+Author:     Xeos <Zaid-Safadi@users.noreply.github.com>
+AuthorDate: Wed Feb 8 00:48:40 2017 -0500
+Commit:     GitHub <noreply@github.com>
+CommitDate: Wed Feb 8 00:48:40 2017 -0500
+
+    Update README.md
+
+M	README.md
+
+commit 47870191b16fccebdbb1277ece5c42e239e8b0a3
+Author:     zaid al-safadi <zsafadi11@gmail.com>
+AuthorDate: Tue Jan 3 21:50:48 2017 -0500
+Commit:     zaid al-safadi <zsafadi11@gmail.com>
+CommitDate: Tue Jan 3 21:50:48 2017 -0500
+
+    Update the demo to query a study/series/instance in DICOM+JSON and DICOM+XML media type. Close Issue #6
+
+M	DICOMwebJS.Proxies/Proxies/MimeTypes.ts
+M	DICOMwebJS.Proxies/Proxies/QidoRsProxy.ts
+M	DICOMwebJS.Proxies/Proxies/StowRsProxy.ts
+M	DICOMwebJS.Proxies/Proxies/WadoRsProxy.ts
+M	DICOMwebJS.Proxies/Scripts/typings/DICOMwebJS/DICOMwebJS.Proxies.d.ts
+M	DICOMwebJS/DICOMwebJS.csproj
+M	Demo/App.ts
+M	Demo/Demo.csproj
+M	Demo/Query/QueryController.ts
+M	Demo/Query/QueryView.ts
+M	Demo/Scripts/DICOMwebJS.Proxies.js
+M	Demo/Scripts/typings/DICOMwebJS/DICOMwebJS.Proxies.d.ts
+M	Demo/Types/CodeRenderer.ts
+M	Demo/Types/ModelDialog.ts
+A	Demo/Types/QidoRsEventArgs.ts
+M	Demo/Views/Demo/_InstanceItem.cshtml
+M	Demo/Views/Demo/_SeriesItem.cshtml
+M	Demo/Views/Demo/_StudyItem.cshtml
+M	dist/DICOMwebJS.Proxies.d.ts
+M	dist/DICOMwebJS.Proxies.js
+M	dist/DICOMwebJS.Proxies.js.map
+
+commit e6bf7785a981f0b47c261f9902c2268ba2d91cf2
+Author:     zaid al-safadi <zsafadi11@gmail.com>
+AuthorDate: Sun Oct 9 19:11:41 2016 -0400
+Commit:     zaid al-safadi <zsafadi11@gmail.com>
+CommitDate: Sun Oct 9 19:11:41 2016 -0400
+
+    Add support for sending authorization header
+
+M	.gitignore
+M	DICOMwebJS.Proxies/Proxies/QidoRsProxy.ts
+M	DICOMwebJS.Proxies/Proxies/ServerConfiguration.ts
+M	DICOMwebJS.Proxies/Proxies/StowRsProxy.ts
+M	DICOMwebJS.Proxies/Proxies/WadoRsProxy.ts
+M	DICOMwebJS.Proxies/Proxies/WadoUriProxy.ts
+M	DICOMwebJS.Proxies/Scripts/typings/DICOMwebJS/DICOMwebJS.Proxies.d.ts
+M	DICOMwebJS.Proxies/web.config
+M	Demo/App.ts
+M	Demo/Demo.csproj
+M	Demo/Query/QueryView.ts
+M	Demo/Scripts/typings/DICOMwebJS/DICOMwebJS.Proxies.d.ts
+M	Demo/Scripts/typings/libs/viewers.d.ts
+M	Demo/cornerstoneViewer/wadoViewer.ts
+M	dist/DICOMwebJS.Proxies.d.ts
+M	dist/DICOMwebJS.Proxies.js
+M	dist/DICOMwebJS.Proxies.js.map
+
+commit ce44f03384692d1b9a7071464ed35db53a8f8a4e
+Author:     zaid al-safadi <zsafadi11@gmail.com>
+AuthorDate: Sun Oct 9 19:07:04 2016 -0400
+Commit:     zaid al-safadi <zsafadi11@gmail.com>
+CommitDate: Sun Oct 9 19:07:04 2016 -0400
+
+    Update MVC routing using RouteAttribute
+
+M	Demo/App_Start/RouteConfig.cs
+M	Demo/Controllers/DemoController.cs
+
+commit f666607acb9638a1b40b389e91303d25d5c19f4d
+Author:     zaid al-safadi <zsafadi11@gmail.com>
+AuthorDate: Thu Sep 29 01:02:37 2016 -0400
+Commit:     zaid al-safadi <zsafadi11@gmail.com>
+CommitDate: Thu Sep 29 01:02:37 2016 -0400
+
+    Support selecting a transferSyntax for the viewer
+
+M	DICOMwebJS.Proxies/Proxies/WadoUriProxy.ts
+M	DICOMwebJS.Proxies/Scripts/typings/DICOMwebJS/DICOMwebJS.Proxies.d.ts
+M	Demo/App.ts
+M	Demo/Demo.csproj
+M	Demo/Query/QueryController.ts
+M	Demo/Scripts/DICOMwebJS.Proxies.js
+M	Demo/Scripts/_references.js
+M	Demo/Scripts/typings/DICOMwebJS/DICOMwebJS.Proxies.d.ts
+M	Demo/Scripts/typings/libs/viewers.d.ts
+M	Demo/Views/Shared/_cornerstoneViewer.cshtml
+M	Demo/cornerstoneViewer/js/cornerstoneWADOImageLoader.js
+R070	Demo/cornerstoneViewer/wadoViewer.js	Demo/cornerstoneViewer/wadoViewer.ts
+M	dist/DICOMwebJS.Proxies.d.ts
+M	dist/DICOMwebJS.Proxies.js
+M	dist/DICOMwebJS.Proxies.js.map
+
+commit a8531add7d1fd207a0453199377cc7ac7eade434
+Author:     zaid al-safadi <zsafadi11@gmail.com>
+AuthorDate: Wed Sep 28 00:18:15 2016 -0400
+Commit:     zaid al-safadi <zsafadi11@gmail.com>
+CommitDate: Wed Sep 28 00:18:15 2016 -0400
+
+    many UI and refactoring updates
+
+M	.gitignore
+M	Demo/App.ts
+M	Demo/Content/Site.css
+M	Demo/Demo.csproj
+M	Demo/Models/ToolbarViewModel.cs
+M	Demo/Query/QueryController.ts
+M	Demo/Query/QueryView.ts
+M	Demo/Query/RetrieveService.ts
+M	Demo/Scripts/DICOMwebJS.Proxies.js
+M	Demo/Scripts/typings/DICOMwebJS/DICOMwebJS.Proxies.d.ts
+M	Demo/Views/Demo/Index.cshtml
+M	Demo/Views/Demo/_InstanceItem.cshtml
+M	Demo/Views/Demo/_QueryFieldsView.cshtml
+M	Demo/Views/Demo/_SeriesItem.cshtml
+M	Demo/Views/Demo/_StudyItem.cshtml
+M	Demo/Views/Demo/_StudyView.cshtml
+M	Demo/Views/Demo/_Toolbar.cshtml
+M	Demo/Views/Shared/_cornerstoneViewer.cshtml
+
+commit bdf6fdd383d6a073e77dce99f8853a6cc80e8968
+Author:     zaid al-safadi <zsafadi11@gmail.com>
+AuthorDate: Wed Sep 28 00:16:03 2016 -0400
+Commit:     zaid al-safadi <zsafadi11@gmail.com>
+CommitDate: Wed Sep 28 00:16:03 2016 -0400
+
+    redo the wado-rs proxy interface
+
+M	DICOMwebJS.Proxies/DICOMwebJS.Proxies.csproj
+M	DICOMwebJS.Proxies/Proxies/WadoRsProxy.ts
+M	DICOMwebJS.Proxies/Scripts/typings/DICOMwebJS/DICOMwebJS.Proxies.d.ts
+
+commit b9a59611917890d1e8b49eaaee4718ecfe8d7d83
+Author:     zaid al-safadi <zsafadi11@gmail.com>
+AuthorDate: Wed Sep 28 00:15:04 2016 -0400
+Commit:     zaid al-safadi <zsafadi11@gmail.com>
+CommitDate: Wed Sep 28 00:15:04 2016 -0400
+
+    Fix output path
+
+M	DICOMwebJS/DICOMwebJS.csproj
+M	dist/DICOMwebJS.Proxies.d.ts
+M	dist/DICOMwebJS.Proxies.js
+M	dist/DICOMwebJS.Proxies.js.map
+
+commit 517982d46e780a5b7da9bb026730e55608503f31
+Author:     zaid al-safadi <zsafadi11@gmail.com>
+AuthorDate: Fri Sep 23 00:58:22 2016 -0400
+Commit:     zaid al-safadi <zsafadi11@gmail.com>
+CommitDate: Fri Sep 23 00:58:22 2016 -0400
+
+    remove unneeded js references
+
+M	Demo/Demo.csproj
+M	Demo/Scripts/_references.js
+
+commit 03fec733ac57dd3e374654096bf47a33aa914d4e
+Merge: 81298b7 dd0bd62
+Author:     zaid al-safadi <zsafadi11@gmail.com>
+AuthorDate: Fri Sep 23 00:52:24 2016 -0400
+Commit:     zaid al-safadi <zsafadi11@gmail.com>
+CommitDate: Fri Sep 23 00:52:24 2016 -0400
+
+    Merge branch 'master' of https://github.com/Zaid-Safadi/dicom-webJS.git
+
+commit 81298b7a71a381d065b13fac556d468eaaa1f6e1
+Author:     zaid al-safadi <zsafadi11@gmail.com>
+AuthorDate: Fri Sep 23 00:52:09 2016 -0400
+Commit:     zaid al-safadi <zsafadi11@gmail.com>
+CommitDate: Fri Sep 23 00:52:09 2016 -0400
+
+    Add support for cornerstron DICOM Viewer. fix #3
+
+M	.gitignore
+M	DICOMwebJS.Proxies/DICOMwebJS.Proxies.csproj
+M	DICOMwebJS.Proxies/Proxies/MimeTypes.ts
+M	DICOMwebJS.Proxies/Proxies/WadoRsProxy.ts
+M	DICOMwebJS.Proxies/Proxies/WadoUriProxy.ts
+M	DICOMwebJS.Proxies/Scripts/typings/DICOMwebJS/DICOMwebJS.Proxies.d.ts
+M	Demo/App.ts
+M	Demo/App_Start/BundleConfig.cs
+M	Demo/Content/Site.css
+M	Demo/Demo.csproj
+M	Demo/Models/MimeTypes.cs
+M	Demo/Properties/PublishProfiles/DICOMwebDemo.pubxml
+M	Demo/Query/QueryView.ts
+M	Demo/Scripts/DICOMwebJS.Proxies.js
+M	Demo/Scripts/_references.js
+M	Demo/Scripts/typings/DICOMwebJS/DICOMwebJS.Proxies.d.ts
+M	Demo/Scripts/typings/libs/html.ts
+A	Demo/Scripts/typings/libs/viewers.d.ts
+M	Demo/Types/ModelDialog.ts
+M	Demo/Types/RsFramesEventArgs.ts
+M	Demo/Views/Demo/Index.cshtml
+A	Demo/Views/Demo/_ImageViewer.cshtml
+M	Demo/Views/Demo/_InstanceItem.cshtml
+M	Demo/Views/Demo/_StoreView.cshtml
+M	Demo/Views/Demo/_StudyView.cshtml
+M	Demo/Views/Shared/_Layout.cshtml
+M	Demo/Views/Shared/_Scripts.cshtml
+A	Demo/Views/Shared/_cornerstoneViewer.cshtml
+M	Demo/Web.config
+A	Demo/cornerstoneViewer/css/cornerstone.min.css
+A	Demo/cornerstoneViewer/js/cornerstone.js
+A	Demo/cornerstoneViewer/js/cornerstone.min.js
+A	Demo/cornerstoneViewer/js/cornerstoneMath.js
+A	Demo/cornerstoneViewer/js/cornerstoneTools.js
+A	Demo/cornerstoneViewer/js/cornerstoneWADOImageLoader.js
+A	Demo/cornerstoneViewer/js/dicomParser.js
+A	Demo/cornerstoneViewer/js/dicomParser.min.js
+A	Demo/cornerstoneViewer/js/libCharLS.js
+A	Demo/cornerstoneViewer/js/libopenjpeg.js
+A	Demo/cornerstoneViewer/js/uids.js
+A	Demo/cornerstoneViewer/wadoViewer.js
+M	dist/DICOMwebJS.Proxies.d.ts
+M	dist/DICOMwebJS.Proxies.js
+M	dist/DICOMwebJS.Proxies.js.map
+
+commit dd0bd62a712c096cb87a9aa2a298a9cc8065138b
+Author:     Xeos <Zaid-Safadi@users.noreply.github.com>
+AuthorDate: Thu Jun 9 01:06:37 2016 -0400
+Commit:     Xeos <Zaid-Safadi@users.noreply.github.com>
+CommitDate: Thu Jun 9 01:06:37 2016 -0400
+
+    update demo link
+
+M	README.md
+
+commit d35dfbe3b6923abe78b729e04b82ee3b447c3752
+Author:     zaid al-safadi <zsafadi11@gmail.com>
+AuthorDate: Wed Jun 8 23:39:26 2016 -0400
+Commit:     zaid al-safadi <zsafadi11@gmail.com>
+CommitDate: Wed Jun 8 23:39:26 2016 -0400
+
+    update fo-dicom server url
+
+M	Demo/Demo.csproj
+M	Demo/Web.config
+
+commit 3e5dc53d940aa979302af50425057e045ab000db
+Merge: d19d631 68681eb
+Author:     zaid al-safadi <zsafadi11@gmail.com>
+AuthorDate: Wed Jun 8 18:29:33 2016 -0400
+Commit:     zaid al-safadi <zsafadi11@gmail.com>
+CommitDate: Wed Jun 8 18:29:33 2016 -0400
+
+    Merge branch 'master' of https://github.com/Zaid-Safadi/dicom-webJS.git
+
+commit d19d631c7ddd8e4c4b52a7e1b267ce32812c756b
+Author:     zaid al-safadi <zsafadi11@gmail.com>
+AuthorDate: Wed Jun 8 18:20:53 2016 -0400
+Commit:     zaid al-safadi <zsafadi11@gmail.com>
+CommitDate: Wed Jun 8 18:27:26 2016 -0400
+
+    support switching between multiple WADO servers
+
+M	.gitignore
+M	DICOMwebJS.Proxies/Proxies/QidoRsProxy.ts
+M	DICOMwebJS.Proxies/Proxies/StowRsProxy.ts
+M	DICOMwebJS.Proxies/Proxies/WadoRsProxy.ts
+M	DICOMwebJS.Proxies/Proxies/WadoUriProxy.ts
+M	DICOMwebJS.Proxies/Scripts/typings/DICOMwebJS/DICOMwebJS.Proxies.d.ts
+M	Demo/App.ts
+M	Demo/Controllers/DemoController.cs
+M	Demo/Demo.csproj
+A	Demo/Models/ServersViewModel.cs
+A	Demo/Properties/PublishProfiles/dicomwebdemo-dev - Web Deploy.pubxml
+M	Demo/Query/QueryView.ts
+M	Demo/Scripts/DICOMwebJS.Proxies.js
+M	Demo/Scripts/typings/DICOMwebJS/DICOMwebJS.Proxies.d.ts
+M	Demo/Views/Demo/Index.cshtml
+M	Demo/Web.config
+M	dist/DICOMwebJS.Proxies.d.ts
+M	dist/DICOMwebJS.Proxies.js
+M	dist/DICOMwebJS.Proxies.js.map
+
+commit 88936f24bfc3ada7898306ce11e9d3484c5d8650
+Author:     zaid al-safadi <zsafadi11@gmail.com>
+AuthorDate: Wed Jun 8 18:21:27 2016 -0400
+Commit:     zaid al-safadi <zsafadi11@gmail.com>
+CommitDate: Wed Jun 8 18:21:27 2016 -0400
+
+    Revert "support switching between multiple WADO servers"
+    
+    This reverts commit 38d709da5f7a589fe424e72004ec0b8f0a23f6de.
+
+M	.gitignore
+M	DICOMwebJS.Proxies/Proxies/QidoRsProxy.ts
+M	DICOMwebJS.Proxies/Proxies/StowRsProxy.ts
+M	DICOMwebJS.Proxies/Proxies/WadoRsProxy.ts
+M	DICOMwebJS.Proxies/Proxies/WadoUriProxy.ts
+M	DICOMwebJS.Proxies/Scripts/typings/DICOMwebJS/DICOMwebJS.Proxies.d.ts
+M	Demo/App.ts
+M	Demo/Controllers/DemoController.cs
+M	Demo/Demo.csproj
+D	Demo/Models/ServersViewModel.cs
+D	Demo/Properties/PublishProfiles/dicomwebdemo-dev - Web Deploy.pubxml
+M	Demo/Query/QueryView.ts
+M	Demo/Scripts/DICOMwebJS.Proxies.js
+M	Demo/Scripts/typings/DICOMwebJS/DICOMwebJS.Proxies.d.ts
+M	Demo/Views/Demo/Index.cshtml
+M	Demo/Web.config
+M	dist/DICOMwebJS.Proxies.d.ts
+M	dist/DICOMwebJS.Proxies.js
+M	dist/DICOMwebJS.Proxies.js.map
+
+commit 38d709da5f7a589fe424e72004ec0b8f0a23f6de
+Author:     zaid al-safadi <zsafadi11@gmail.com>
+AuthorDate: Wed Jun 8 18:20:53 2016 -0400
+Commit:     zaid al-safadi <zsafadi11@gmail.com>
+CommitDate: Wed Jun 8 18:20:53 2016 -0400
+
+    support switching between multiple WADO servers
+
+M	.gitignore
+M	DICOMwebJS.Proxies/Proxies/QidoRsProxy.ts
+M	DICOMwebJS.Proxies/Proxies/StowRsProxy.ts
+M	DICOMwebJS.Proxies/Proxies/WadoRsProxy.ts
+M	DICOMwebJS.Proxies/Proxies/WadoUriProxy.ts
+M	DICOMwebJS.Proxies/Scripts/typings/DICOMwebJS/DICOMwebJS.Proxies.d.ts
+M	Demo/App.ts
+M	Demo/Controllers/DemoController.cs
+M	Demo/Demo.csproj
+A	Demo/Models/ServersViewModel.cs
+A	Demo/Properties/PublishProfiles/dicomwebdemo-dev - Web Deploy.pubxml
+M	Demo/Query/QueryView.ts
+M	Demo/Scripts/DICOMwebJS.Proxies.js
+M	Demo/Scripts/typings/DICOMwebJS/DICOMwebJS.Proxies.d.ts
+M	Demo/Views/Demo/Index.cshtml
+M	Demo/Web.config
+M	dist/DICOMwebJS.Proxies.d.ts
+M	dist/DICOMwebJS.Proxies.js
+M	dist/DICOMwebJS.Proxies.js.map
+
+commit 68681ebf3efea1c9a58f6ee411dd9040f22c2180
+Author:     Xeos <Zaid-Safadi@users.noreply.github.com>
+AuthorDate: Wed Apr 27 11:19:53 2016 -0400
+Commit:     Xeos <Zaid-Safadi@users.noreply.github.com>
+CommitDate: Wed Apr 27 11:19:53 2016 -0400
+
+    Update README.md
+
+M	README.md
+
+commit 37f775e5a30f2746d8138d897286ec8895732aa1
+Author:     Xeos <Zaid-Safadi@users.noreply.github.com>
+AuthorDate: Wed Apr 27 11:18:57 2016 -0400
+Commit:     Xeos <Zaid-Safadi@users.noreply.github.com>
+CommitDate: Wed Apr 27 11:18:57 2016 -0400
+
+    Update README.md
+
+M	README.md
+
+commit b4f2ae7b6c17c3a701c079228500e580027c8a4a
+Author:     Xeos <Zaid-Safadi@users.noreply.github.com>
+AuthorDate: Wed Apr 27 11:17:06 2016 -0400
+Commit:     Xeos <Zaid-Safadi@users.noreply.github.com>
+CommitDate: Wed Apr 27 11:17:06 2016 -0400
+
+    Create license.txt
+
+A	license.txt
+
+commit c1f2b4a49da813ba810d640f5968cde2d5106a01
+Author:     zaid al-safadi <zsafadi11@gmail.com>
+AuthorDate: Sat Apr 9 12:47:19 2016 -0400
+Commit:     zaid al-safadi <zsafadi11@gmail.com>
+CommitDate: Sat Apr 9 12:47:19 2016 -0400
+
+    combine javascript output into one file
+
+M	Demo/Demo.csproj
+
+commit 80eaeadfae2e9c8675b3a2e83244d5227742fb56
+Author:     zaid al-safadi <zsafadi11@gmail.com>
+AuthorDate: Sat Apr 9 12:33:37 2016 -0400
+Commit:     zaid al-safadi <zsafadi11@gmail.com>
+CommitDate: Sat Apr 9 12:33:37 2016 -0400
+
+    UI updates
+
+M	Demo/App.js
+M	Demo/App.ts
+M	Demo/App_Start/BundleConfig.cs
+M	Demo/Demo.csproj
+D	Demo/Query/QueryController.js
+D	Demo/Query/QueryController.js.map
+D	Demo/Query/QueryModel.js
+D	Demo/Query/QueryModel.js.map
+D	Demo/Query/QueryView.js
+D	Demo/Query/QueryView.js.map
+M	Demo/Query/QueryView.ts
+D	Demo/Query/RetrieveService.js
+D	Demo/Query/RetrieveService.js.map
+M	Demo/Scripts/_references.js
+M	Demo/Scripts/typings/libs/html.js
+A	Demo/Types/CodeRenderer.ts
+D	Demo/Types/ILiteEvent.js
+D	Demo/Types/ILiteEvent.js.map
+A	Demo/Types/ModelDialog.ts
+D	Demo/Types/RsFramesEventArgs.js
+D	Demo/Types/RsFramesEventArgs.js.map
+M	Demo/Types/RsFramesEventArgs.ts
+D	Demo/Types/RsInstanceEventArgs.js
+D	Demo/Types/RsInstanceEventArgs.js.map
+D	Demo/Types/WadoUriEventArgs.js
+D	Demo/Types/WadoUriEventArgs.js.map
+M	Demo/Views/Demo/Index.cshtml
+M	Demo/Views/Demo/_AlertDlg.cshtml
+M	Demo/Views/Demo/_StoreView.cshtml
+M	Demo/Views/Demo/_StudyItem.cshtml
+
+commit 189ccc6302e4f18f8e38f40cc2ef5ef3e44a5d5d
+Author:     zaid al-safadi <zsafadi11@gmail.com>
+AuthorDate: Sat Apr 2 16:31:29 2016 -0400
+Commit:     zaid al-safadi <zsafadi11@gmail.com>
+CommitDate: Sat Apr 2 16:31:29 2016 -0400
+
+    Update dist
+
+M	DICOMwebJS.Proxies/Scripts/typings/DICOMwebJS/DICOMwebJS.Proxies.d.ts
+M	Demo/App.js
+M	Demo/App.js.map
+M	dist/DICOMwebJS.Proxies.d.ts
+M	dist/DICOMwebJS.Proxies.js
+M	dist/DICOMwebJS.Proxies.js.map
+
+commit c356888c5c0869c7a958303bca178c3043b31a5e
+Author:     zaid al-safadi <zsafadi11@gmail.com>
+AuthorDate: Sat Apr 2 16:30:49 2016 -0400
+Commit:     zaid al-safadi <zsafadi11@gmail.com>
+CommitDate: Sat Apr 2 16:30:49 2016 -0400
+
+    New DICOM Instance Details view (frame, json, xml, DICOM...)
+
+M	Demo/App.ts
+M	Demo/Content/Site.css
+A	Demo/Models/MimeTypes.cs
+M	Demo/Models/ToolbarViewModel.cs
+M	Demo/Query/QueryController.js
+M	Demo/Query/QueryController.js.map
+M	Demo/Query/QueryController.ts
+M	Demo/Query/QueryModel.js
+M	Demo/Query/QueryModel.js.map
+M	Demo/Query/QueryModel.ts
+M	Demo/Query/QueryView.js
+M	Demo/Query/QueryView.js.map
+M	Demo/Query/QueryView.ts
+M	Demo/Query/RetrieveService.js
+M	Demo/Query/RetrieveService.js.map
+M	Demo/Query/RetrieveService.ts
+M	Demo/Views/Demo/_InstanceItem.cshtml
+A	Demo/Views/Demo/_ItemDetailsToolbar.cshtml
+M	Demo/Views/Demo/_SeriesItem.cshtml
+M	Demo/Views/Demo/_StudyItem.cshtml
+M	Demo/Views/Demo/_StudyView.cshtml
+M	Demo/Views/Web.config
+
+commit 24138138387618780f26419a8fc14eee16da8d2e
+Author:     zaid al-safadi <zsafadi11@gmail.com>
+AuthorDate: Sat Apr 2 16:29:47 2016 -0400
+Commit:     zaid al-safadi <zsafadi11@gmail.com>
+CommitDate: Sat Apr 2 16:29:47 2016 -0400
+
+    general project changes
+
+M	Demo/App_Start/BundleConfig.cs
+M	Demo/App_Start/FilterConfig.cs
+M	Demo/App_Start/RouteConfig.cs
+M	Demo/Controllers/DemoController.cs
+M	Demo/Demo.csproj
+M	Demo/Global.asax
+M	Demo/Global.asax.cs
+M	Demo/Web.config
+M	Demo/packages.config
+
+commit 11256195a5e8415266fb4c6fab7a0fd25c336f3a
+Author:     zaid al-safadi <zsafadi11@gmail.com>
+AuthorDate: Sat Apr 2 16:21:11 2016 -0400
+Commit:     zaid al-safadi <zsafadi11@gmail.com>
+CommitDate: Sat Apr 2 16:21:11 2016 -0400
+
+    Create events classes
+
+A	Demo/Types/ILiteEvent.js
+A	Demo/Types/ILiteEvent.js.map
+A	Demo/Types/ILiteEvent.ts
+A	Demo/Types/RsFramesEventArgs.js
+A	Demo/Types/RsFramesEventArgs.js.map
+A	Demo/Types/RsFramesEventArgs.ts
+A	Demo/Types/RsInstanceEventArgs.js
+A	Demo/Types/RsInstanceEventArgs.js.map
+A	Demo/Types/RsInstanceEventArgs.ts
+A	Demo/Types/WadoUriEventArgs.js
+A	Demo/Types/WadoUriEventArgs.js.map
+A	Demo/Types/WadoUriEventArgs.ts
+
+commit 6a083734fb6defb43319c087ed0beb75a64fa5e8
+Author:     zaid al-safadi <zsafadi11@gmail.com>
+AuthorDate: Sat Apr 2 16:20:15 2016 -0400
+Commit:     zaid al-safadi <zsafadi11@gmail.com>
+CommitDate: Sat Apr 2 16:20:15 2016 -0400
+
+    update jquery version and scripts
+
+M	Demo/Scripts/DICOMwebJS.Proxies.js
+M	Demo/Scripts/_references.js
+D	Demo/Scripts/jquery-1.10.2.min.js
+D	Demo/Scripts/jquery-1.10.2.min.map
+R095	Demo/Scripts/jquery-1.10.2.intellisense.js	Demo/Scripts/jquery-2.1.4.intellisense.js
+R065	Demo/Scripts/jquery-1.10.2.js	Demo/Scripts/jquery-2.1.4.js
+A	Demo/Scripts/jquery-2.1.4.min.js
+A	Demo/Scripts/jquery-2.1.4.min.map
+M	Demo/Scripts/typings/DICOMwebJS/DICOMwebJS.Proxies.d.ts
+A	Demo/Scripts/typings/bootstrap/bootstrap.d.ts
+
+commit d88da2c211a546442e174de65ec0f38d93d41288
+Author:     zaid al-safadi <zsafadi11@gmail.com>
+AuthorDate: Sat Apr 2 16:18:14 2016 -0400
+Commit:     zaid al-safadi <zsafadi11@gmail.com>
+CommitDate: Sat Apr 2 16:18:14 2016 -0400
+
+    support client RS Retreive Frame
+
+M	DICOMwebJS.Proxies/Proxies/WadoRsProxy.ts
+
+commit 92dde1e408ebb32f0aaeb04f0517d09fc0318e71
+Author:     zaid al-safadi <zsafadi11@gmail.com>
+AuthorDate: Thu Mar 24 23:09:01 2016 -0400
+Commit:     zaid al-safadi <zsafadi11@gmail.com>
+CommitDate: Thu Mar 24 23:09:01 2016 -0400
+
+    support frame number in wadoUri
+
+M	DICOMwebJS.Proxies/Proxies/WadoUriProxy.ts
+
+commit 00193b59d495050911098845a46657039a7b4bf4
+Author:     zaid al-safadi <zsafadi11@gmail.com>
+AuthorDate: Mon Mar 21 23:35:27 2016 -0400
+Commit:     zaid al-safadi <zsafadi11@gmail.com>
+CommitDate: Mon Mar 21 23:35:27 2016 -0400
+
+    Update UI, Json Viewer, DICOM Download
+
+M	DICOMwebJS.Proxies/Proxies/QidoRsProxy.ts
+M	Demo/App.js
+M	Demo/App.js.map
+M	Demo/App.ts
+M	Demo/App_Start/RouteConfig.cs
+M	Demo/Content/Site.css
+R085	Demo/Controllers/HomeController.cs	Demo/Controllers/DemoController.cs
+M	Demo/Demo.csproj
+M	Demo/Query/QueryModel.js
+M	Demo/Query/QueryModel.js.map
+M	Demo/Query/QueryModel.ts
+M	Demo/Query/QueryView.js
+M	Demo/Query/QueryView.js.map
+M	Demo/Query/QueryView.ts
+M	Demo/Scripts/DICOMwebJS.Proxies.js
+M	Demo/Scripts/_references.js
+A	Demo/Scripts/typings/libs/ace.d.ts
+A	Demo/Scripts/typings/libs/html.js
+A	Demo/Scripts/typings/libs/html.ts
+R086	Demo/Views/Home/Index.cshtml	Demo/Views/Demo/Index.cshtml
+R088	Demo/Views/Home/_AlertDlg.cshtml	Demo/Views/Demo/_AlertDlg.cshtml
+R100	Demo/Views/Home/_InstanceItem.cshtml	Demo/Views/Demo/_InstanceItem.cshtml
+R100	Demo/Views/Home/_QueryFieldsView.cshtml	Demo/Views/Demo/_QueryFieldsView.cshtml
+R100	Demo/Views/Home/_SeriesItem.cshtml	Demo/Views/Demo/_SeriesItem.cshtml
+R096	Demo/Views/Home/_StoreView.cshtml	Demo/Views/Demo/_StoreView.cshtml
+R098	Demo/Views/Home/_StudyItem.cshtml	Demo/Views/Demo/_StudyItem.cshtml
+R057	Demo/Views/Home/_StudyView.cshtml	Demo/Views/Demo/_StudyView.cshtml
+R100	Demo/Views/Home/_Toolbar.cshtml	Demo/Views/Demo/_Toolbar.cshtml
+M	Demo/Views/Shared/_Layout.cshtml
+A	Demo/Views/Shared/_Scripts.cshtml
+M	Demo/Views/Web.config
+M	dist/DICOMwebJS.Proxies.js
+M	dist/DICOMwebJS.Proxies.js.map
+
+commit c6995a7779246b4fb503b802790f5640f7809d29
+Merge: 1c3cdda 53a16df
+Author:     zaid al-safadi <zsafadi11@gmail.com>
+AuthorDate: Mon Mar 14 19:00:35 2016 -0400
+Commit:     zaid al-safadi <zsafadi11@gmail.com>
+CommitDate: Mon Mar 14 19:00:35 2016 -0400
+
+    Merge branch 'master' of https://github.com/Zaid-Safadi/dicom-webJS.git
+
+commit 1c3cddad0cb86a7e25874c674c8bfe1133f94658
+Author:     zaid al-safadi <zsafadi11@gmail.com>
+AuthorDate: Mon Mar 14 19:00:27 2016 -0400
+Commit:     zaid al-safadi <zsafadi11@gmail.com>
+CommitDate: Mon Mar 14 19:00:27 2016 -0400
+
+    delete auto-generated  scripts
+
+D	DICOMwebJS/DicomElement.js
+D	DICOMwebJS/DicomElement.js.map
+D	DICOMwebJS/DicomSourceProvider.js
+D	DICOMwebJS/DicomSourceProvider.js.map
+D	DICOMwebJS/DicomTag.js
+D	DICOMwebJS/DicomTag.js.map
+D	DICOMwebJS/DicomTags.js.map
+D	DICOMwebJS/ImageModule.js
+D	DICOMwebJS/ImageModule.js.map
+D	DICOMwebJS/MedicalCoJs.Dicom
+D	DICOMwebJS/MedicalCoJs.Dicom.d.ts
+D	DICOMwebJS/MedicalCoJs.Dicom.map
+
+commit 53a16df7de0c05c8c1fec244d61a8a26364ec552
+Author:     Xeos <Zaid-Safadi@users.noreply.github.com>
+AuthorDate: Mon Mar 14 18:55:00 2016 -0400
+Commit:     Xeos <Zaid-Safadi@users.noreply.github.com>
+CommitDate: Mon Mar 14 18:55:00 2016 -0400
+
+    Create README.md
+
+A	README.md
+
+commit f3eec2bbe99875392bc486ff3e52a08fba7bb62a
+Author:     zaid al-safadi <zsafadi11@gmail.com>
+AuthorDate: Mon Mar 14 18:28:49 2016 -0400
+Commit:     zaid al-safadi <zsafadi11@gmail.com>
+CommitDate: Mon Mar 14 18:28:49 2016 -0400
+
+    expose json dataset ISourceProvider
+
+M	DICOMwebJS.Proxies/Scripts/typings/DICOMwebJS/DICOMwebJS.Proxies.d.ts
+M	DICOMwebJS.Proxies/Scripts/typings/DICOMwebJS/DICOMwebJS.d.ts
+M	DICOMwebJS/Types/DicomSourceProvider.ts
+M	Demo/App.js
+M	Demo/Query/QueryController.js
+M	Demo/Query/QueryModel.js
+M	Demo/Query/QueryView.js
+M	Demo/Query/QueryView.js.map
+M	Demo/Query/QueryView.ts
+M	Demo/Query/RetrieveService.js
+M	Demo/Scripts/DICOMwebJS.Proxies.js
+M	Demo/Scripts/DICOMwebJS.js
+M	Demo/Scripts/typings/DICOMwebJS/DICOMwebJS.Proxies.d.ts
+M	Demo/Scripts/typings/DICOMwebJS/DICOMwebJS.d.ts
+M	dist/DICOMwebJS.Proxies.d.ts
+M	dist/DICOMwebJS.Proxies.js
+M	dist/DICOMwebJS.Proxies.js.map
+M	dist/DICOMwebJS.d.ts
+M	dist/DICOMwebJS.js
+M	dist/DICOMwebJS.js.map
+
+commit 490f136e1fac88a723711d3ec55ba5e51f1cdf69
+Author:     zaid al-safadi <zsafadi11@gmail.com>
+AuthorDate: Mon Mar 14 01:42:01 2016 -0400
+Commit:     zaid al-safadi <zsafadi11@gmail.com>
+CommitDate: Mon Mar 14 01:42:01 2016 -0400
+
+    Update demo buttons - add json viewer
+
+M	Demo/App.js
+M	Demo/App_Start/BundleConfig.cs
+A	Demo/Content/jquery.json-viewer.css
+M	Demo/Demo.csproj
+M	Demo/Query/QueryController.js
+M	Demo/Query/QueryModel.js
+M	Demo/Query/QueryView.js
+M	Demo/Query/QueryView.js.map
+M	Demo/Query/QueryView.ts
+M	Demo/Query/RetrieveService.js
+M	Demo/Scripts/_references.js
+A	Demo/Scripts/jquery.json-viewer.js
+M	Demo/Views/Home/Index.cshtml
+M	Demo/Views/Home/_AlertDlg.cshtml
+M	Demo/Views/Home/_InstanceItem.cshtml
+M	Demo/Views/Home/_SeriesItem.cshtml
+M	Demo/Views/Home/_StudyItem.cshtml
+M	Demo/Views/Shared/_Layout.cshtml
+
+commit eb719ee283cc4cbd8e4286259a3ccfa73dc3f91d
+Author:     zaid al-safadi <zsafadi11@gmail.com>
+AuthorDate: Thu Mar 10 21:06:29 2016 -0500
+Commit:     zaid al-safadi <zsafadi11@gmail.com>
+CommitDate: Thu Mar 10 21:06:29 2016 -0500
+
+    add github URL
+
+M	Demo/App.js
+M	Demo/App.js.map
+M	Demo/Query/QueryController.js
+M	Demo/Query/QueryModel.js
+M	Demo/Query/QueryModel.js.map
+M	Demo/Query/QueryView.js
+M	Demo/Query/QueryView.js.map
+M	Demo/Query/RetrieveService.js
+M	Demo/Views/Home/Index.cshtml
+
+commit 5b6f0331cbacd1665a22e49dfc1d6993fdd8d74b
+Author:     zaid al-safadi <zsafadi11@gmail.com>
+AuthorDate: Thu Mar 10 20:55:51 2016 -0500
+Commit:     zaid al-safadi <zsafadi11@gmail.com>
+CommitDate: Thu Mar 10 20:56:21 2016 -0500
+
+    Initial commit
+
+A	.gitattributes
+A	.gitignore
+A	DICOMwebJS.Proxies/DICOMwebJS.Proxies.csproj
+A	DICOMwebJS.Proxies/Proxies/MimeTypes.ts
+A	DICOMwebJS.Proxies/Proxies/QidoRsProxy.ts
+A	DICOMwebJS.Proxies/Proxies/ServerConfiguration.ts
+A	DICOMwebJS.Proxies/Proxies/StowRsProxy.ts
+A	DICOMwebJS.Proxies/Proxies/WadoRsProxy.ts
+A	DICOMwebJS.Proxies/Proxies/WadoUriProxy.ts
+A	DICOMwebJS.Proxies/Scripts/jquery-2.1.4.intellisense.js
+A	DICOMwebJS.Proxies/Scripts/jquery-2.1.4.js
+A	DICOMwebJS.Proxies/Scripts/jquery-2.1.4.min.js
+A	DICOMwebJS.Proxies/Scripts/jquery-2.1.4.min.map
+A	DICOMwebJS.Proxies/Scripts/typings/DICOMwebJS/DICOMwebJS.Proxies.d.ts
+A	DICOMwebJS.Proxies/Scripts/typings/DICOMwebJS/DICOMwebJS.d.ts
+A	DICOMwebJS.Proxies/Scripts/typings/jquery/jquery.d.ts
+A	DICOMwebJS.Proxies/Utils/StringExtensions.ts
+A	DICOMwebJS.Proxies/packages.config
+A	DICOMwebJS.Proxies/web.Debug.config
+A	DICOMwebJS.Proxies/web.Release.config
+A	DICOMwebJS.Proxies/web.config
+A	DICOMwebJS/DICOMwebJS.csproj
+A	DICOMwebJS/DicomElement.js
+A	DICOMwebJS/DicomElement.js.map
+A	DICOMwebJS/DicomSourceProvider.js
+A	DICOMwebJS/DicomSourceProvider.js.map
+A	DICOMwebJS/DicomTag.js
+A	DICOMwebJS/DicomTag.js.map
+A	DICOMwebJS/DicomTags.js.map
+A	DICOMwebJS/ImageModule.js
+A	DICOMwebJS/ImageModule.js.map
+A	DICOMwebJS/MedicalCoJs.Dicom
+A	DICOMwebJS/MedicalCoJs.Dicom.d.ts
+A	DICOMwebJS/MedicalCoJs.Dicom.map
+A	DICOMwebJS/Types/DicomElement.ts
+A	DICOMwebJS/Types/DicomModuleBase.ts
+A	DICOMwebJS/Types/DicomSourceProvider.ts
+A	DICOMwebJS/Types/DicomTag.ts
+A	DICOMwebJS/Types/DicomTags.ts
+A	DICOMwebJS/Types/DicomVR.ts
+A	DICOMwebJS/Types/ImageModule.ts
+A	DICOMwebJS/Types/PersonName.ts
+A	DICOMwebJS/web.Debug.config
+A	DICOMwebJS/web.Release.config
+A	DICOMwebJS/web.config
+A	Demo.sln
+A	Demo/App.js
+A	Demo/App.js.map
+A	Demo/App.ts
+A	Demo/App_Start/BundleConfig.cs
+A	Demo/App_Start/FilterConfig.cs
+A	Demo/App_Start/RouteConfig.cs
+A	Demo/Content/Site.css
+A	Demo/Content/bootstrap.css
+A	Demo/Content/bootstrap.min.css
+A	Demo/Content/flatly-bootstrap.css
+A	Demo/Content/flatly-bootstrap.min.css
+A	Demo/Controllers/HomeController.cs
+A	Demo/Demo.csproj
+A	Demo/Global.asax
+A	Demo/Global.asax.cs
+A	Demo/LESS/bootswatch-flatly.less
+A	Demo/LESS/flatly-variables.less
+A	Demo/Models/ToolbarViewModel.cs
+A	Demo/Project_Readme.html
+A	Demo/Properties/AssemblyInfo.cs
+A	Demo/Properties/PublishProfiles/DICOMwebDemo.pubxml
+A	Demo/Query/QueryController.js
+A	Demo/Query/QueryController.js.map
+A	Demo/Query/QueryController.ts
+A	Demo/Query/QueryModel.js
+A	Demo/Query/QueryModel.js.map
+A	Demo/Query/QueryModel.ts
+A	Demo/Query/QueryView.js
+A	Demo/Query/QueryView.js.map
+A	Demo/Query/QueryView.ts
+A	Demo/Query/RetrieveService.js
+A	Demo/Query/RetrieveService.js.map
+A	Demo/Query/RetrieveService.ts
+A	Demo/Scripts/DICOMwebJS.Proxies.js
+A	Demo/Scripts/DICOMwebJS.js
+A	Demo/Scripts/_references.js
+A	Demo/Scripts/bootstrap.js
+A	Demo/Scripts/bootstrap.min.js
+A	Demo/Scripts/jquery-1.10.2.intellisense.js
+A	Demo/Scripts/jquery-1.10.2.js
+A	Demo/Scripts/jquery-1.10.2.min.js
+A	Demo/Scripts/jquery-1.10.2.min.map
+A	Demo/Scripts/jquery.validate-vsdoc.js
+A	Demo/Scripts/jquery.validate.js
+A	Demo/Scripts/jquery.validate.min.js
+A	Demo/Scripts/jquery.validate.unobtrusive.js
+A	Demo/Scripts/jquery.validate.unobtrusive.min.js
+A	Demo/Scripts/modernizr-2.6.2.js
+A	Demo/Scripts/respond.js
+A	Demo/Scripts/respond.min.js
+A	Demo/Scripts/typings/DICOMwebJS/DICOMwebJS.Proxies.d.ts
+A	Demo/Scripts/typings/DICOMwebJS/DICOMwebJS.d.ts
+A	Demo/Scripts/typings/jquery/jquery.d.ts
+A	Demo/Views/Home/Index.cshtml
+A	Demo/Views/Home/_AlertDlg.cshtml
+A	Demo/Views/Home/_InstanceItem.cshtml
+A	Demo/Views/Home/_QueryFieldsView.cshtml
+A	Demo/Views/Home/_SeriesItem.cshtml
+A	Demo/Views/Home/_StoreView.cshtml
+A	Demo/Views/Home/_StudyItem.cshtml
+A	Demo/Views/Home/_StudyView.cshtml
+A	Demo/Views/Home/_Toolbar.cshtml
+A	Demo/Views/Shared/Error.cshtml
+A	Demo/Views/Shared/_Layout.cshtml
+A	Demo/Views/Web.config
+A	Demo/Views/_ViewStart.cshtml
+A	Demo/Web.Debug.config
+A	Demo/Web.Release.config
+A	Demo/Web.config
+A	Demo/favicon.ico
+A	Demo/fonts/glyphicons-halflings-regular.eot
+A	Demo/fonts/glyphicons-halflings-regular.svg
+A	Demo/fonts/glyphicons-halflings-regular.ttf
+A	Demo/fonts/glyphicons-halflings-regular.woff
+A	Demo/packages.config
+A	dist/DICOMwebJS.Proxies.d.ts
+A	dist/DICOMwebJS.Proxies.js
+A	dist/DICOMwebJS.Proxies.js.map
+A	dist/DICOMwebJS.d.ts
+A	dist/DICOMwebJS.js
+A	dist/DICOMwebJS.js.map
