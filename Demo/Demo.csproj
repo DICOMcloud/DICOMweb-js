@@ -141,6 +141,7 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\cornerstone.min.css" />
     <TypeScriptCompile Include="JSLib\wadoViewer.ts" />
+    <Content Include="dicomwebjs-demo.js" />
     <Content Include="JSLib\uids.js" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -149,6 +150,7 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="bower.json" />
+    <Content Include="dicomwebjs-demo.js.map" />
     <None Include="Properties\PublishProfiles\dicomwebdemo-dev - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\DICOMwebDemo.pubxml" />
     <Content Include="Scripts\DICOMwebJS.js" />
@@ -273,7 +275,6 @@
 xcopy "$(ProjectDir)../dist\*.js" "$(ProjectDir)Scripts\*.js"  /i /d /y</PreBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\Microsoft.TypeScript.MSBuild.2.1.5\build\Microsoft.TypeScript.MSBuild.targets" Condition="Exists('..\packages\Microsoft.TypeScript.MSBuild.2.1.5\build\Microsoft.TypeScript.MSBuild.targets')" />
-
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
