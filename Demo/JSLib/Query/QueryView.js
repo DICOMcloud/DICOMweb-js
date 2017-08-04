@@ -1,6 +1,11 @@
+/// <reference path="../../scripts/typings/libs/ace.d.ts" />
+/// <reference path="../../scripts/typings/libs/html.ts" />
 var QueryView = (function () {
     function QueryView(parentElement, model, retrieveService) {
+        //these will be replaced by some event dispatcher, 
+        //keep it simple for now
         this.RetrieveInstanceEvent = null;
+        //EVENTS
         this._onQidoStudy = new LiteEvent();
         this._onQidoSeries = new LiteEvent();
         this._onQidoInstance = new LiteEvent();
@@ -92,16 +97,20 @@ var QueryView = (function () {
         }
     };
     QueryView.prototype.download = function (data) {
+        //http://stackoverflow.com/questions/16086162/handle-file-download-from-ajax-post/23797348#23797348
         var filename = "dicom.txt";
         var blob = new Blob([data], { type: "application/octet-stream" });
         if (typeof window.navigator.msSaveBlob !== 'undefined') {
+            // IE workaround for "HTML7007: One or more blob URLs were revoked by closing the blob for which they were created. These URLs will no longer resolve as the data backing the URL has been freed."
             window.navigator.msSaveBlob(blob, filename);
         }
         else {
             var URL = window.URL || window.webkitURL;
             var downloadUrl = URL.createObjectURL(blob);
             if (filename) {
+                // use HTML5 a[download] attribute to specify filename
                 var a = document.createElement("a");
+                // safari doesn't support this yet
                 if (typeof a.download === 'undefined') {
                     window.location.assign(downloadUrl);
                 }
@@ -248,12 +257,14 @@ var QueryView = (function () {
             return false;
         });
     };
+    //TODO: zaid-move this to the app
     QueryView.prototype.createViewTemplates = function () {
         this.createStudyTemplate();
         this.createSeriesTemplate();
         this.createInstanceTemplate();
     };
     QueryView.prototype.getTemplateRelativePath = function (templatePath) {
+        //take the relative path name and remove / if exists
         return window.location.pathname.replace(/\/$/, "") + templatePath;
     };
     QueryView.prototype.createStudyTemplate = function () {
@@ -314,6 +325,7 @@ var QueryView = (function () {
     QueryView.prototype.createInstanceItem = function (instance, index) {
         var $item = this._$instanceItemTemplate.clone();
         $item.find("*[data-pacs-InstanceNum]").text(instance.InstanceNumber);
+        //$item.find("*[data-pacs-SopInstanceUid]").text(instance.SopInstanceUid);
         this.registerInstanceEvents(instance, $item, index);
         return $item;
     };

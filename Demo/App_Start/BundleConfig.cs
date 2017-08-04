@@ -26,6 +26,7 @@ namespace CloudPacs.Demo
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css" ) );
+
         }
     }
 }

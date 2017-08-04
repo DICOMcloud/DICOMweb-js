@@ -1,3 +1,4 @@
+//TODO: update events with real listenr, currently they are just callbacks to one function
 var QueryModel = (function () {
     function QueryModel() {
         this.StudyQueryChangedEvent = null;
@@ -86,6 +87,7 @@ var QueryModel = (function () {
             return this._selectedStudyIndex;
         },
         set: function (value) {
+            //if (this._selectedStudyIndex != value) 
             {
                 if (this._studies.length <= value || value < this.__NOT_SELECTED) {
                     throw new RangeError();
@@ -103,6 +105,7 @@ var QueryModel = (function () {
             return this._selectedSeriesIndex;
         },
         set: function (value) {
+            //if (this._selectedSeriesIndex != value)
             {
                 if (this._series.length <= value || value < this.__NOT_SELECTED) {
                     throw new RangeError();
@@ -120,6 +123,7 @@ var QueryModel = (function () {
             return this._selectedInstancesIndex;
         },
         set: function (value) {
+            //if (this._selectedInstancesIndex != value) 
             {
                 if (this._instances.length <= value || value < this.__NOT_SELECTED) {
                     throw new RangeError();
@@ -164,6 +168,7 @@ var QueryModel = (function () {
         this._onSelectedInstanceChanged.trigger();
     };
     QueryModel.prototype.onStudiesChanged = function () {
+        //calling props to fire events
         this.SelectedStudyIndex = this.__NOT_SELECTED;
         this.SelectedSeriesIndex = this.__NOT_SELECTED;
         this.SelectedInstanceIndex = this.__NOT_SELECTED;

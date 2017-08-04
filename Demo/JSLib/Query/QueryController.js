@@ -132,6 +132,8 @@ var QueryController = (function () {
         this._queryService.findInstances(params);
     };
     QueryController.prototype.onQueryStudies = function (data) {
+        //TODO: use a model service for getting 
+        //the response data and converting it
         var length = data.length;
         var studies = [];
         while (length--) {

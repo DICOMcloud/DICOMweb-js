@@ -18,8 +18,9 @@ namespace CloudPacs.Demo
             "~/bower_components/cornerstoneMath/dist/cornerstoneMath.min.js",
             "~/bower_components/cornerstoneTools/dist/cornerstoneTools.min.js" )) ;
 
-            bundles.Add(new ScriptBundle("~/bundles/app").IncludeDirectory(
-                       "~/JSLib/", "*.js", true));
+            bundles.Add(new ScriptBundle("~/bundles/app").Include (
+                       "~/JSLib/uids.js",
+                       "~/dicomwebjs-demo.js"));
 
             bundles.Add(new StyleBundle("~/Content/dicomweb-js").Include(
                       "~/Content/demo.css",

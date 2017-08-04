@@ -1,4 +1,5 @@
 var RetrieveService = (function () {
+    //_queryModel: QueryModel;
     function RetrieveService(retrieveServic) {
         this._retrieveService = retrieveServic;
     }
@@ -18,6 +19,7 @@ var RetrieveService = (function () {
                 data = JSON.parse(data);
             }
             successCallback(data);
+            //TODO: if XML then parse multipart and return the raw XML
         })
             .fail(function (ev) {
             console.error("getObjectMetadata failed");
@@ -68,7 +70,7 @@ var RetrieveService = (function () {
             successCallback(data);
         })
             .fail(function (ev) {
-            alert("failed: " + ev);
+            alert("failed: " + ev); //TODO: move to view
         });
     };
     RetrieveService.prototype.DownloadStudy = function (instance, successCallback) {
@@ -77,7 +79,7 @@ var RetrieveService = (function () {
             successCallback(data);
         })
             .fail(function (ev) {
-            alert("failed: " + ev);
+            alert("failed: " + ev); //TODO: move to view
         });
     };
     return RetrieveService;

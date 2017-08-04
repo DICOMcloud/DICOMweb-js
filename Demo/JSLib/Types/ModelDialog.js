@@ -1,3 +1,4 @@
+/// <reference path="coderenderer.ts" />
 var ModalDialog = (function () {
     function ModalDialog($dialogName) {
         this._onDlgClose = new LiteEvent();

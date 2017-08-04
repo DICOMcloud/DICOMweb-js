@@ -36,6 +36,7 @@ var app = (function () {
         });
         this.initStore();
         window.onerror = function (message, url, lineNumber) {
+            //save error and send to server for example.
             alert(message + "\n" + url + "\n" + lineNumber);
             return true;
         };
@@ -43,6 +44,19 @@ var app = (function () {
             DICOMwebJS.ServerConfiguration.BaseServerUrl = $("#serverList").val();
         });
     };
+    //public initViewer() {
+    //   // base function to get elements
+    //   dwv.gui.getElement = dwv.gui.base.getElement;
+    //   dwv.gui.displayProgress = function (percent) { };
+    //   // create the dwv app
+    //   var viewer = new dwv.App();
+    //   // initialise with the id of the container div
+    //   viewer.init({
+    //      "containerDivId": "dwv",
+    //      "tools": ["WindowLevel"], // or try "ZoomAndPan"
+    //   });
+    //   return viewer;
+    //}
     app.prototype.initAuthentication = function () {
         var token = this.getAuthenticationToken();
         if (token) {
@@ -52,6 +66,8 @@ var app = (function () {
     };
     app.prototype.getAuthenticationToken = function () {
         var name = this.__AUTHENTICATION_COOKIE;
+        //http://stackoverflow.com/questions/14573223/set-cookie-and-get-cookie-with-javascript
+        //function readCookie(name) {
         var nameEQ = name + "=";
         var ca = document.cookie.split(';');
         for (var i = 0; i < ca.length; i++) {
@@ -62,12 +78,15 @@ var app = (function () {
                 return c.substring(nameEQ.length, c.length);
         }
         return null;
+        //}
     };
     app.prototype.initStore = function () {
         var _this = this;
         $("#addFileButton").click(function (e) {
             e.preventDefault();
             var newName = jQuery('#displayName').val();
+            // Initiate method calls using jQuery promises.
+            // Get the local file as an array buffer.
             var getFile = _this.getFileBuffer();
             var url = DICOMwebJS.ServerConfiguration.getStowUrl();
             getFile.done(function (arrayBuffer) {
@@ -86,6 +105,7 @@ var app = (function () {
             });
         });
     };
+    // Get the local file as an array buffer.
     app.prototype.getFileBuffer = function () {
         var fileInput = $('#getFile');
         var deferred = jQuery.Deferred();

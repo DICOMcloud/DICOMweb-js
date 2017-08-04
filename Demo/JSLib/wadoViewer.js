@@ -1,5 +1,7 @@
 cornerstoneWADOImageLoader.configure({
     beforeSend: function (xhr) {
+        // Add custom headers here (e.g. auth tokens)
+        //xhr.setRequestHeader('x-auth-token', 'my auth token');
         if (DICOMwebJS.ServerConfiguration.IncludeAuthorizationHeader) {
             xhr.setRequestHeader("Authorization", DICOMwebJS.ServerConfiguration.SecurityToken);
         }
@@ -27,6 +29,18 @@ var WadoViewer = (function () {
         };
         cornerstoneWADOImageLoader.webWorkerManager.initialize(config);
     };
+    //configureWebWorker()
+    //{
+    //   var config = {
+    //      webWorkerPath: 'cornerstoneViewer/js/cornerstoneWADOImageLoaderWebWorker.min.js',
+    //      taskConfiguration: {
+    //         'decodeTask': {
+    //            codecsPath: 'cornerstoneWADOImageLoaderCodecs.min.js'
+    //         }
+    //      }
+    //   };
+    //   cornerstoneWADOImageLoader.webWorkerManager.initialize(config);
+    //}
     WadoViewer.prototype.loadInstance = function (instance, transferSyntax) {
         if (transferSyntax === void 0) { transferSyntax = null; }
         var dicomInstance = {
@@ -36,6 +50,8 @@ var WadoViewer = (function () {
         };
         var imageParam = { frameNumber: null, transferSyntax: transferSyntax };
         var instanceUrl = this._uriProxy.createUrl(dicomInstance, MimeTypes.DICOM, imageParam);
+        //add this "wadouri:" so it loads the wado uri loader, 
+        //the loader trims this prefix from the url
         this.loadAndViewImage("wadouri:" + instanceUrl);
         this._loadedInstance = instance;
         cornerstone.resize(this._viewerElement, true);
@@ -51,14 +67,16 @@ var WadoViewer = (function () {
             cornerstone.loadAndCacheImage(imageId).then(function (image) {
                 console.log(image);
                 var viewport = cornerstone.getDefaultViewportForImage(element, image);
+                //$('#toggleModalityLUT').attr("checked",viewport.modalityLUT !== undefined);
+                //$('#toggleVOILUT').attr("checked",viewport.voiLUT !== undefined);
                 cornerstone.displayImage(element, image, viewport);
                 if (_this._loaded === false) {
                     cornerstoneTools.mouseInput.enable(element);
                     cornerstoneTools.mouseWheelInput.enable(element);
-                    cornerstoneTools.wwwc.activate(element, 1);
-                    cornerstoneTools.pan.activate(element, 2);
-                    cornerstoneTools.zoom.activate(element, 4);
-                    cornerstoneTools.zoomWheel.activate(element);
+                    cornerstoneTools.wwwc.activate(element, 1); // ww/wc is the default tool for left mouse button
+                    cornerstoneTools.pan.activate(element, 2); // pan is the default tool for middle mouse button
+                    cornerstoneTools.zoom.activate(element, 4); // zoom is the default tool for right mouse button
+                    cornerstoneTools.zoomWheel.activate(element); // zoom is the default tool for middle mouse wheel
                     cornerstoneTools.wwwcTouchDrag.activate(element);
                     _this._loaded = true;
                 }
