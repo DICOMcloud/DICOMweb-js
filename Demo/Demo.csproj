@@ -36,19 +36,40 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <TypeScriptModuleKind />
-    <TypeScriptOutFile>dicomwebjs-demo.js</TypeScriptOutFile>
-    <TypeScriptOutDir />
-    <TypeScriptMapRoot />
-    <TypeScriptSourceRoot />
+     <TypeScriptTarget>ES5</TypeScriptTarget>
+     <TypeScriptJSXEmit>None</TypeScriptJSXEmit>
+     <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
+     <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
+     <TypeScriptModuleKind>System</TypeScriptModuleKind>
+     <TypeScriptRemoveComments>False</TypeScriptRemoveComments>
+     <TypeScriptOutFile>dicomwebjs-demo.js</TypeScriptOutFile>
+     <TypeScriptOutDir />
+     <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
+     <TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
+     <TypeScriptSourceMap>True</TypeScriptSourceMap>
+     <TypeScriptMapRoot />
+     <TypeScriptSourceRoot />
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+     <TypeScriptTarget>ES5</TypeScriptTarget>
+     <TypeScriptJSXEmit>None</TypeScriptJSXEmit>
+     <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
+     <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
+     <TypeScriptModuleKind>System</TypeScriptModuleKind>
+     <TypeScriptRemoveComments>False</TypeScriptRemoveComments>
+     <TypeScriptOutFile>dicomwebjs-demo.js</TypeScriptOutFile>
+     <TypeScriptOutDir />
+     <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
+     <TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
+     <TypeScriptSourceMap>True</TypeScriptSourceMap>
+     <TypeScriptMapRoot />
+     <TypeScriptSourceRoot />
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -140,6 +161,8 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\cornerstone.min.css" />
+    <Content Include="Views\Demo\_StoreAnonymizer.cshtml" />
+    <TypeScriptCompile Include="JSLib\Store\StoreView.ts" />
     <TypeScriptCompile Include="JSLib\wadoViewer.ts" />
     <Content Include="dicomwebjs-demo.js" />
     <Content Include="JSLib\uids.js" />

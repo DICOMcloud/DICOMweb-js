@@ -52,7 +52,8 @@ class app {
 
       });
 
-      this.initStore();
+      new StoreView($(".app-store-view")[0]);
+
       window.onerror = function (message, url, lineNumber) {
          //save error and send to server for example.
          alert(message + "\n" + url + "\n" + lineNumber);
@@ -107,54 +108,6 @@ class app {
          }
          return null;
       //}
-   }
-   private initStore() {
-
-      $("#addFileButton").click((e) => {
-         e.preventDefault();
-         var newName = jQuery('#displayName').val();
-
-         // Initiate method calls using jQuery promises.
-         // Get the local file as an array buffer.
-         var getFile = this.getFileBuffer();
-         var url = DICOMwebJS.ServerConfiguration.getStowUrl();
-         getFile.done(function (arrayBuffer: ArrayBuffer) {
-            var proxy = new StowRsProxy(url);
-            var dlg = new ModalDialog("#modal-alert");
-
-            proxy.StoreInstance(arrayBuffer, (xhr: XMLHttpRequest) => {
-               
-               if (xhr.getResponseHeader("content-type").indexOf("application/json") >= 0) {
-                  dlg.showJson("JSON Store Response", JSON.parse(xhr.response));
-               }
-               else {
-                  dlg.showXml("XML Store Response", xhr.response);
-               }
-            },
-            (xhr: XMLHttpRequest) => {
-               dlg.showText("Error Storing Dataset", xhr.response);
-            });
-         });
-      });
-   }
-
-   // Get the local file as an array buffer.
-   private getFileBuffer() {
-      var fileInput: any = $('#getFile');
-      var deferred = jQuery.Deferred();
-      var reader = new FileReader();
-
-      reader.onloadend = function (e: any) {
-         deferred.resolve(e.target.result);
-      }
-
-      reader.onerror = function (e: any) {
-         deferred.reject(e.target.error);
-      }
-
-      reader.readAsArrayBuffer(fileInput[0].files[0]);
-
-      return deferred.promise();
    }
 }
 

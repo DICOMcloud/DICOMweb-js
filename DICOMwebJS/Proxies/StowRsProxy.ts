@@ -25,11 +25,13 @@
    StoreInstance
    (
       fileBuffer: ArrayBuffer,
-      successCallback: (xhr: XMLHttpRequest) => void,
-      failureCallback: (xhr: XMLHttpRequest ) => void
-   )
+      studyInstanceUID: string,
+      query:string
+   ) : JQueryPromise<XMLHttpRequest>
    {
-      var url = this.BaseUrl + "/studies/1234";
+      var deffered = $.Deferred();
+      var studyPart = (studyInstanceUID) ? "/studies/" + studyInstanceUID : "";
+      var url = this.BaseUrl + studyPart + "?"+ (query||"");
       var xhr = new XMLHttpRequest();
       var boundary = 'DICOM FILE';
       var method = 'POST';
@@ -49,18 +51,21 @@
       xhr.onreadystatechange = function (data) {
          if (xhr.readyState == 4) {
             if (xhr.status == 200 || xhr.status == 304) {
-               successCallback(xhr)
+               deffered.resolve(xhr);
             }
             else {
-               failureCallback( xhr);
+               deffered.reject( xhr);
             }
          }
       };
       xhr.onerror = function (error) {
-         failureCallback(xhr);
+         deffered.reject(xhr);
       };
 
-      xhr.send(request);}
+      xhr.send(request);
+
+      return deffered.promise();
+   }
 
    //
    //http://stackoverflow.com/questions/8262266/xmlhttprequest-multipart-related-post-with-xml-and-image-as-payload

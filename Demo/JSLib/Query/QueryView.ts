@@ -377,6 +377,7 @@ class QueryView
       }
 
       $item.find("*[data-pacs-patientName]").text(patientName);
+      $item.find("*[data-pacs-patientId]").text(study.PatientId);
       $item.find("*[data-pacs-accessionNumber]").text(study.AccessionNumber);
       $item.find("*[data-pacs-studyDate]").text(study.StudyDate);
       $item.find("*[data-pacs-studyID]").text(study.StudyID);
@@ -418,7 +419,7 @@ class QueryView
 
    private registerStudyEvents(study: StudyParams, $item: JQuery, index: number)
    {
-      $item.find(".panel-body").on("click", (ev: JQueryEventObject) => {
+      $item.find(".thumbnail").on("click", (ev: JQueryEventObject) => {
          this._model.SelectedStudyIndex = index;
 
          $("#studyCollapse").collapse("hide");

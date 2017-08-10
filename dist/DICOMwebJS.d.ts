@@ -97,7 +97,7 @@ declare class StowRsProxy {
     BaseUrl: string;
     private _returnJson;
     returnJson: boolean;
-    StoreInstance(fileBuffer: ArrayBuffer, successCallback: (xhr: XMLHttpRequest) => void, failureCallback: (xhr: XMLHttpRequest) => void): void;
+    StoreInstance(fileBuffer: ArrayBuffer, studyInstanceUID: string, query: string): JQueryPromise<XMLHttpRequest>;
     private gen_multipart(title, boundary, mimetype, byteBuffer);
 }
 declare class WadoRsProxy {

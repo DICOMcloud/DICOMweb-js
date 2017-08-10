@@ -1,0 +1,29 @@
+﻿<div class="panel panel-info">
+    <div class="panel-heading">1. Anonymize</div>
+
+    <div class="panel-body">
+        <div>
+            <p>
+            By default, the DICOMcloud server will anonymize all DICOM datasets with default values for:
+            <ol>
+                <li>Patient ID (0010,0020): <b>"Dcloud.Anonymized"</b></li> 
+                <li>Patient Name (0010,0010) <b>"Dcloud^Anonymized"</b></li>
+            </ol>
+            </p>
+            <p>
+                In order to change these values with your own, you must use a unique Patient ID that
+                doesn't already exists on the server with your preffered <b>Patient Name</b>
+            </p>
+        </div>
+        <div>
+            <form class="navbar-form navbar-left" role="search">
+                <div class="form-group">
+                    <input type="text" class="form-control app-anonymizer-field" data-app-tag="00100020" placeholder="Patient ID:">
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control app-anonymizer-field" data-app-tag="00100010" placeholder="Patient Name:">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

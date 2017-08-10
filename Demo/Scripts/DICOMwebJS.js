@@ -474,8 +474,10 @@ var StowRsProxy = (function () {
         enumerable: true,
         configurable: true
     });
-    StowRsProxy.prototype.StoreInstance = function (fileBuffer, successCallback, failureCallback) {
-        var url = this.BaseUrl + "/studies/1234";
+    StowRsProxy.prototype.StoreInstance = function (fileBuffer, studyInstanceUID, query) {
+        var deffered = $.Deferred();
+        var studyPart = (studyInstanceUID) ? "/studies/" + studyInstanceUID : "";
+        var url = this.BaseUrl + studyPart + "?" + (query || "");
         var xhr = new XMLHttpRequest();
         var boundary = 'DICOM FILE';
         var method = 'POST';
@@ -492,17 +494,18 @@ var StowRsProxy = (function () {
         xhr.onreadystatechange = function (data) {
             if (xhr.readyState == 4) {
                 if (xhr.status == 200 || xhr.status == 304) {
-                    successCallback(xhr);
+                    deffered.resolve(xhr);
                 }
                 else {
-                    failureCallback(xhr);
+                    deffered.reject(xhr);
                 }
             }
         };
         xhr.onerror = function (error) {
-            failureCallback(xhr);
+            deffered.reject(xhr);
         };
         xhr.send(request);
+        return deffered.promise();
     };
     StowRsProxy.prototype.gen_multipart = function (title, boundary, mimetype, byteBuffer) {
         var buffer = new Uint8Array(byteBuffer);

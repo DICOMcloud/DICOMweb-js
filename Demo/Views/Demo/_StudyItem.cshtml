@@ -1,7 +1,8 @@
 ﻿<div class="col-xs-6 col-sm-4 col-md-3">
-    <div class="panel-body thumbnail">
+    <div class="thumbnail">
         <div class="xcol-md-3">
             <strong><span data-pacs-patientName="true"></span></strong>
+            (<strong><span data-pacs-patientId="true"></span></strong>)
         </div>
         <hr/>
         <div class="xcol-md-2">
@@ -21,37 +22,35 @@
             <span data-pacs-accessionNumber="true"></span>
         </div>
     </div>
-    <div class="panel-footer">
-        <div class="btn-group btn-group-justified" role="group" aria-label="...">
-            <div class="btn-group dropup">
-                <a href="#" type="button" role="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    QIDO-RS
-                    <span class="caret"></span>
-                </a>
-                <ul class="dropdown-menu">
-                    <li><a href="#" data-pacs-viewQidoStudy="json">JSON</a></li>
-                    <li><a href="#" data-pacs-viewQidoStudy="xml">DIOCM XML</a></li>
-                </ul>
-            </div>
-            <div class="btn-group dropup"  >
-                <a href="#" type="button" role="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    RS-Meta
-                    <span class="caret"></span>
-                </a>
-                <ul class="dropdown-menu">
-                    <li><a href="#" data-pacs-study-json="true">JSON</a></li>
-                    <li><a href="#" data-pacs-study-xml>DIOCM XML</a></li>
-                </ul>
-            </div>
-            <div class="btn-group dropup">
-                <a href="#" type="button" role="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    ...
-                    <span class="caret"></span>
-                </a>
-                <ul class="dropdown-menu">
-                    <li><a href="#" data-pacs-deleteStudy="true">Delete</a></li>
-                </ul>
-            </div>
+    <div class="btn-group btn-group-justified" role="group" aria-label="...">
+        <div class="btn-group dropup">
+            <a href="#" type="button" role="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                QIDO-RS
+                <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+                <li><a href="#" data-pacs-viewQidoStudy="json">JSON</a></li>
+                <li><a href="#" data-pacs-viewQidoStudy="xml">DIOCM XML</a></li>
+            </ul>
+        </div>
+        <div class="btn-group dropup"  >
+            <a href="#" type="button" role="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                RS-Meta
+                <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+                <li><a href="#" data-pacs-study-json="true">JSON</a></li>
+                <li><a href="#" data-pacs-study-xml>DIOCM XML</a></li>
+            </ul>
+        </div>
+        <div class="btn-group dropup">
+            <a href="#" type="button" role="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                ...
+                <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+                <li><a href="#" data-pacs-deleteStudy="true">Delete</a></li>
+            </ul>
         </div>
     </div>
 </div>

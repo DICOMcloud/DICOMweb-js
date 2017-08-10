@@ -1,11 +1,14 @@
-﻿<div class="panel panel-default">
+﻿
+@Html.Partial("_StoreAnonymizer")        
+
+<div class="panel panel-primary">
+    <div class="panel-heading">2. Store</div>
     <div class="panel-body">
-        <div class="alert alert-info alert-dismissible" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            Browse and upload your DICOM files to store them on the <a href="https://github.com/Zaid-Safadi/DICOMcloud">DICOMcloud WADO server</a> using the STOW–RS service then use the “Query & Retrieve” tab to search for your studies, 
-            series and instances, and retrieve them on the client using the QIDO-RS, WADO-RS and WADI-URI services 
-        </div>
-        
+        <p>
+            Browse and upload your DICOM files to store them on the <a href="https://github.com/Zaid-Safadi/DICOMcloud">DICOMcloud WADO server</a> using the STOW–RS service then use the “Query & Retrieve” tab to search for your studies,
+            series and instances, and retrieve them on the client using the QIDO-RS, WADO-RS and WADI-URI services
+        </p>
+
         <div class="input-group">
             <span class="input-group-btn">
                 <span class="btn btn-primary btn-file">
@@ -18,28 +21,28 @@
             <input id="displayName" type="text" class="form-control" readonly>
         </div>
     </div>
-    <div class="panel-footer">
-        <div class="text-info"><p> 
-            DICOM files will be anonymized by the DICOMcloud server according to the DICOM confidentiality Basic Profile with the following options:
-            <ol>
-                <li>
-                    Retain Patient Characteristics Option (e.g. Ethnic Group, Patient’s Age, Patient’s Sex, Size, Weight…)
-                </li>
-                <li>
-                    Retain UIDs (e.g. Study Instance UID, Series Instance UID, SOP Instance UID…)
-                </li>
-                <li>
-                    Retain Longitudinal Temporal information with Full Dates Options (e.g. Study Date/Time, Series Date/Time…)
-                </li>
-            </ol>
-            </p>
-        <p>
-            For more information about the DICOM confidentiality Basic Profile, you can refer to the DICOM spec 
-            <a href="http://dicom.nema.org/medical/dicom/current/output/html/part15.html#chapter_E"  target="_blank" title="Attribute Confidentiality Profiles">"Attribute Confidentiality Profiles"</a>
-        </p>
-        </div>
-        <div class="text-danger">Not: Information that is burned into the image pixel data will NOT be removed.</div>
-        <div class="text-danger">Stored files might be deleted at any time without notice</div>
-    </div>
 </div>
+<hr />
+<div class="well">
+    <p>
+        DICOM files will be anonymized by the DICOMcloud server according to the DICOM confidentiality Basic Profile with the following options:
+        <ol>
+            <li>
+                Retain Patient Characteristics Option (e.g. Ethnic Group, Patient’s Age, Patient’s Sex, Size, Weight…)
+            </li>
+            <li>
+                Retain UIDs (e.g. Study Instance UID, Series Instance UID, SOP Instance UID…)
+            </li>
+            <li>
+                Retain Longitudinal Temporal information with Full Dates Options (e.g. Study Date/Time, Series Date/Time…)
+            </li>
+        </ol>
+    </p>
+    <p>
+        For more information about the DICOM confidentiality Basic Profile, you can refer to the DICOM spec
+        <a href="http://dicom.nema.org/medical/dicom/current/output/html/part15.html#chapter_E" target="_blank" title="Attribute Confidentiality Profiles">"Attribute Confidentiality Profiles"</a>
+    </p>
 
+    <div class="text-danger">Note: Information that is burned into the image pixel data will NOT be removed.</div>
+    <div class="text-danger">Stored files might be deleted at any time without notice</div>
+</div>

@@ -34,7 +34,6 @@ var app = (function () {
                 viewer.loadInstance(loadedInstance, $("#SelectedTransferSyntax").val());
             }
         });
-        this.initStore();
         window.onerror = function (message, url, lineNumber) {
             //save error and send to server for example.
             alert(message + "\n" + url + "\n" + lineNumber);
@@ -79,45 +78,6 @@ var app = (function () {
         }
         return null;
         //}
-    };
-    app.prototype.initStore = function () {
-        var _this = this;
-        $("#addFileButton").click(function (e) {
-            e.preventDefault();
-            var newName = jQuery('#displayName').val();
-            // Initiate method calls using jQuery promises.
-            // Get the local file as an array buffer.
-            var getFile = _this.getFileBuffer();
-            var url = DICOMwebJS.ServerConfiguration.getStowUrl();
-            getFile.done(function (arrayBuffer) {
-                var proxy = new StowRsProxy(url);
-                var dlg = new ModalDialog("#modal-alert");
-                proxy.StoreInstance(arrayBuffer, function (xhr) {
-                    if (xhr.getResponseHeader("content-type").indexOf("application/json") >= 0) {
-                        dlg.showJson("JSON Store Response", JSON.parse(xhr.response));
-                    }
-                    else {
-                        dlg.showXml("XML Store Response", xhr.response);
-                    }
-                }, function (xhr) {
-                    dlg.showText("Error Storing Dataset", xhr.response);
-                });
-            });
-        });
-    };
-    // Get the local file as an array buffer.
-    app.prototype.getFileBuffer = function () {
-        var fileInput = $('#getFile');
-        var deferred = jQuery.Deferred();
-        var reader = new FileReader();
-        reader.onloadend = function (e) {
-            deferred.resolve(e.target.result);
-        };
-        reader.onerror = function (e) {
-            deferred.reject(e.target.error);
-        };
-        reader.readAsArrayBuffer(fileInput[0].files[0]);
-        return deferred.promise();
     };
     return app;
 }());
