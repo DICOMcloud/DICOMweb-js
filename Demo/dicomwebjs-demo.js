@@ -44,7 +44,7 @@ var app = (function () {
                 viewer.loadInstance(loadedInstance, $("#SelectedTransferSyntax").val());
             }
         });
-        new StoreView($(".app-store-view")[0]);
+        new StoreView($("#_StoreView")[0]);
         window.onerror = function (message, url, lineNumber) {
             //save error and send to server for example.
             alert(message + "\n" + url + "\n" + lineNumber);

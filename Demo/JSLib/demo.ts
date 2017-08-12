@@ -52,7 +52,7 @@ class app {
 
       });
 
-      new StoreView($(".app-store-view")[0]);
+      new StoreView($("#_StoreView")[0]);
 
       window.onerror = function (message, url, lineNumber) {
          //save error and send to server for example.
