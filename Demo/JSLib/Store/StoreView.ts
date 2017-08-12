@@ -67,7 +67,9 @@
          var tagKey = $(element).attr("data-app-tag");
          var tagValue = $(element).val();
 
-         anonyElementsQuery += tagKey + "=" + tagValue + "&" ;
+         if (tagValue !== "") {
+            anonyElementsQuery += tagKey + "=" + tagValue + "&";
+         }
       });
 
       return anonyElementsQuery;
