@@ -1,7 +1,7 @@
 ***
 # Announcement
 
-**The dicom-webJS project is now moved from the [original repository](https://github.com/Zaid-Safadi/dicom-webJS) and is now maintained here in its own GitHub Orgnization. The project is now licensed/owned by the DICOMcloud project Contributors. .**
+**The dicom-webJS project is now moved from the [original repository](https://github.com/Zaid-Safadi/dicom-webJS) and is now maintained here in its own GitHub Orgnization. The project is now licensed/owned by the DICOM-webjs project Contributors. .**
 ***
 
 # dicom-webJS
@@ -28,7 +28,7 @@ Or you can use the dist folder to include the compiled JS files in your project.
 
 
 ## About
-- Author: [DICOMcloud Contributors](https://github.com/DICOMcloud/DICOMweb-js/graphs/contributors)
+- Author: [DICOM-webjs Contributors](https://github.com/DICOMcloud/DICOMweb-js/graphs/contributors)
 - License: [MIT License](http://opensource.org/licenses/MIT)
 
 
