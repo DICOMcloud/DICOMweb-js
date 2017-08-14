@@ -62,16 +62,6 @@ class QueryView
 
    public get instanceViewRequest() { return this._onViewInstance; }
    
-   public showError(message?:string)
-   {
-      
-      alert("Error\n\n" + message );
-   }
-
-   public showInfo(message:string) {
-      alert(message);
-   }
-
    public clearInstanceMetadata()
    {
       var editor;
@@ -87,38 +77,6 @@ class QueryView
    {
       if (args.MediaType == MimeTypes.Json) { this.renderJson($(".pacs-metadata-viewer"), data); }
       if (args.MediaType == MimeTypes.xmlDicom) { this.renderXml($(".pacs-metadata-viewer"), data); }
-   }
-
-   public download(data: any) {
-      //http://stackoverflow.com/questions/16086162/handle-file-download-from-ajax-post/23797348#23797348
-      var filename = "dicom.txt";
-      var blob = new Blob([data], { type: "application/octet-stream" });
-      if (typeof window.navigator.msSaveBlob !== 'undefined') {
-         // IE workaround for "HTML7007: One or more blob URLs were revoked by closing the blob for which they were created. These URLs will no longer resolve as the data backing the URL has been freed."
-         window.navigator.msSaveBlob(blob, filename);
-      }
-      else {
-         var URL = window.URL || window.webkitURL;
-         var downloadUrl = URL.createObjectURL(blob);
-
-         if (filename) {
-            // use HTML5 a[download] attribute to specify filename
-            var a = document.createElement("a");
-            // safari doesn't support this yet
-            if (typeof a.download === 'undefined') {
-               window.location.assign(downloadUrl);
-            } else {
-               a.href = downloadUrl;
-               a.download = filename;
-               document.body.appendChild(a);
-               a.click();
-               //TODO: this should be added, need testing
-               //document.body.removeChild(a);
-            }
-         } else {
-            window.location.assign(downloadUrl);
-         }
-      }
    }
 
    private bin2String(array: any) {
@@ -159,39 +117,26 @@ class QueryView
          var index = this._model.SelectedSeriesIndex;
 
 
-         this._$seriesView.children(".thumbnail").removeClass("selected");
+         this._$seriesView.find(".thumbnail").removeClass("selected");
 
          if (index != -1) {
-            this._$seriesView.children(".thumbnail").eq(index).addClass("selected");
+            this._$seriesView.find(".thumbnail").eq(index).addClass("selected");
          }
       });
 
       this._model.SelectedInstanceChangedEvent.on(() => {
          var index = this._model.SelectedInstanceIndex;
-         this._$instanceView.children(".thumbnail").removeClass("selected");
+         this._$instanceView.find(".thumbnail").removeClass("selected");
          this.clearInstanceMetadata();
          if (index == -1) {
             $(".instance-details").hide();
          }
          else {
-            this._$instanceView.children(".thumbnail").eq(index).addClass("selected");
+            this._$instanceView.find(".thumbnail").eq(index).addClass("selected");
 
             $(".instance-details").show();
          }
       });
-
-      $("*[data-rs-instance]").on("click", (ev: JQueryEventObject) => {
-         var instance = this._model.selectedInstance();
-
-         if (instance) {
-            var args = new RsInstanceEventArgs(instance, $(ev.target).attr("data-pacs-args"));
-            this._onInstance.trigger(args);
-         }
-
-         ev.preventDefault();
-         return false;
-      });
-
 
       $("*[data-rs-frames]").on("click", (ev: JQueryEventObject) => {
          var instance = this._model.selectedInstance();
@@ -575,6 +520,14 @@ class QueryView
 
       $item.find("*[data-pacs-viewInstanceViewer]").on("click", (ev: JQueryEventObject) => {
          this._onViewInstance.trigger(new WadoUriEventArgs(instance, MimeTypes.DICOM, ""));
+         ev.preventDefault();
+         return false;
+      });
+
+      $item.find("*[data-rs-instance]").on("click", (ev: JQueryEventObject) => {
+         var args = new RsInstanceEventArgs(instance, $(ev.target).attr("data-pacs-args"));
+         this._onInstance.trigger(args);
+
          ev.preventDefault();
          return false;
       });

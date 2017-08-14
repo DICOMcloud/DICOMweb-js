@@ -67,17 +67,17 @@
       this._queryView.instanceRequest.on((args) => {
          this._retrieveService.getObjectInstance(args.InstanceParams,  args.MediaType,
             (data: any) => {
-               this._queryView.download(data);
+               appUtils.download(data, "wado-rs.txt");
             });
       });
 
       this._queryView.framesRequest.on((args) => {
          this._retrieveService.getFrameUncompressed(args.InstanceParams, args.FrameList,
             (data ) => {
-               this._queryView.download(data);
+               appUtils.download(data,"wado-rs.frm");
             },
             (ev)=>{
-               this._queryView.showError();
+               appUtils.showError();
             });
       });
 
@@ -91,10 +91,10 @@
          let imageParam: WadoImageParams = { frameNumber: args.Frame, transferSyntax:null };
          this._wadoUriService.getDicomInstance(instance, false, imageParam,
             (data) => {
-               this._queryView.download(data);
+               appUtils.download(data,"dicom.dcm");
             },
             (err) => {
-               this._queryView.showError();
+               appUtils.showError();
             }
          );
       });
@@ -102,10 +102,10 @@
       this._queryView.deleteStudyRequest.on((args) => {
          this._delowRsProxy.deleteStudy(args.StudyParams.StudyInstanceUid)
             .done ( (response) => {
-            this._queryView.showInfo("Success");
+               appUtils.showInfo("Success");
          })
             .fail( (error) => {
-            this._queryView.showError(error);
+               appUtils.showError(error);
          });
       });
 

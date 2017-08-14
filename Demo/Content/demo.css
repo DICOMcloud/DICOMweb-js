@@ -16,20 +16,6 @@
     white-space: normal;
 }
 
-/* Set width on the form input elements since they're 100% wide by default */
-input,
-select,
-textarea {
-    max-width: 280px;
-}
-
-/* Set width on the form input elements since they're 100% wide by default */
-input,
-select,
-textarea {
-    max-width: 280px;
-}
-
 .btn-file {
   position: relative;
   overflow: hidden;
@@ -80,22 +66,18 @@ border:0;
       padding-right: 5px;
 }
 
-.dicomWeb-js .thumbnail
-{
+.dicomWeb-js .thumbnail {
    cursor: pointer;
    font-size: 12px;
-   /*margin-bottom: 10px;*/
+   height: 150px;
+   padding: 10px;
+   margin-bottom: 0px;
    /*margin-right:5px;*/
 }
 
    .dicomWeb-js .thumbnail:hover, .dicomWeb-js .selected {
       background-color: #E1DBF3;
    }
-
-.dicomWeb-js .thumbnail {
-   height: 150px;
-   padding: 10px;
-}
 
 .dicomWeb-js .panel-footer {
    padding: 0;

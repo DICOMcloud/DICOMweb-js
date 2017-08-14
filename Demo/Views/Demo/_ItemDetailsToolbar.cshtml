@@ -9,11 +9,11 @@
         {
             @toolbarItem.Render()
         }
-        <div class="btn-group">
-            @foreach (var toolbarItem in toolbarGroup.OfType<ToolbarLink>())
-            {
-                @toolbarItem.Render()
-            }
-        </div>
+
+        @foreach (var toolbarItem in toolbarGroup.OfType<ToolbarLink>())
+        {
+            @toolbarItem.Render()
+        }
+
     </div>
 }

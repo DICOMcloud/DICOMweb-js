@@ -62,6 +62,49 @@ var StoreView = (function () {
     };
     return StoreView;
 }());
+var appUtils;
+(function (appUtils) {
+    function download(data, filename) {
+        //http://stackoverflow.com/questions/16086162/handle-file-download-from-ajax-post/23797348#23797348
+        var blob = new Blob([data], { type: "application/octet-stream" });
+        if (typeof window.navigator.msSaveBlob !== 'undefined') {
+            // IE workaround for "HTML7007: One or more blob URLs were revoked by closing the blob for which they were created. These URLs will no longer resolve as the data backing the URL has been freed."
+            window.navigator.msSaveBlob(blob, filename);
+        }
+        else {
+            var URL = window.URL || window.webkitURL;
+            var downloadUrl = URL.createObjectURL(blob);
+            if (filename) {
+                // use HTML5 a[download] attribute to specify filename
+                var a = document.createElement("a");
+                // safari doesn't support this yet
+                if (typeof a.download === 'undefined') {
+                    window.location.assign(downloadUrl);
+                }
+                else {
+                    a.href = downloadUrl;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    //TODO: this should be added, need testing
+                    document.body.removeChild(a);
+                }
+            }
+            else {
+                window.location.assign(downloadUrl);
+            }
+        }
+    }
+    appUtils.download = download;
+    function showError(message) {
+        alert("Error\n\n" + message);
+    }
+    appUtils.showError = showError;
+    function showInfo(message) {
+        alert(message);
+    }
+    appUtils.showInfo = showInfo;
+})(appUtils || (appUtils = {}));
 cornerstoneWADOImageLoader.configure({
     beforeSend: function (xhr) {
         // Add custom headers here (e.g. auth tokens)
@@ -81,6 +124,7 @@ var WadoViewer = (function () {
         $(window).resize(function () {
             cornerstone.resize(element, true);
         });
+        this.registerImageURLButtons();
     }
     WadoViewer.prototype.configureWebWorker = function () {
         var config = {
@@ -93,18 +137,6 @@ var WadoViewer = (function () {
         };
         cornerstoneWADOImageLoader.webWorkerManager.initialize(config);
     };
-    //configureWebWorker()
-    //{
-    //   var config = {
-    //      webWorkerPath: 'cornerstoneViewer/js/cornerstoneWADOImageLoaderWebWorker.min.js',
-    //      taskConfiguration: {
-    //         'decodeTask': {
-    //            codecsPath: 'cornerstoneWADOImageLoaderCodecs.min.js'
-    //         }
-    //      }
-    //   };
-    //   cornerstoneWADOImageLoader.webWorkerManager.initialize(config);
-    //}
     WadoViewer.prototype.loadInstance = function (instance, transferSyntax) {
         if (transferSyntax === void 0) { transferSyntax = null; }
         var dicomInstance = {
@@ -118,7 +150,9 @@ var WadoViewer = (function () {
         //the loader trims this prefix from the url
         this.loadAndViewImage("wadouri:" + instanceUrl);
         this._loadedInstance = instance;
+        this._transferSyntax = transferSyntax;
         cornerstone.resize(this._viewerElement, true);
+        $("#image-url-input").val(instanceUrl);
     };
     WadoViewer.prototype.loadedInstance = function () {
         return this._loadedInstance;
@@ -197,6 +231,54 @@ var WadoViewer = (function () {
         catch (err) {
             alert(err);
         }
+    };
+    WadoViewer.prototype.registerImageURLButtons = function () {
+        var _this = this;
+        var $copyBtn = $('#copy-image-url-button');
+        var $downloadBtn = $('#dlownload-image-url-button');
+        $downloadBtn.bind('click', function () {
+            if (_this._loadedInstance) {
+                var imageParam = { frameNumber: "", transferSyntax: _this._transferSyntax };
+                var instanceParam = {
+                    studyUID: _this._loadedInstance.StudyInstanceUid,
+                    seriesUID: _this._loadedInstance.SeriesInstanceUID,
+                    instanceUID: _this._loadedInstance.SopInstanceUid
+                };
+                _this._uriProxy.getDicomInstance(instanceParam, false, imageParam, function (data) {
+                    appUtils.download(data, "dicom.dcm");
+                }, function (err) {
+                    appUtils.showError(err.message);
+                });
+            }
+        });
+        $copyBtn.on('click', function () {
+            var inputSelector = $copyBtn.attr("data-clipboard-target");
+            var input = document.querySelector($copyBtn.attr("data-clipboard-target"));
+            if ($(inputSelector).val() == "") {
+                return;
+            }
+            input.select();
+            try {
+                var success = document.execCommand('copy');
+                if (success) {
+                    $copyBtn.trigger('copied', ['Copied!']);
+                }
+                else {
+                    $copyBtn.trigger('copied', ['Copy with Ctrl-c']);
+                }
+            }
+            catch (err) {
+                $copyBtn.trigger('copied', ['Copy with Ctrl-c']);
+            }
+        });
+        // Handler for updating the tooltip message.
+        $copyBtn.on('copied', function (event, message) {
+            $copyBtn.attr('title', message)
+                .tooltip('fixTitle')
+                .tooltip('show')
+                .attr('title', "Copy to Clipboard")
+                .tooltip('fixTitle');
+        });
     };
     return WadoViewer;
 }());
@@ -340,14 +422,14 @@ var QueryController = (function () {
         });
         this._queryView.instanceRequest.on(function (args) {
             _this._retrieveService.getObjectInstance(args.InstanceParams, args.MediaType, function (data) {
-                _this._queryView.download(data);
+                appUtils.download(data, "wado-rs.txt");
             });
         });
         this._queryView.framesRequest.on(function (args) {
             _this._retrieveService.getFrameUncompressed(args.InstanceParams, args.FrameList, function (data) {
-                _this._queryView.download(data);
+                appUtils.download(data, "wado-rs.frm");
             }, function (ev) {
-                _this._queryView.showError();
+                appUtils.showError();
             });
         });
         this._queryView.wadoUriRequest.on(function (args) {
@@ -358,18 +440,18 @@ var QueryController = (function () {
             };
             var imageParam = { frameNumber: args.Frame, transferSyntax: null };
             _this._wadoUriService.getDicomInstance(instance, false, imageParam, function (data) {
-                _this._queryView.download(data);
+                appUtils.download(data, "dicom.dcm");
             }, function (err) {
-                _this._queryView.showError();
+                appUtils.showError();
             });
         });
         this._queryView.deleteStudyRequest.on(function (args) {
             _this._delowRsProxy.deleteStudy(args.StudyParams.StudyInstanceUid)
                 .done(function (response) {
-                _this._queryView.showInfo("Success");
+                appUtils.showInfo("Success");
             })
                 .fail(function (error) {
-                _this._queryView.showError(error);
+                appUtils.showError(error);
             });
         });
         this._queryModel.StudyQueryChangedEvent = function () {
@@ -766,12 +848,6 @@ var QueryView = (function () {
         enumerable: true,
         configurable: true
     });
-    QueryView.prototype.showError = function (message) {
-        alert("Error\n\n" + message);
-    };
-    QueryView.prototype.showInfo = function (message) {
-        alert(message);
-    };
     QueryView.prototype.clearInstanceMetadata = function () {
         var editor;
         var editorSession;
@@ -785,36 +861,6 @@ var QueryView = (function () {
         }
         if (args.MediaType == MimeTypes.xmlDicom) {
             this.renderXml($(".pacs-metadata-viewer"), data);
-        }
-    };
-    QueryView.prototype.download = function (data) {
-        //http://stackoverflow.com/questions/16086162/handle-file-download-from-ajax-post/23797348#23797348
-        var filename = "dicom.txt";
-        var blob = new Blob([data], { type: "application/octet-stream" });
-        if (typeof window.navigator.msSaveBlob !== 'undefined') {
-            // IE workaround for "HTML7007: One or more blob URLs were revoked by closing the blob for which they were created. These URLs will no longer resolve as the data backing the URL has been freed."
-            window.navigator.msSaveBlob(blob, filename);
-        }
-        else {
-            var URL = window.URL || window.webkitURL;
-            var downloadUrl = URL.createObjectURL(blob);
-            if (filename) {
-                // use HTML5 a[download] attribute to specify filename
-                var a = document.createElement("a");
-                // safari doesn't support this yet
-                if (typeof a.download === 'undefined') {
-                    window.location.assign(downloadUrl);
-                }
-                else {
-                    a.href = downloadUrl;
-                    a.download = filename;
-                    document.body.appendChild(a);
-                    a.click();
-                }
-            }
-            else {
-                window.location.assign(downloadUrl);
-            }
         }
     };
     QueryView.prototype.bin2String = function (array) {
@@ -844,31 +890,22 @@ var QueryView = (function () {
         });
         this._model.SelectedSeriesChangedEvent.on(function () {
             var index = _this._model.SelectedSeriesIndex;
-            _this._$seriesView.children(".thumbnail").removeClass("selected");
+            _this._$seriesView.find(".thumbnail").removeClass("selected");
             if (index != -1) {
-                _this._$seriesView.children(".thumbnail").eq(index).addClass("selected");
+                _this._$seriesView.find(".thumbnail").eq(index).addClass("selected");
             }
         });
         this._model.SelectedInstanceChangedEvent.on(function () {
             var index = _this._model.SelectedInstanceIndex;
-            _this._$instanceView.children(".thumbnail").removeClass("selected");
+            _this._$instanceView.find(".thumbnail").removeClass("selected");
             _this.clearInstanceMetadata();
             if (index == -1) {
                 $(".instance-details").hide();
             }
             else {
-                _this._$instanceView.children(".thumbnail").eq(index).addClass("selected");
+                _this._$instanceView.find(".thumbnail").eq(index).addClass("selected");
                 $(".instance-details").show();
             }
-        });
-        $("*[data-rs-instance]").on("click", function (ev) {
-            var instance = _this._model.selectedInstance();
-            if (instance) {
-                var args = new RsInstanceEventArgs(instance, $(ev.target).attr("data-pacs-args"));
-                _this._onInstance.trigger(args);
-            }
-            ev.preventDefault();
-            return false;
         });
         $("*[data-rs-frames]").on("click", function (ev) {
             var instance = _this._model.selectedInstance();
@@ -1138,6 +1175,12 @@ var QueryView = (function () {
         });
         $item.find("*[data-pacs-viewInstanceViewer]").on("click", function (ev) {
             _this._onViewInstance.trigger(new WadoUriEventArgs(instance, MimeTypes.DICOM, ""));
+            ev.preventDefault();
+            return false;
+        });
+        $item.find("*[data-rs-instance]").on("click", function (ev) {
+            var args = new RsInstanceEventArgs(instance, $(ev.target).attr("data-pacs-args"));
+            _this._onInstance.trigger(args);
             ev.preventDefault();
             return false;
         });

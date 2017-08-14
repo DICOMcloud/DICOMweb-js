@@ -17,22 +17,19 @@
             </div>
             <div class="btn-group dropup">
                 <a href="#" type="button" role="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    QIDO-RS
+                    More...
                     <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
-                    <li><a href="#" data-pacs-viewQidoInstance="json">JSON</a></li>
-                    <li><a href="#" data-pacs-viewQidoInstance="xml">DIOCM XML</a></li>
-                </ul>
-            </div>
-            <div class="btn-group dropup">
-                <a href="#" type="button" role="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    RS-Meta
-                    <span class="caret"></span>
-                </a>
-                <ul class="dropdown-menu">
-                    <li><a href="#" data-pacs-instance-json>JSON</a></li>
-                    <li><a href="#" data-pacs-instance-xml>XML</a></li>
+                    <li><a href="#" data-rs-instance data-pacs-args="application/dicom">WADO-RS Instance<i class="pull-right glyphicon glyphicon-save"></i></a></li>
+                    <li><a href="#" data-rs-instance data-pacs-args="application/octet-stream">WADO-RS Bulk-data<i class=" pull-right glyphicon glyphicon-save"></i></a></li>                    
+                    <li role="separator" class="divider"></li>
+                    <li><a href="#" data-pacs-instance-json>WADO-RS-Meta (JSON)</a></li>
+                    <li><a href="#" data-pacs-instance-xml>WADO-RS-Meta (XML)</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a href="#" data-pacs-viewQidoInstance="json">QIDO-RS (JSON)</a></li>
+                    <li><a href="#" data-pacs-viewQidoInstance="xml">QIDO-RS (XML)</a></li>
+
                 </ul>
             </div>
         </div>

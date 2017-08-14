@@ -36,19 +36,19 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-     <TypeScriptTarget>ES5</TypeScriptTarget>
-     <TypeScriptJSXEmit>None</TypeScriptJSXEmit>
-     <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
-     <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
-     <TypeScriptModuleKind>System</TypeScriptModuleKind>
-     <TypeScriptRemoveComments>False</TypeScriptRemoveComments>
-     <TypeScriptOutFile>dicomwebjs-demo.js</TypeScriptOutFile>
-     <TypeScriptOutDir />
-     <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
-     <TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
-     <TypeScriptSourceMap>True</TypeScriptSourceMap>
-     <TypeScriptMapRoot />
-     <TypeScriptSourceRoot />
+    <TypeScriptTarget>ES5</TypeScriptTarget>
+    <TypeScriptJSXEmit>None</TypeScriptJSXEmit>
+    <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
+    <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
+    <TypeScriptModuleKind>System</TypeScriptModuleKind>
+    <TypeScriptRemoveComments>False</TypeScriptRemoveComments>
+    <TypeScriptOutFile>dicomwebjs-demo.js</TypeScriptOutFile>
+    <TypeScriptOutDir />
+    <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
+    <TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
+    <TypeScriptSourceMap>True</TypeScriptSourceMap>
+    <TypeScriptMapRoot />
+    <TypeScriptSourceRoot />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <DebugType>pdbonly</DebugType>
@@ -57,19 +57,19 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-     <TypeScriptTarget>ES5</TypeScriptTarget>
-     <TypeScriptJSXEmit>None</TypeScriptJSXEmit>
-     <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
-     <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
-     <TypeScriptModuleKind>System</TypeScriptModuleKind>
-     <TypeScriptRemoveComments>False</TypeScriptRemoveComments>
-     <TypeScriptOutFile>dicomwebjs-demo.js</TypeScriptOutFile>
-     <TypeScriptOutDir />
-     <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
-     <TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
-     <TypeScriptSourceMap>True</TypeScriptSourceMap>
-     <TypeScriptMapRoot />
-     <TypeScriptSourceRoot />
+    <TypeScriptTarget>ES5</TypeScriptTarget>
+    <TypeScriptJSXEmit>None</TypeScriptJSXEmit>
+    <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
+    <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
+    <TypeScriptModuleKind>System</TypeScriptModuleKind>
+    <TypeScriptRemoveComments>False</TypeScriptRemoveComments>
+    <TypeScriptOutFile>dicomwebjs-demo.js</TypeScriptOutFile>
+    <TypeScriptOutDir />
+    <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
+    <TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
+    <TypeScriptSourceMap>True</TypeScriptSourceMap>
+    <TypeScriptMapRoot />
+    <TypeScriptSourceRoot />
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -158,22 +158,35 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\bootstrap-theme.css" />
+    <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\cornerstone.min.css" />
+    <Content Include="Content\img\clippy.svg" />
+    <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Views\Demo\_StoreAnonymizer.cshtml" />
+    <Content Include="Views\Demo\_CopyImageUrl.cshtml" />
     <TypeScriptCompile Include="JSLib\Store\StoreView.ts" />
+    <TypeScriptCompile Include="JSLib\appUtils.ts" />
     <TypeScriptCompile Include="JSLib\wadoViewer.ts" />
     <Content Include="dicomwebjs-demo.js" />
     <Content Include="JSLib\uids.js" />
     <Content Include="favicon.ico" />
-    <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\demo.css" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="bower.json" />
     <Content Include="dicomwebjs-demo.js.map" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\bootstrap.min.css.map" />
+    <Content Include="Content\bootstrap.css.map" />
+    <Content Include="Content\bootstrap-theme.min.css.map" />
+    <Content Include="Content\bootstrap-theme.css.map" />
     <None Include="Properties\PublishProfiles\dicomwebdemo-dev - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\DICOMwebDemo.pubxml" />
     <Content Include="Scripts\DICOMwebJS.js" />
@@ -216,7 +229,7 @@
     <Content Include="Views\Shared\_Scripts.cshtml" />
     <Content Include="Views\Demo\_ItemDetailsToolbar.cshtml" />
     <Content Include="Views\Demo\_ImageViewer.cshtml" />
-    <Content Include="Views\Shared\_cornerstoneViewer.cshtml" />
+    <Content Include="Views\Demo\_cornerstoneViewer.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include=".bin\" />
@@ -224,9 +237,6 @@
     <Folder Include="js\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="fonts\glyphicons-halflings-regular.woff" />
-    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
-    <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="packages.config">
       <SubType>Designer</SubType>
     </Content>
