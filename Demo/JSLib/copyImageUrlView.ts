@@ -47,7 +47,7 @@
          var inputSelector = this._$copyBtn.attr("data-clipboard-target");
          var input = this._$parent[0].querySelector(inputSelector);
 
-         if ($(inputSelector).val() == "") { return; }
+         if ($(input).val() == "") { return; }
 
          input.select();
 
