@@ -167,6 +167,9 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Views\Demo\_StoreAnonymizer.cshtml" />
     <Content Include="Views\Demo\_CopyImageUrl.cshtml" />
+    <Content Include="Views\Demo\_StoreResult.cshtml" />
+    <TypeScriptCompile Include="JSLib\copyImageUrlView.ts" />
+    <TypeScriptCompile Include="JSLib\Store\StoreResultView.ts" />
     <TypeScriptCompile Include="JSLib\Store\StoreView.ts" />
     <TypeScriptCompile Include="JSLib\appUtils.ts" />
     <TypeScriptCompile Include="JSLib\wadoViewer.ts" />

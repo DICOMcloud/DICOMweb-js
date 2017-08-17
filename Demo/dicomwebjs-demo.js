@@ -1,67 +1,13 @@
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var StoreView = (function () {
-    function StoreView(parentElement) {
-        this._parent = parentElement;
-        this.registerEvents();
-    }
-    StoreView.prototype.registerEvents = function () {
-        var _this = this;
-        $(this._parent).find("#addFileButton").click(function (e) {
-            e.preventDefault();
-            var newName = jQuery('#displayName').val();
-            // Initiate method calls using jQuery promises.
-            // Get the local file as an array buffer.
-            var getFile = _this.getFileBuffer();
-            var url = DICOMwebJS.ServerConfiguration.getStowUrl();
-            var anonymizedElementsQuery = _this.getAnonymizedElementsQuery();
-            getFile.done(function (arrayBuffer) {
-                var proxy = new StowRsProxy(url);
-                var dlg = new ModalDialog("#modal-alert");
-                proxy.StoreInstance(arrayBuffer, null, anonymizedElementsQuery).done(function (xhr) {
-                    if (xhr.getResponseHeader("content-type").indexOf("application/json") >= 0) {
-                        dlg.showJson("JSON Store Response", JSON.parse(xhr.response));
-                    }
-                    else {
-                        dlg.showXml("XML Store Response", xhr.response);
-                    }
-                })
-                    .fail(function (xhr) {
-                    dlg.showText("Error Storing Dataset", xhr.response);
-                });
-            });
-        });
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
-    // Get the local file as an array buffer.
-    StoreView.prototype.getFileBuffer = function () {
-        var fileInput = $('#getFile');
-        var deferred = jQuery.Deferred();
-        var reader = new FileReader();
-        reader.onloadend = function (e) {
-            deferred.resolve(e.target.result);
-        };
-        reader.onerror = function (e) {
-            deferred.reject(e.target.error);
-        };
-        reader.readAsArrayBuffer(fileInput[0].files[0]);
-        return deferred.promise();
-    };
-    StoreView.prototype.getAnonymizedElementsQuery = function () {
-        var anonyElementsQuery = "";
-        $(this._parent).find(".app-anonymizer-field").each(function (index, element) {
-            var tagKey = $(element).attr("data-app-tag");
-            var tagValue = $(element).val();
-            if (tagValue !== "") {
-                anonyElementsQuery += tagKey + "=" + tagValue + "&";
-            }
-        });
-        return anonyElementsQuery;
-    };
-    return StoreView;
-}());
+})();
 var appUtils;
 (function (appUtils) {
     function download(data, filename) {
@@ -105,183 +51,6 @@ var appUtils;
     }
     appUtils.showInfo = showInfo;
 })(appUtils || (appUtils = {}));
-cornerstoneWADOImageLoader.configure({
-    beforeSend: function (xhr) {
-        // Add custom headers here (e.g. auth tokens)
-        //xhr.setRequestHeader('x-auth-token', 'my auth token');
-        if (DICOMwebJS.ServerConfiguration.IncludeAuthorizationHeader) {
-            xhr.setRequestHeader("Authorization", DICOMwebJS.ServerConfiguration.SecurityToken);
-        }
-    }
-});
-var WadoViewer = (function () {
-    function WadoViewer(element, uriProx) {
-        this._loaded = false;
-        this._viewerElement = element;
-        this._uriProxy = uriProx;
-        cornerstone.enable(element);
-        this.configureWebWorker();
-        $(window).resize(function () {
-            cornerstone.resize(element, true);
-        });
-        this.registerImageURLButtons();
-    }
-    WadoViewer.prototype.configureWebWorker = function () {
-        var config = {
-            webWorkerPath: 'bower_components/cornerstoneWADOImageLoader/dist/cornerstoneWADOImageLoaderWebWorker.min.js',
-            taskConfiguration: {
-                'decodeTask': {
-                    codecsPath: 'cornerstoneWADOImageLoaderCodecs.min.js'
-                }
-            }
-        };
-        cornerstoneWADOImageLoader.webWorkerManager.initialize(config);
-    };
-    WadoViewer.prototype.loadInstance = function (instance, transferSyntax) {
-        if (transferSyntax === void 0) { transferSyntax = null; }
-        var dicomInstance = {
-            studyUID: instance.StudyInstanceUid,
-            seriesUID: instance.SeriesInstanceUID,
-            instanceUID: instance.SopInstanceUid
-        };
-        var imageParam = { frameNumber: null, transferSyntax: transferSyntax };
-        var instanceUrl = this._uriProxy.createUrl(dicomInstance, MimeTypes.DICOM, imageParam);
-        //add this "wadouri:" so it loads the wado uri loader, 
-        //the loader trims this prefix from the url
-        this.loadAndViewImage("wadouri:" + instanceUrl);
-        this._loadedInstance = instance;
-        this._transferSyntax = transferSyntax;
-        cornerstone.resize(this._viewerElement, true);
-        $("#image-url-input").val(instanceUrl);
-    };
-    WadoViewer.prototype.loadedInstance = function () {
-        return this._loadedInstance;
-    };
-    WadoViewer.prototype.loadAndViewImage = function (imageId) {
-        var _this = this;
-        var element = this._viewerElement;
-        try {
-            var start = new Date().getTime();
-            cornerstone.loadAndCacheImage(imageId).then(function (image) {
-                console.log(image);
-                var viewport = cornerstone.getDefaultViewportForImage(element, image);
-                //$('#toggleModalityLUT').attr("checked",viewport.modalityLUT !== undefined);
-                //$('#toggleVOILUT').attr("checked",viewport.voiLUT !== undefined);
-                cornerstone.displayImage(element, image, viewport);
-                if (_this._loaded === false) {
-                    cornerstoneTools.mouseInput.enable(element);
-                    cornerstoneTools.mouseWheelInput.enable(element);
-                    cornerstoneTools.wwwc.activate(element, 1); // ww/wc is the default tool for left mouse button
-                    cornerstoneTools.pan.activate(element, 2); // pan is the default tool for middle mouse button
-                    cornerstoneTools.zoom.activate(element, 4); // zoom is the default tool for right mouse button
-                    cornerstoneTools.zoomWheel.activate(element); // zoom is the default tool for middle mouse wheel
-                    cornerstoneTools.wwwcTouchDrag.activate(element);
-                    _this._loaded = true;
-                }
-                function getTransferSyntax() {
-                    var value = image.data.string('x00020010');
-                    return value + ' [' + uids[value] + ']';
-                }
-                function getSopClass() {
-                    var value = image.data.string('x00080016');
-                    return value + ' [' + uids[value] + ']';
-                }
-                function getPixelRepresentation() {
-                    var value = image.data.uint16('x00280103');
-                    if (value === undefined) {
-                        return;
-                    }
-                    return value + (value === 0 ? ' (unsigned)' : ' (signed)');
-                }
-                function getPlanarConfiguration() {
-                    var value = image.data.uint16('x00280006');
-                    if (value === undefined) {
-                        return;
-                    }
-                    return value + (value === 0 ? ' (pixel)' : ' (plane)');
-                }
-                $('#transferSyntax').text(getTransferSyntax());
-                $('#sopClass').text(getSopClass());
-                $('#samplesPerPixel').text(image.data.uint16('x00280002'));
-                $('#photometricInterpretation').text(image.data.string('x00280004'));
-                $('#numberOfFrames').text(image.data.string('x00280008'));
-                $('#planarConfiguration').text(getPlanarConfiguration());
-                $('#rows').text(image.data.uint16('x00280010'));
-                $('#columns').text(image.data.uint16('x00280011'));
-                $('#pixelSpacing').text(image.data.string('x00280030'));
-                $('#bitsAllocated').text(image.data.uint16('x00280100'));
-                $('#bitsStored').text(image.data.uint16('x00280101'));
-                $('#highBit').text(image.data.uint16('x00280102'));
-                $('#pixelRepresentation').text(getPixelRepresentation());
-                $('#windowCenter').text(image.data.string('x00281050'));
-                $('#windowWidth').text(image.data.string('x00281051'));
-                $('#rescaleIntercept').text(image.data.string('x00281052'));
-                $('#rescaleSlope').text(image.data.string('x00281053'));
-                $('#basicOffsetTable').text(image.data.elements.x7fe00010.basicOffsetTable ? image.data.elements.x7fe00010.basicOffsetTable.length : '');
-                $('#fragments').text(image.data.elements.x7fe00010.fragments ? image.data.elements.x7fe00010.fragments.length : '');
-                $('#minStoredPixelValue').text(image.minPixelValue);
-                $('#maxStoredPixelValue').text(image.maxPixelValue);
-                var end = new Date().getTime();
-                var time = end - start;
-                $('#loadTime').text(time + "ms");
-            }, function (err) {
-                alert(err);
-            });
-        }
-        catch (err) {
-            alert(err);
-        }
-    };
-    WadoViewer.prototype.registerImageURLButtons = function () {
-        var _this = this;
-        var $copyBtn = $('#copy-image-url-button');
-        var $downloadBtn = $('#dlownload-image-url-button');
-        $downloadBtn.bind('click', function () {
-            if (_this._loadedInstance) {
-                var imageParam = { frameNumber: "", transferSyntax: _this._transferSyntax };
-                var instanceParam = {
-                    studyUID: _this._loadedInstance.StudyInstanceUid,
-                    seriesUID: _this._loadedInstance.SeriesInstanceUID,
-                    instanceUID: _this._loadedInstance.SopInstanceUid
-                };
-                _this._uriProxy.getDicomInstance(instanceParam, false, imageParam, function (data) {
-                    appUtils.download(data, "dicom.dcm");
-                }, function (err) {
-                    appUtils.showError(err.message);
-                });
-            }
-        });
-        $copyBtn.on('click', function () {
-            var inputSelector = $copyBtn.attr("data-clipboard-target");
-            var input = document.querySelector($copyBtn.attr("data-clipboard-target"));
-            if ($(inputSelector).val() == "") {
-                return;
-            }
-            input.select();
-            try {
-                var success = document.execCommand('copy');
-                if (success) {
-                    $copyBtn.trigger('copied', ['Copied!']);
-                }
-                else {
-                    $copyBtn.trigger('copied', ['Copy with Ctrl-c']);
-                }
-            }
-            catch (err) {
-                $copyBtn.trigger('copied', ['Copy with Ctrl-c']);
-            }
-        });
-        // Handler for updating the tooltip message.
-        $copyBtn.on('copied', function (event, message) {
-            $copyBtn.attr('title', message)
-                .tooltip('fixTitle')
-                .tooltip('show')
-                .attr('title', "Copy to Clipboard")
-                .tooltip('fixTitle');
-        });
-    };
-    return WadoViewer;
-}());
 window.onload = function () {
     new app();
 };
@@ -305,8 +74,7 @@ var app = (function () {
         var delowProxy = new DelowRsProxy();
         var queryView = new QueryView(document.getElementById("#content"), model, rsService);
         var queryController = new QueryController(queryView, model, qidoProxy, rsService, uriProxy, delowProxy);
-        var element = $('#dicomImage').get(0);
-        var viewer = new WadoViewer(element, uriProxy);
+        var viewer = new WadoViewer($(".dicomWeb-js-viewer"), uriProxy);
         this.initAuthentication();
         queryView.instanceViewRequest.on(function (args) {
             $('.nav-tabs a[href="#_ViewerView"]').tab('show');
@@ -319,11 +87,11 @@ var app = (function () {
             }
         });
         new StoreView($("#_StoreView")[0]);
-        window.onerror = function (message, url, lineNumber) {
-            //save error and send to server for example.
-            alert(message + "\n" + url + "\n" + lineNumber);
-            return true;
-        };
+        //window.onerror = function (message, url, lineNumber) {
+        //   //save error and send to server for example.
+        //   alert(message + "\n" + url + "\n" + lineNumber);
+        //   return true;
+        //};  
         $("#serverList").change(function () {
             DICOMwebJS.ServerConfiguration.BaseServerUrl = $("#serverList").val();
         });
@@ -439,9 +207,9 @@ var QueryController = (function () {
                 instanceUID: args.InstanceParams.SopInstanceUid
             };
             var imageParam = { frameNumber: args.Frame, transferSyntax: null };
-            _this._wadoUriService.getDicomInstance(instance, false, imageParam, function (data) {
+            _this._wadoUriService.getDicomInstance(instance, false, imageParam).done(function (data) {
                 appUtils.download(data, "dicom.dcm");
-            }, function (err) {
+            }).fail(function (err) {
                 appUtils.showError();
             });
         });
@@ -1310,6 +1078,125 @@ var RetrieveService = (function () {
     };
     return RetrieveService;
 }());
+var StoreResultView = (function () {
+    function StoreResultView($view, uriProxy) {
+        this.$view = $view;
+        this.$progress = this.$view.find(".progress").hide();
+        this.$alert = this.$view.find(".store-result-alert");
+        this.$resultBody = this.$view.find(".store-result-body").hide();
+        this.$resultTitle = this.$view.find(".store-result-title");
+        this.$resultContent = this.$view.find(".store-result-content");
+        this._copyImageView = new copyImageUrlView($view, uriProxy);
+    }
+    StoreResultView.prototype.showProgress = function () {
+        this.$resultBody.hide();
+        this.$progress.show();
+    };
+    StoreResultView.prototype.showSuccess = function (xmlData) {
+        this.$progress.hide();
+        this.$resultBody.show();
+        this.$alert.addClass("alert-success").removeClass("alert-danger");
+        this.$resultTitle.text("Success!");
+        if (xmlData) {
+            var $referencedInstance = $(xmlData).find("DicomAttribute[keyword='ReferencedInstanceSequence']");
+            var instanceUrl = $referencedInstance.find("DicomAttribute[keyword='RetrieveURI']").children("Value").text();
+            this._copyImageView.setUrl(instanceUrl);
+            CodeRenderer.renderXml(this.$resultContent[0], this.getString(xmlData));
+        }
+        else {
+            this._copyImageView.setUrl("");
+            CodeRenderer.renderXml(this.$resultContent[0], "");
+        }
+    };
+    StoreResultView.prototype.showError = function (xmlData, error) {
+        this.$progress.hide();
+        this.$resultBody.show();
+        this.$alert.addClass("alert-danger").removeClass("alert-success");
+        this.$resultTitle.text(error);
+        this._copyImageView.setUrl("");
+        if (xmlData) {
+            CodeRenderer.renderXml(this.$resultContent[0], this.getString(xmlData));
+        }
+        else {
+            this._copyImageView.setUrl("");
+            CodeRenderer.renderXml(this.$resultContent[0], "");
+        }
+    };
+    StoreResultView.prototype.hide = function () {
+        this.$view.hide();
+    };
+    StoreResultView.prototype.show = function () {
+        this.$view.show();
+    };
+    StoreResultView.prototype.getString = function (data) {
+        return data.xml ? data.xml : (new XMLSerializer()).serializeToString(data);
+    };
+    return StoreResultView;
+}());
+var StoreView = (function () {
+    function StoreView(parentElement) {
+        this._parent = parentElement;
+        this._resultView = new StoreResultView($(".store-result-view"), new WadoUriProxy(DICOMwebJS.ServerConfiguration.getWadoRsUrl()));
+        this._resultView.hide();
+        this.registerEvents();
+    }
+    StoreView.prototype.registerEvents = function () {
+        var _this = this;
+        $(this._parent).find("#addFileButton").click(function (e) {
+            e.preventDefault();
+            var newName = jQuery('#displayName').val();
+            // Initiate method calls using jQuery promises.
+            // Get the local file as an array buffer.
+            var getFile = _this.getFileBuffer();
+            var url = DICOMwebJS.ServerConfiguration.getStowUrl();
+            var anonymizedElementsQuery = _this.getAnonymizedElementsQuery();
+            getFile.done(function (arrayBuffer) {
+                var proxy = new StowRsProxy(url);
+                var dlg = new ModalDialog("#modal-alert");
+                _this._resultView.show();
+                _this._resultView.showProgress();
+                proxy.StoreInstance(arrayBuffer, null, anonymizedElementsQuery).done(function (xhr) {
+                    if (xhr.getResponseHeader("content-type").indexOf("application/json") >= 0) {
+                        dlg.showJson("JSON Store Response", JSON.parse(xhr.response));
+                    }
+                    else {
+                        _this._resultView.showSuccess(xhr.responseXML);
+                    }
+                })
+                    .fail(function (xhr) {
+                    //dlg.showText("Error Storing Dataset", xhr.response);
+                    _this._resultView.showError(xhr.responseXML, "Error Storing Dataset");
+                });
+            });
+        });
+    };
+    // Get the local file as an array buffer.
+    StoreView.prototype.getFileBuffer = function () {
+        var fileInput = $('#getFile');
+        var deferred = jQuery.Deferred();
+        var reader = new FileReader();
+        reader.onloadend = function (e) {
+            deferred.resolve(e.target.result);
+        };
+        reader.onerror = function (e) {
+            deferred.reject(e.target.error);
+        };
+        reader.readAsArrayBuffer(fileInput[0].files[0]);
+        return deferred.promise();
+    };
+    StoreView.prototype.getAnonymizedElementsQuery = function () {
+        var anonyElementsQuery = "";
+        $(this._parent).find(".app-anonymizer-field").each(function (index, element) {
+            var tagKey = $(element).attr("data-app-tag");
+            var tagValue = $(element).val();
+            if (tagValue !== "") {
+                anonyElementsQuery += tagKey + "=" + tagValue + "&";
+            }
+        });
+        return anonyElementsQuery;
+    };
+    return StoreView;
+}());
 var CodeRenderer = (function () {
     function CodeRenderer() {
     }
@@ -1329,7 +1216,7 @@ var CodeRenderer = (function () {
         editor = ace.edit(uiElement);
         editorSession = editor.getSession();
         editorSession.setValue(data);
-        editorSession.setMode("ace/mode/html");
+        editorSession.setMode("ace/mode/xml");
         editor.resize();
     };
     CodeRenderer.renderValue = function (uiElement, data) {
@@ -1403,6 +1290,10 @@ var ModalDialog = (function () {
         $dlg.find(".modal-title").text(title);
         $dlg.modal("show");
         this.onDialogClose($dlg);
+    };
+    ModalDialog.prototype.$getPreContentElement = function () {
+        var $dlg = $(this._$dialogName);
+        return $dlg.find(".model-body-preContent");
     };
     ModalDialog.prototype.onDialogClose = function ($dlg) {
         var _this = this;
@@ -1554,4 +1445,189 @@ var WadoUriEventArgs = (function (_super) {
     ;
     return WadoUriEventArgs;
 }(RsInstanceEventArgs));
+cornerstoneWADOImageLoader.configure({
+    beforeSend: function (xhr) {
+        // Add custom headers here (e.g. auth tokens)
+        //xhr.setRequestHeader('x-auth-token', 'my auth token');
+        if (DICOMwebJS.ServerConfiguration.IncludeAuthorizationHeader) {
+            xhr.setRequestHeader("Authorization", DICOMwebJS.ServerConfiguration.SecurityToken);
+        }
+    }
+});
+var WadoViewer = (function () {
+    function WadoViewer($parentView, uriProxy) {
+        this._loaded = false;
+        this._$parentView = $parentView;
+        this._viewerElement = $parentView.find('#dicomImage').get(0);
+        this._uriProxy = uriProxy;
+        this._copyImageView = new copyImageUrlView($parentView, uriProxy);
+        cornerstone.enable(this._viewerElement);
+        this.configureWebWorker();
+        $(window).resize(function () {
+            cornerstone.resize(this._viewerElement, true);
+        });
+    }
+    WadoViewer.prototype.configureWebWorker = function () {
+        var config = {
+            webWorkerPath: 'bower_components/cornerstoneWADOImageLoader/dist/cornerstoneWADOImageLoaderWebWorker.min.js',
+            taskConfiguration: {
+                'decodeTask': {
+                    codecsPath: 'cornerstoneWADOImageLoaderCodecs.min.js'
+                }
+            }
+        };
+        cornerstoneWADOImageLoader.webWorkerManager.initialize(config);
+    };
+    WadoViewer.prototype.loadInstance = function (instance, transferSyntax) {
+        if (transferSyntax === void 0) { transferSyntax = null; }
+        var dicomInstance = {
+            studyUID: instance.StudyInstanceUid,
+            seriesUID: instance.SeriesInstanceUID,
+            instanceUID: instance.SopInstanceUid
+        };
+        var imageParam = { frameNumber: null, transferSyntax: transferSyntax };
+        var instanceUrl = this._uriProxy.createUrl(dicomInstance, MimeTypes.DICOM, imageParam);
+        //add this "wadouri:" so it loads the wado uri loader, 
+        //the loader trims this prefix from the url
+        this.loadAndViewImage("wadouri:" + instanceUrl);
+        this._loadedInstance = instance;
+        this._transferSyntax = transferSyntax;
+        cornerstone.resize(this._viewerElement, true);
+        this._copyImageView.setUrl(instanceUrl);
+    };
+    WadoViewer.prototype.loadedInstance = function () {
+        return this._loadedInstance;
+    };
+    WadoViewer.prototype.loadAndViewImage = function (imageId) {
+        var _this = this;
+        var element = this._viewerElement;
+        try {
+            var start = new Date().getTime();
+            cornerstone.loadAndCacheImage(imageId).then(function (image) {
+                console.log(image);
+                var viewport = cornerstone.getDefaultViewportForImage(element, image);
+                //$('#toggleModalityLUT').attr("checked",viewport.modalityLUT !== undefined);
+                //$('#toggleVOILUT').attr("checked",viewport.voiLUT !== undefined);
+                cornerstone.displayImage(element, image, viewport);
+                if (_this._loaded === false) {
+                    cornerstoneTools.mouseInput.enable(element);
+                    cornerstoneTools.mouseWheelInput.enable(element);
+                    cornerstoneTools.wwwc.activate(element, 1); // ww/wc is the default tool for left mouse button
+                    cornerstoneTools.pan.activate(element, 2); // pan is the default tool for middle mouse button
+                    cornerstoneTools.zoom.activate(element, 4); // zoom is the default tool for right mouse button
+                    cornerstoneTools.zoomWheel.activate(element); // zoom is the default tool for middle mouse wheel
+                    cornerstoneTools.wwwcTouchDrag.activate(element);
+                    _this._loaded = true;
+                }
+                function getTransferSyntax() {
+                    var value = image.data.string('x00020010');
+                    return value + ' [' + uids[value] + ']';
+                }
+                function getSopClass() {
+                    var value = image.data.string('x00080016');
+                    return value + ' [' + uids[value] + ']';
+                }
+                function getPixelRepresentation() {
+                    var value = image.data.uint16('x00280103');
+                    if (value === undefined) {
+                        return;
+                    }
+                    return value + (value === 0 ? ' (unsigned)' : ' (signed)');
+                }
+                function getPlanarConfiguration() {
+                    var value = image.data.uint16('x00280006');
+                    if (value === undefined) {
+                        return;
+                    }
+                    return value + (value === 0 ? ' (pixel)' : ' (plane)');
+                }
+                $('#transferSyntax').text(getTransferSyntax());
+                $('#sopClass').text(getSopClass());
+                $('#samplesPerPixel').text(image.data.uint16('x00280002'));
+                $('#photometricInterpretation').text(image.data.string('x00280004'));
+                $('#numberOfFrames').text(image.data.string('x00280008'));
+                $('#planarConfiguration').text(getPlanarConfiguration());
+                $('#rows').text(image.data.uint16('x00280010'));
+                $('#columns').text(image.data.uint16('x00280011'));
+                $('#pixelSpacing').text(image.data.string('x00280030'));
+                $('#bitsAllocated').text(image.data.uint16('x00280100'));
+                $('#bitsStored').text(image.data.uint16('x00280101'));
+                $('#highBit').text(image.data.uint16('x00280102'));
+                $('#pixelRepresentation').text(getPixelRepresentation());
+                $('#windowCenter').text(image.data.string('x00281050'));
+                $('#windowWidth').text(image.data.string('x00281051'));
+                $('#rescaleIntercept').text(image.data.string('x00281052'));
+                $('#rescaleSlope').text(image.data.string('x00281053'));
+                $('#basicOffsetTable').text(image.data.elements.x7fe00010.basicOffsetTable ? image.data.elements.x7fe00010.basicOffsetTable.length : '');
+                $('#fragments').text(image.data.elements.x7fe00010.fragments ? image.data.elements.x7fe00010.fragments.length : '');
+                $('#minStoredPixelValue').text(image.minPixelValue);
+                $('#maxStoredPixelValue').text(image.maxPixelValue);
+                var end = new Date().getTime();
+                var time = end - start;
+                $('#loadTime').text(time + "ms");
+            }, function (err) {
+                alert(err);
+            });
+        }
+        catch (err) {
+            alert(err);
+        }
+    };
+    return WadoViewer;
+}());
+var copyImageUrlView = (function () {
+    function copyImageUrlView($parent, uriProxy) {
+        this._$parent = $parent;
+        this._uriProxy = uriProxy;
+        this._instanceUrl = null;
+        this._$copyBtn = $parent.find('#copy-image-url-button');
+        this._$downloadBtn = $parent.find('#dlownload-image-url-button');
+        this.registerImageURLButtons();
+    }
+    copyImageUrlView.prototype.setUrl = function (instanceUrl) {
+        this._instanceUrl = instanceUrl;
+        this._$parent.find("#image-url-input").val(instanceUrl);
+    };
+    copyImageUrlView.prototype.registerImageURLButtons = function () {
+        var _this = this;
+        this._$downloadBtn.bind('click', function () {
+            if (_this._instanceUrl) {
+                _this._uriProxy.getObjectInstance(_this._instanceUrl).done(function (data) {
+                    appUtils.download(data, "dicom.dcm");
+                }).fail(function (err) {
+                    appUtils.showError(err.message);
+                });
+            }
+        });
+        this._$copyBtn.on('click', function () {
+            var inputSelector = _this._$copyBtn.attr("data-clipboard-target");
+            var input = _this._$parent[0].querySelector(inputSelector);
+            if ($(inputSelector).val() == "") {
+                return;
+            }
+            input.select();
+            try {
+                var success = document.execCommand('copy');
+                if (success) {
+                    _this._$copyBtn.trigger('copied', ['Copied!']);
+                }
+                else {
+                    _this._$copyBtn.trigger('copied', ['Copy with Ctrl-c']);
+                }
+            }
+            catch (err) {
+                _this._$copyBtn.trigger('copied', ['Copy with Ctrl-c']);
+            }
+        });
+        // Handler for updating the tooltip message.
+        this._$copyBtn.on('copied', function (event, message) {
+            _this._$copyBtn.attr('title', message)
+                .tooltip('fixTitle')
+                .tooltip('show')
+                .attr('title', "Copy to Clipboard")
+                .tooltip('fixTitle');
+        });
+    };
+    return copyImageUrlView;
+}());
 //# sourceMappingURL=dicomwebjs-demo.js.map

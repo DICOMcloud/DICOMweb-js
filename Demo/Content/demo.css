@@ -93,5 +93,9 @@ border:0;
 }
 
 #dwv > .layerContainer {
-margin:auto;
-} 
+   margin:auto;
+}
+
+.store-result-content {
+   height:300px;
+}

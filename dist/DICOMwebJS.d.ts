@@ -119,13 +119,13 @@ declare class WadoRsProxy {
 declare class WadoUriProxy {
     private _xhr;
     private static _QueryParamsFormatted;
-    _baseUrl: string;
+    private _baseUrl;
     constructor(baseUrl?: string);
     BaseUrl: string;
-    getDicomInstance(instanceData: CommonDicomInstanceParams, anonymize: boolean, imageParams: WadoImageParams, successCallback: (buffer: any) => void, failureCallback: (error: ErrorEvent) => void): void;
-    getJpegImage(instanceData: CommonDicomInstanceParams, imageParams: WadoImageParams, successCallback: (buffer: any) => void, failureCallback: (error: ErrorEvent) => void): void;
-    getUncompressedImage(instanceData: CommonDicomInstanceParams, imageParams: WadoImageParams, successCallback: (buffer: ArrayBuffer) => void, failureCallback: (error: ErrorEvent) => void): void;
-    getObjectInstance(instanceData: CommonDicomInstanceParams, mimeType: string, imageParams: WadoImageParams, successCallback: (buffer: any) => void, failureCallback: (error: Event) => void): void;
+    getDicomInstance(instanceData: CommonDicomInstanceParams, anonymize: boolean, imageParams: WadoImageParams): JQueryPromise<any>;
+    getJpegImage(instanceData: CommonDicomInstanceParams, imageParams: WadoImageParams): JQueryPromise<any>;
+    getUncompressedImage(instanceData: CommonDicomInstanceParams, imageParams: WadoImageParams): JQueryPromise<any>;
+    getObjectInstance(url: string): JQueryPromise<any>;
     createUrl(instanceData: CommonDicomInstanceParams, mimeType: string, imageParams: WadoImageParams): string;
 }
 declare class CommonDicomInstanceParams {

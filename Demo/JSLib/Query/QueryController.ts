@@ -89,10 +89,10 @@
          };
 
          let imageParam: WadoImageParams = { frameNumber: args.Frame, transferSyntax:null };
-         this._wadoUriService.getDicomInstance(instance, false, imageParam,
+         this._wadoUriService.getDicomInstance(instance, false, imageParam).done(
             (data) => {
                appUtils.download(data,"dicom.dcm");
-            },
+            }).fail(
             (err) => {
                appUtils.showError();
             }

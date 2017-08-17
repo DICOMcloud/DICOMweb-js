@@ -1,0 +1,21 @@
+﻿<hr />
+
+<div class="progress">
+    <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+        <span class="sr-only">100% Complete</span>
+    </div>
+</div>
+<div class="store-result-body">
+    <div class="store-result-alert alert alert-success" role="alert" style="margin-bottom:5px">
+        <h3 class="panel-title">
+            <span class="store-result-title">Success!</span>
+            <a data-toggle="collapse" class="alert-link" href="#storeResultCollapse">show details <i class="glyphicon glyphicon-collapse-down"></i></a>
+        </h3>
+    </div>
+
+    @Html.Partial("_CopyImageUrl")
+
+    <div id="storeResultCollapse" class="collapse">
+        <div class="panel-body dicomWeb-js store-result-content"></div>
+    </div>
+</div>

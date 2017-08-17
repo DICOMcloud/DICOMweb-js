@@ -5,7 +5,7 @@
     <div class="panel-heading">2. Store</div>
     <div class="panel-body">
         <p>
-            Browse and upload your DICOM files to store them on the <a href="https://github.com/Zaid-Safadi/DICOMcloud">DICOMcloud WADO server</a> using the STOW–RS service then use the “Query & Retrieve” tab to search for your studies,
+            Browse and upload your DICOM files to store them on the <a href="https://github.com/DICOMcloud/DICOMcloud">DICOMcloud WADO server</a> using the STOW–RS service then use the “Query & Retrieve” tab to search for your studies,
             series and instances, and retrieve them on the client using the QIDO-RS, WADO-RS and WADI-URI services
         </p>
 
@@ -19,6 +19,9 @@
                 </span>
             </span>
             <input id="displayName" type="text" class="form-control" readonly>
+        </div>
+        <div class="store-result-view">
+            @Html.Partial("_StoreResult")
         </div>
     </div>
 </div>

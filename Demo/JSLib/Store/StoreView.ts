@@ -1,9 +1,15 @@
 ﻿class StoreView
 {
    private _parent: HTMLElement;
+   private _resultView: StoreResultView;
+
 
    constructor(parentElement: HTMLElement) {
       this._parent = parentElement;
+      this._resultView = new StoreResultView($(".store-result-view"),
+         new WadoUriProxy(DICOMwebJS.ServerConfiguration.getWadoRsUrl()));
+
+      this._resultView.hide();
 
       this.registerEvents();
    }
@@ -21,21 +27,24 @@
          var anonymizedElementsQuery = this.getAnonymizedElementsQuery();
 
 
-         getFile.done(function (arrayBuffer: ArrayBuffer) {
+         getFile.done((arrayBuffer: ArrayBuffer) => {
             var proxy = new StowRsProxy(url);
             var dlg = new ModalDialog("#modal-alert");
 
+            this._resultView.show();
+            this._resultView.showProgress();
             proxy.StoreInstance(arrayBuffer, null, anonymizedElementsQuery).done ( (xhr: XMLHttpRequest) => {
 
                if (xhr.getResponseHeader("content-type").indexOf("application/json") >= 0) {
                   dlg.showJson("JSON Store Response", JSON.parse(xhr.response));
                }
                else {
-                  dlg.showXml("XML Store Response", xhr.response);
+                  this._resultView.showSuccess(xhr.responseXML);
                }
             })
             .fail((xhr: XMLHttpRequest) => {
-               dlg.showText("Error Storing Dataset", xhr.response);
+               //dlg.showText("Error Storing Dataset", xhr.response);
+               this._resultView.showError(xhr.responseXML, "Error Storing Dataset");
             });
          });
       });

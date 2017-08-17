@@ -2,7 +2,7 @@
 {
     private _xhr: XMLHttpRequest;
     private static _QueryParamsFormatted: string = "?RequestType=wado&studyUID={0}&seriesUID={1}&objectUID={2}"
-    public _baseUrl: string = "";
+    private _baseUrl: string = "";
 
     constructor(baseUrl: string = null) {
        this._baseUrl = baseUrl;
@@ -23,54 +23,52 @@
     }
 
     //returns the DICOM DS 
-    getDicomInstance(instanceData: CommonDicomInstanceParams, anonymize: boolean, imageParams: WadoImageParams, successCallback: (buffer: any) => void, failureCallback: (error: ErrorEvent) => void) { 
-        this.getObjectInstance(instanceData, MimeTypes.DICOM, imageParams, successCallback, failureCallback)
+    getDicomInstance(instanceData: CommonDicomInstanceParams, anonymize: boolean, imageParams: WadoImageParams): JQueryPromise<any> { 
+       return this.getObjectInstance(this.createUrl(instanceData, MimeTypes.DICOM, imageParams));
     } 
 
      //returns a jpeg image reprenstation of the DICOM image
-    getJpegImage(instanceData: CommonDicomInstanceParams, imageParams: WadoImageParams, successCallback: (buffer: any) => void, failureCallback: (error: ErrorEvent) => void)
+    getJpegImage(instanceData: CommonDicomInstanceParams, imageParams: WadoImageParams): JQueryPromise<any>
     {
-       this.getObjectInstance(instanceData, MimeTypes.Jpeg, imageParams, successCallback, failureCallback)
+       return this.getObjectInstance(this.createUrl(instanceData, MimeTypes.Jpeg, imageParams));
     }
 
     //returns the image data after being decoded
-   getUncompressedImage(instanceData: CommonDicomInstanceParams, imageParams: WadoImageParams, successCallback: (buffer:ArrayBuffer)=>void, failureCallback:(error:ErrorEvent)=>void)
+    getUncompressedImage(instanceData: CommonDicomInstanceParams, imageParams: WadoImageParams): JQueryPromise<any>
    {
-        this.getObjectInstance ( instanceData, MimeTypes.UncompressedData, imageParams, successCallback, failureCallback)
+        return this.getObjectInstance (this.createUrl(instanceData, MimeTypes.UncompressedData, imageParams))
    }
 
    getObjectInstance
    (
-      instanceData: CommonDicomInstanceParams,
-      mimeType: string,
-      imageParams: WadoImageParams,
-      successCallback: (buffer: any) => void,
-      failureCallback: (error: Event) => void
-   )
+      url: string,
+   ) :JQueryPromise<any>
    {
-       var url = this.createUrl(instanceData, mimeType, imageParams);
-       var xhr = new XMLHttpRequest();
-       
-       xhr.overrideMimeType("application/octet-stream");
-       xhr.open("GET", url, true);
-       xhr.responseType = "arraybuffer";
-       xhr.onreadystatechange = function () {
-           if (xhr.readyState == 4 && xhr.status == 200) {
-               var buffer = new Uint8Array(xhr.response);
+      var deffered = $.Deferred();
+      var xhr = new XMLHttpRequest();
 
-               successCallback(buffer);
-           }
-       };
-       xhr.onerror = function (error) {
-           failureCallback(error);
-       };
+      xhr.overrideMimeType("application/octet-stream");
+      xhr.open("GET", url, true);
+      xhr.responseType = "arraybuffer";
+      xhr.onreadystatechange = function () {
+         if (xhr.readyState == 4 && xhr.status == 200) {
+            var buffer = new Uint8Array(xhr.response);
 
-       if (DICOMwebJS.ServerConfiguration.IncludeAuthorizationHeader) {
-          xhr.setRequestHeader("Authorization", DICOMwebJS.ServerConfiguration.SecurityToken);
-       }
+            deffered.resolve(buffer);
+         }
+      };
+      xhr.onerror = function (error) {
+         deffered.reject(error);
+      };
 
-       xhr.send(null);
-   } 
+      if (DICOMwebJS.ServerConfiguration.IncludeAuthorizationHeader) {
+         xhr.setRequestHeader("Authorization", DICOMwebJS.ServerConfiguration.SecurityToken);
+      }
+
+      xhr.send(null);
+
+      return deffered.promise();
+   }
 
    public createUrl(instanceData: CommonDicomInstanceParams,mimeType: string,imageParams: WadoImageParams): string {
       var url = this.BaseUrl;

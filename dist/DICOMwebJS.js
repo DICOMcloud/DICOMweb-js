@@ -677,17 +677,17 @@ var WadoUriProxy = (function () {
         enumerable: true,
         configurable: true
     });
-    WadoUriProxy.prototype.getDicomInstance = function (instanceData, anonymize, imageParams, successCallback, failureCallback) {
-        this.getObjectInstance(instanceData, MimeTypes.DICOM, imageParams, successCallback, failureCallback);
+    WadoUriProxy.prototype.getDicomInstance = function (instanceData, anonymize, imageParams) {
+        return this.getObjectInstance(this.createUrl(instanceData, MimeTypes.DICOM, imageParams));
     };
-    WadoUriProxy.prototype.getJpegImage = function (instanceData, imageParams, successCallback, failureCallback) {
-        this.getObjectInstance(instanceData, MimeTypes.Jpeg, imageParams, successCallback, failureCallback);
+    WadoUriProxy.prototype.getJpegImage = function (instanceData, imageParams) {
+        return this.getObjectInstance(this.createUrl(instanceData, MimeTypes.Jpeg, imageParams));
     };
-    WadoUriProxy.prototype.getUncompressedImage = function (instanceData, imageParams, successCallback, failureCallback) {
-        this.getObjectInstance(instanceData, MimeTypes.UncompressedData, imageParams, successCallback, failureCallback);
+    WadoUriProxy.prototype.getUncompressedImage = function (instanceData, imageParams) {
+        return this.getObjectInstance(this.createUrl(instanceData, MimeTypes.UncompressedData, imageParams));
     };
-    WadoUriProxy.prototype.getObjectInstance = function (instanceData, mimeType, imageParams, successCallback, failureCallback) {
-        var url = this.createUrl(instanceData, mimeType, imageParams);
+    WadoUriProxy.prototype.getObjectInstance = function (url) {
+        var deffered = $.Deferred();
         var xhr = new XMLHttpRequest();
         xhr.overrideMimeType("application/octet-stream");
         xhr.open("GET", url, true);
@@ -695,16 +695,17 @@ var WadoUriProxy = (function () {
         xhr.onreadystatechange = function () {
             if (xhr.readyState == 4 && xhr.status == 200) {
                 var buffer = new Uint8Array(xhr.response);
-                successCallback(buffer);
+                deffered.resolve(buffer);
             }
         };
         xhr.onerror = function (error) {
-            failureCallback(error);
+            deffered.reject(error);
         };
         if (DICOMwebJS.ServerConfiguration.IncludeAuthorizationHeader) {
             xhr.setRequestHeader("Authorization", DICOMwebJS.ServerConfiguration.SecurityToken);
         }
         xhr.send(null);
+        return deffered.promise();
     };
     WadoUriProxy.prototype.createUrl = function (instanceData, mimeType, imageParams) {
         var url = this.BaseUrl;

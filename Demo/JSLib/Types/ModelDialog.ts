@@ -59,6 +59,13 @@ class ModalDialog {
       this.onDialogClose($dlg);
    }
 
+   public $getPreContentElement()
+   {
+      var $dlg: any = $(this._$dialogName);
+
+      return $dlg.find(".model-body-preContent");
+   }
+
    private onDialogClose($dlg: any)
    {
       $dlg.on('hidden.bs.modal', () => {

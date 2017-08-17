@@ -16,22 +16,24 @@ class WadoViewer
    private _uriProxy: WadoUriProxy;
    private _loadedInstance: InstanceParams;
    private _transferSyntax: string;
+   private _$parentView: JQuery;
    private _viewerElement: HTMLElement;
+   private _copyImageView: copyImageUrlView;
 
-   constructor(element:HTMLElement, uriProx: WadoUriProxy)
+
+   constructor($parentView:JQuery, uriProxy: WadoUriProxy)
    {
-      this._viewerElement = element;
-      this._uriProxy = uriProx;
-
-      cornerstone.enable(element);
+      this._$parentView = $parentView;
+      this._viewerElement = $parentView.find('#dicomImage').get(0);
+      this._uriProxy = uriProxy;
+      this._copyImageView = new copyImageUrlView($parentView, uriProxy);
+      cornerstone.enable(this._viewerElement);
 
       this.configureWebWorker();
 
       $(window).resize(function () {
-         cornerstone.resize(element, true);
+         cornerstone.resize(this._viewerElement, true);
       })
-
-      this.registerImageURLButtons();
    }
 
 
@@ -69,7 +71,7 @@ class WadoViewer
 
       cornerstone.resize(this._viewerElement, true);
 
-      $("#image-url-input").val(instanceUrl);
+      this._copyImageView.setUrl(instanceUrl);
    }
 
    public loadedInstance(): InstanceParams
@@ -160,64 +162,4 @@ class WadoViewer
            alert(err);
        }
    }
-
-    private registerImageURLButtons()
-    {
-       var $copyBtn = $('#copy-image-url-button');
-       var $downloadBtn = $('#dlownload-image-url-button');
-
-
-       $downloadBtn.bind('click', () => {
-
-          if (this._loadedInstance) {
-             let imageParam: WadoImageParams = { frameNumber: "", transferSyntax: this._transferSyntax };
-             let instanceParam: CommonDicomInstanceParams = {
-                studyUID: this._loadedInstance.StudyInstanceUid,
-                seriesUID: this._loadedInstance.SeriesInstanceUID,
-                instanceUID: this._loadedInstance.SopInstanceUid
-             };
-
-             this._uriProxy.getDicomInstance(instanceParam, false, imageParam,
-                (data) => {
-                   appUtils.download(data, "dicom.dcm");
-                },
-                (err) => {
-                   appUtils.showError(err.message);
-                }
-             );
-          }
-       });
-
-
-       $copyBtn.on('click', function () {
-          var inputSelector = $copyBtn.attr("data-clipboard-target");
-          var input = document.querySelector($copyBtn.attr("data-clipboard-target"));
-
-          if ($(inputSelector).val() == "") { return; }
-
-          input.select();
-
-          try {
-             var success = document.execCommand('copy');
-             if (success) {
-                $copyBtn.trigger('copied', ['Copied!']);
-             } else {
-                $copyBtn.trigger('copied', ['Copy with Ctrl-c']);
-             }
-          } catch (err) {
-             $copyBtn.trigger('copied', ['Copy with Ctrl-c']);
-          }
-       });
-
-       // Handler for updating the tooltip message.
-       $copyBtn.on('copied', (event, message)=> {
-          $copyBtn.attr('title', message)
-             .tooltip('fixTitle')
-             .tooltip('show')
-             .attr('title', "Copy to Clipboard")
-             .tooltip('fixTitle');
-       });
-
-
-    }
 }
