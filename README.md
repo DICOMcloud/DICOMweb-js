@@ -4,8 +4,8 @@
 **The dicom-webJS project is now moved from the [original repository](https://github.com/Zaid-Safadi/dicom-webJS) and is now maintained here in its own GitHub Orgnization. The project is now licensed/owned by the DICOM-webjs project Contributors. .**
 ***
 
-# dicom-webJS
-dicom-webJS is an open source JS client for consuming DICOM Web Services - part 13 with a ASP.NET MVC demo that uses the [Cornerstone viewer](https://github.com/chafey/cornerstone) and [cornerstoneWADOImageLoader](https://github.com/chafey/cornerstoneWADOImageLoader)  
+# DICOMweb-JS
+DICOMweb-JS is an open source JS client for consuming DICOM Web Services - part 13 with a ASP.NET MVC demo that uses the [Cornerstone viewer](https://github.com/chafey/cornerstone) and [cornerstoneWADOImageLoader](https://github.com/chafey/cornerstoneWADOImageLoader)  
 
 The code provide a basic library for sending DICOM Web requests and parsing JSON and multipart reposnses in (DIOCM, XML, Buld data...) . 
 
