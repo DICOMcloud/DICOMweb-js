@@ -417,7 +417,7 @@ var DICOMwebJS;
 (function (DICOMwebJS) {
     var ServerConfiguration;
     (function (ServerConfiguration) {
-        ServerConfiguration.WadoUriPart = "api/wadouri";
+        ServerConfiguration.WadoUriPart = "wadouri";
         ServerConfiguration.WadoRsPart = "wadors";
         ServerConfiguration.StowPart = "stowrs";
         ServerConfiguration.QidoPart = "qidors";

@@ -1,7 +1,7 @@
 ﻿module DICOMwebJS {
     export module ServerConfiguration {
         export var BaseServerUrl: string;
-        export var WadoUriPart: string = "api/wadouri";
+        export var WadoUriPart: string = "wadouri";
         export var WadoRsPart : string = "wadors";
         export var StowPart: string = "stowrs";
         export var QidoPart: string = "qidors";
