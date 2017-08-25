@@ -29,9 +29,9 @@ declare class QidoRsProxy {
     _baseUrl: string;
     constructor(baseUrl?: string);
     BaseUrl: string;
-    findStudies(query: queryParams): void;
-    findSeries(query: queryParams): void;
-    findInstances(query: queryParams): void;
+    findStudies(query: queryParams): JQueryPromise<XMLHttpRequest>;
+    findSeries(query: queryParams): JQueryPromise<XMLHttpRequest>;
+    findInstances(query: queryParams): JQueryPromise<XMLHttpRequest>;
     private DoQuery(query, path);
 }
 declare class QueryOptions {

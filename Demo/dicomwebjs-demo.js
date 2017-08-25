@@ -466,23 +466,40 @@ var QueryController = (function () {
         this._queryView.qidoStudy.on(function (args) {
             var query = new StudyParams();
             query.StudyInstanceUid = args.StudyInstanceUID;
-            var request = _this.getQidoQueryParam(query, args.MediaType, "QIDO-RS Study");
-            _this._queryService.findInstances(request);
+            var request = _this.getQidoQueryParam(query, args.MediaType);
+            _this._queryService.findInstances(request)
+                .done(function (xhr, data) {
+                _this.showDialog("QIDO-RS Study", args.MediaType, data);
+            }).fail(function (xhr) {
+                new ModalDialog().showError("Error (HTTPS Status: " + xhr.status + ")", xhr.responseText);
+            });
         });
         this._queryView.qidoSeries.on(function (args) {
             var query = new SeriesParams();
-            var request = _this.getQidoQueryParam(query, args.MediaType, "QIDO-RS Series");
+            var request = _this.getQidoQueryParam(query, args.MediaType);
             query.StudyInstanceUid = args.StudyInstanceUID;
             query.SeriesInstanceUID = args.SeriesInstanceUID;
-            _this._queryService.findInstances(request);
+            _this._queryService.findInstances(request)
+                .done(function (xhr, data) {
+                _this.showDialog("QIDO-RS Series", args.MediaType, data);
+            })
+                .fail(function (xhr) {
+                new ModalDialog().showError("Error (HTTPS Status: " + xhr.status + ")", xhr.responseText);
+            });
         });
         this._queryView.qidoInstance.on(function (args) {
             var query = new InstanceParams();
-            var request = _this.getQidoQueryParam(query, args.MediaType, "QIDO-RS Instance");
+            var request = _this.getQidoQueryParam(query, args.MediaType);
             query.StudyInstanceUid = args.StudyInstanceUID;
             query.SeriesInstanceUID = args.SeriesInstanceUID;
             query.SopInstanceUid = args.SopInstanceUID;
-            _this._queryService.findInstances(request);
+            _this._queryService.findInstances(request)
+                .done(function (xhr, data) {
+                _this.showDialog("QIDO-RS Instance", args.MediaType, data);
+            })
+                .fail(function (xhr) {
+                new ModalDialog().showError("Error (HTTPS Status: " + xhr.status + ")", xhr.responseText);
+            });
         });
         this._queryView.instanceMetaDataRequest.on(function (args) {
             _this._retrieveService.getObjectInstanceMetadata(args.InstanceParams, function (data) {
@@ -498,7 +515,7 @@ var QueryController = (function () {
             _this._retrieveService.getFrameUncompressed(args.InstanceParams, args.FrameList, function (data) {
                 appUtils.download(data, "wado-rs.frm");
             }, function (ev) {
-                appUtils.showError();
+                new ModalDialog().showError("Error", "");
             });
         });
         this._queryView.wadoUriRequest.on(function (args) {
@@ -511,7 +528,7 @@ var QueryController = (function () {
             _this._wadoUriService.getDicomInstance(instance, false, imageParam).done(function (data) {
                 appUtils.download(data, "dicom.dcm");
             }).fail(function (err) {
-                appUtils.showError();
+                new ModalDialog().showError("Error", err);
             });
         });
         this._queryView.deleteStudyRequest.on(function (args) {
@@ -520,7 +537,7 @@ var QueryController = (function () {
                 appUtils.showInfo("Success");
             })
                 .fail(function (error) {
-                appUtils.showError(error);
+                new ModalDialog().showError("Error", error);
             });
         });
         this._queryModel.StudyQueryChangedEvent = function () {
@@ -543,12 +560,15 @@ var QueryController = (function () {
             returnValues: [],
             options: null,
             acceptType: MimeTypes.Json,
-            success: function (data) {
-                _this.onQueryStudies(data);
-            },
-            error: this.onQueryError
+            success: null,
+            error: null
         };
-        this._queryService.findStudies(params);
+        this._queryService.findStudies(params)
+            .done(function (xhr, data) {
+            _this.onQueryStudies(data);
+        }).fail(function (xhr) {
+            _this.onQueryError(xhr.status, xhr.responseText);
+        });
     };
     QueryController.prototype.querySeries = function (study) {
         var _this = this;
@@ -560,12 +580,15 @@ var QueryController = (function () {
             returnValues: [],
             options: null,
             acceptType: MimeTypes.Json,
-            success: function (data) {
-                _this.onQuerySeries(data);
-            },
-            error: this.onQueryError
+            success: null,
+            error: null
         };
-        this._queryService.findSeries(params);
+        this._queryService.findSeries(params)
+            .done(function (xhr, data) {
+            _this.onQuerySeries(data);
+        }).fail(function (xhr) {
+            _this.onQueryError(xhr.statusText, xhr.responseText);
+        });
     };
     QueryController.prototype.queryInstances = function (series) {
         var _this = this;
@@ -577,12 +600,15 @@ var QueryController = (function () {
             returnValues: [],
             options: null,
             acceptType: MimeTypes.Json,
-            success: function (data) {
-                _this.onQueryInstances(data);
-            },
-            error: this.onQueryError
+            success: null,
+            error: null
         };
-        this._queryService.findInstances(params);
+        this._queryService.findInstances(params)
+            .done(function (xhr, data) {
+            _this.onQueryInstances(data);
+        }).fail(function (xhr) {
+            _this.onQueryError(xhr.statusText, xhr.responseText);
+        });
     };
     QueryController.prototype.onQueryStudies = function (data) {
         //TODO: use a model service for getting 
@@ -616,19 +642,14 @@ var QueryController = (function () {
         }
         this._queryModel.Instances = instances;
     };
-    QueryController.prototype.getQidoQueryParam = function (query, mediaType, operation) {
-        var _this = this;
+    QueryController.prototype.getQidoQueryParam = function (query, mediaType) {
         var request = {
             query: query,
             returnValues: [],
             options: null,
             acceptType: mediaType,
-            success: function (data) {
-                _this.showDialog(operation, mediaType, data);
-            },
-            error: function () {
-                alert(operation + " Failed");
-            }
+            success: null,
+            error: null
         };
         request.returnValues.push(new DicomTag(DicomTags.StudyInstanceUid));
         request.returnValues.push(new DicomTag(DicomTags.SeriesInstanceUid));
@@ -645,8 +666,8 @@ var QueryController = (function () {
             dlg.showXml(title, data);
         }
     };
-    QueryController.prototype.onQueryError = function (textStatus, errorThrown) {
-        new ModalDialog().showError("Error", textStatus + " : " + errorThrown);
+    QueryController.prototype.onQueryError = function (status, errorThrown) {
+        new ModalDialog().showError("Error (HTTP Status" + status + ")", errorThrown);
     };
     return QueryController;
 }());
@@ -843,7 +864,6 @@ var QueryModel = (function () {
     };
     return QueryModel;
 }());
-/// <reference path="../../scripts/typings/libs/ace.d.ts" />
 /// <reference path="../../scripts/typings/libs/html.ts" />
 var QueryView = (function () {
     function QueryView(parentElement, model, retrieveService) {

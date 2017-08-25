@@ -137,15 +137,16 @@ var QidoRsProxy = (function () {
         configurable: true
     });
     QidoRsProxy.prototype.findStudies = function (query) {
-        this.DoQuery(query, "/studies");
+        return this.DoQuery(query, "/studies");
     };
     QidoRsProxy.prototype.findSeries = function (query) {
-        this.DoQuery(query, "/series");
+        return this.DoQuery(query, "/series");
     };
     QidoRsProxy.prototype.findInstances = function (query) {
-        this.DoQuery(query, "/instances");
+        return this.DoQuery(query, "/instances");
     };
     QidoRsProxy.prototype.DoQuery = function (query, path) {
+        var $deffered = $.Deferred();
         var xhr = new XMLHttpRequest();
         var elements = query.query.DicomSourceProvider.getElements();
         var length = elements.length;
@@ -180,25 +181,30 @@ var QidoRsProxy = (function () {
         xhr.setRequestHeader("accept", acceptHeader);
         xhr.timeout = 20000;
         xhr.onreadystatechange = function () {
-            if (xhr.readyState == 4 && xhr.status == 200) {
-                if (query.success) {
+            if (xhr.readyState == 4) {
+                if (xhr.status == 200) {
                     var data = xhr.response;
                     if (acceptHeader === MimeTypes.Json) {
                         data = JSON.parse(data);
                     }
-                    query.success(data);
+                    if (query.success) {
+                        query.success(data);
+                    }
+                    $deffered.resolve(xhr, data);
                 }
-            }
-        };
-        xhr.onerror = function (error) {
-            if (query.error) {
-                query.error(xhr.statusText, error);
+                else {
+                    if (query.error) {
+                        query.error(xhr.statusText, xhr.responseText);
+                    }
+                    $deffered.reject(xhr);
+                }
             }
         };
         if (DICOMwebJS.ServerConfiguration.IncludeAuthorizationHeader) {
             xhr.setRequestHeader("Authorization", DICOMwebJS.ServerConfiguration.SecurityToken);
         }
         xhr.send(null);
+        return $deffered.promise();
     };
     return QidoRsProxy;
 }());

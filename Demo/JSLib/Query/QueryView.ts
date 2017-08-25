@@ -1,5 +1,4 @@
-﻿/// <reference path="../../scripts/typings/libs/ace.d.ts" />
-/// <reference path="../../scripts/typings/libs/html.ts" />
+﻿/// <reference path="../../scripts/typings/libs/html.ts" />
 
 class QueryView
 {

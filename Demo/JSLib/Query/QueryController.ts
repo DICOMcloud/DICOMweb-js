@@ -32,30 +32,48 @@
 
          query.StudyInstanceUid = args.StudyInstanceUID;
 
-         var request = this.getQidoQueryParam(query, args.MediaType, "QIDO-RS Study");
+         var request = this.getQidoQueryParam(query, args.MediaType);
 
-         this._queryService.findInstances(request);
+         this._queryService.findInstances(request)
+            .done((xhr: XMLHttpRequest, data: any) => {
+               this.showDialog("QIDO-RS Study", args.MediaType, data);
+
+            }).fail((xhr: XMLHttpRequest) => {
+               new ModalDialog().showError("Error (HTTPS Status: " + xhr.status + ")" , xhr.responseText);
+            });
       });
 
       this._queryView.qidoSeries.on((args: QidoRsEventArgs) => {
          var query = new SeriesParams();
-         var request = this.getQidoQueryParam(query, args.MediaType, "QIDO-RS Series");
+         var request = this.getQidoQueryParam(query, args.MediaType);
 
          query.StudyInstanceUid  = args.StudyInstanceUID;
          query.SeriesInstanceUID = args.SeriesInstanceUID;
 
-         this._queryService.findInstances(request);
+         this._queryService.findInstances(request)
+            .done((xhr: XMLHttpRequest, data: any) => {
+               this.showDialog("QIDO-RS Series", args.MediaType, data);
+            })
+            .fail((xhr: XMLHttpRequest) => {
+               new ModalDialog().showError("Error (HTTPS Status: " + xhr.status + ")", xhr.responseText);
+            });
       });
 
       this._queryView.qidoInstance.on((args: QidoRsEventArgs) => {
          var query = new InstanceParams();
-         var request = this.getQidoQueryParam(query, args.MediaType, "QIDO-RS Instance");
+         var request = this.getQidoQueryParam(query, args.MediaType);
 
          query.StudyInstanceUid  = args.StudyInstanceUID;
          query.SeriesInstanceUID = args.SeriesInstanceUID;
          query.SopInstanceUid    = args.SopInstanceUID;
 
-         this._queryService.findInstances(request);
+         this._queryService.findInstances(request)
+            .done((xhr: XMLHttpRequest, data: any) => {
+               this.showDialog("QIDO-RS Instance", args.MediaType, data);
+            })
+            .fail((xhr: XMLHttpRequest) => {
+               new ModalDialog().showError("Error (HTTPS Status: " + xhr.status + ")", xhr.responseText);
+            });
       });
 
       this._queryView.instanceMetaDataRequest.on((args) => {
@@ -78,7 +96,7 @@
                appUtils.download(data,"wado-rs.frm");
             },
             (ev)=>{
-               appUtils.showError();
+               new ModalDialog().showError("Error", "");
             });
       });
 
@@ -95,7 +113,7 @@
                appUtils.download(data,"dicom.dcm");
             }).fail(
             (err) => {
-               appUtils.showError();
+               new ModalDialog().showError("Error", err);
             }
          );
       });
@@ -106,7 +124,7 @@
                appUtils.showInfo("Success");
          })
             .fail( (error) => {
-               appUtils.showError(error);
+               new ModalDialog().showError("Error", error);
          });
       });
 
@@ -133,12 +151,17 @@
          returnValues: [],
          options: null,
          acceptType: MimeTypes.Json,
-         success: (data: any) => {
-            this.onQueryStudies(data);
-         },
-         error: this.onQueryError
+         success: null,
+         error: null 
       };
-      this._queryService.findStudies(params);
+
+      this._queryService.findStudies(params)
+         .done((xhr: XMLHttpRequest, data: any) => {
+            this.onQueryStudies(data);
+
+         }).fail((xhr: XMLHttpRequest) => {
+            this.onQueryError(xhr.status, xhr.responseText);
+         });
    }
 
    querySeries(study: DicomModuleBase):any {
@@ -152,12 +175,17 @@
          returnValues: [],
          options: null,
          acceptType: MimeTypes.Json,
-         success: (data: any) => {
-            this.onQuerySeries(data);
-         },
-         error: this.onQueryError
+         success: null,
+         error: null
       };
-      this._queryService.findSeries(params);
+
+       this._queryService.findSeries(params)
+         .done((xhr: XMLHttpRequest, data: any) => {
+            this.onQuerySeries(data);
+
+         }).fail((xhr: XMLHttpRequest) => {
+            this.onQueryError(xhr.statusText, xhr.responseText);
+         });
    }
    
    queryInstances(series: DicomModuleBase) {
@@ -170,12 +198,16 @@
          returnValues: [],
          options: null,
          acceptType: MimeTypes.Json,
-         success: (data: any) => {
-            this.onQueryInstances(data);
-         },
-         error: this.onQueryError
+         success: null,
+         error: null
       };
-      this._queryService.findInstances(params);
+       this._queryService.findInstances(params)
+         .done((xhr: XMLHttpRequest, data: any) => {
+            this.onQueryInstances(data);
+
+       }).fail((xhr: XMLHttpRequest) => {
+          this.onQueryError(xhr.statusText, xhr.responseText);
+       });
    }
 
    onQueryStudies(data: any): any   {
@@ -220,19 +252,15 @@
       this._queryModel.Instances = instances;      
    }
 
-   private getQidoQueryParam(query:DicomModuleBase, mediaType: string, operation:string) : queryParams
+   private getQidoQueryParam(query:DicomModuleBase, mediaType:string) : queryParams
    {
       var request: queryParams = {
          query: query,
          returnValues: [],
          options: null,
          acceptType: mediaType,
-         success : (data: any) => {
-            this.showDialog(operation, mediaType, data);
-         },
-         error : () => {
-            alert(operation + " Failed");
-         }
+         success : null,
+         error : null
       };
 
       request.returnValues.push(new DicomTag(DicomTags.StudyInstanceUid));
@@ -256,8 +284,8 @@
       }
    }
 
-   onQueryError(textStatus: string, errorThrown: string)
+   onQueryError(status: any, errorThrown: string)
    {
-      new ModalDialog().showError("Error", textStatus + " : " + errorThrown);
+      new ModalDialog().showError("Error (HTTP Status" + status + ")", errorThrown);
    }
 } 

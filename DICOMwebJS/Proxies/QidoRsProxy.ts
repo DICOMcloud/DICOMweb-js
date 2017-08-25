@@ -20,23 +20,20 @@ class QidoRsProxy
       this._baseUrl = value;
    }
 
-    //findPatients(query: PatientParams, options: QueryOptions) {
-    //    //there is no qido patient 
-    //}
-
-    findStudies(query: queryParams) {
-       this.DoQuery(query, "/studies");
+   findStudies(query: queryParams): JQueryPromise<XMLHttpRequest> {
+      return this.DoQuery(query, "/studies");
     }
 
-    findSeries(query: queryParams) {
-       this.DoQuery(query, "/series");
+   findSeries(query: queryParams): JQueryPromise<XMLHttpRequest> {
+      return this.DoQuery(query, "/series");
     }
 
-    findInstances(query: queryParams) {
-       this.DoQuery(query, "/instances");
+   findInstances(query: queryParams): JQueryPromise<XMLHttpRequest> {
+       return this.DoQuery(query, "/instances");
     }
 
-    private DoQuery(query: queryParams, path: string) {
+   private DoQuery(query: queryParams, path: string): JQueryPromise<XMLHttpRequest> {
+      var $deffered = $.Deferred();
        var xhr = new XMLHttpRequest();
        var elements = query.query.DicomSourceProvider.getElements();
        var length = elements.length;
@@ -87,23 +84,29 @@ class QidoRsProxy
        xhr.timeout = 20000;
 
        xhr.onreadystatechange = function () {
-          if (xhr.readyState == 4 && xhr.status == 200) {
-             if (query.success) {
+          if (xhr.readyState == 4) {
+             if (xhr.status == 200) {
                 var data = xhr.response;
-
-                if (acceptHeader === MimeTypes.Json)
-                {
+                if (acceptHeader === MimeTypes.Json) {
                    data = JSON.parse(data);
                 }
-                query.success(data);
+
+                if (query.success) {
+                   query.success(data);
+                }
+
+                $deffered.resolve(xhr, data);
+             }
+             else
+             {
+                if (query.error) {
+                   query.error(xhr.statusText, xhr.responseText);
+                }
+
+                $deffered.reject(xhr);
              }
           }
-       };
-       
-       xhr.onerror = function (error){
-          if (query.error) {
-             query.error(xhr.statusText, error);
-          }
+
        };
 
        if (DICOMwebJS.ServerConfiguration.IncludeAuthorizationHeader) {
@@ -111,6 +114,8 @@ class QidoRsProxy
        }
 
        xhr.send(null);
+
+       return $deffered.promise();
     }
 }
 
