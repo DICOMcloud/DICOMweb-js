@@ -38,14 +38,14 @@ var QueryController = (function () {
         });
         this._queryView.instanceRequest.on(function (args) {
             _this._retrieveService.getObjectInstance(args.InstanceParams, args.MediaType, function (data) {
-                _this._queryView.download(data);
+                appUtils.download(data, "wado-rs.txt");
             });
         });
         this._queryView.framesRequest.on(function (args) {
             _this._retrieveService.getFrameUncompressed(args.InstanceParams, args.FrameList, function (data) {
-                _this._queryView.download(data);
+                appUtils.download(data, "wado-rs.frm");
             }, function (ev) {
-                _this._queryView.showError();
+                appUtils.showError();
             });
         });
         this._queryView.wadoUriRequest.on(function (args) {
@@ -55,19 +55,19 @@ var QueryController = (function () {
                 instanceUID: args.InstanceParams.SopInstanceUid
             };
             var imageParam = { frameNumber: args.Frame, transferSyntax: null };
-            _this._wadoUriService.getDicomInstance(instance, false, imageParam, function (data) {
-                _this._queryView.download(data);
-            }, function (err) {
-                _this._queryView.showError();
+            _this._wadoUriService.getDicomInstance(instance, false, imageParam).done(function (data) {
+                appUtils.download(data, "dicom.dcm");
+            }).fail(function (err) {
+                appUtils.showError();
             });
         });
         this._queryView.deleteStudyRequest.on(function (args) {
             _this._delowRsProxy.deleteStudy(args.StudyParams.StudyInstanceUid)
                 .done(function (response) {
-                _this._queryView.showInfo("Success");
+                appUtils.showInfo("Success");
             })
                 .fail(function (error) {
-                _this._queryView.showError(error);
+                appUtils.showError(error);
             });
         });
         this._queryModel.StudyQueryChangedEvent = function () {

@@ -29,11 +29,12 @@
    {
       this._queryView.qidoStudy.on((args:QidoRsEventArgs) => {
          var query = new StudyParams();
-         var request = this.getQidoQueryParam(query, args.MediaType, "QIDO-RS Study");
 
          query.StudyInstanceUid = args.StudyInstanceUID;
 
-         this._queryService.findStudies(request);
+         var request = this.getQidoQueryParam(query, args.MediaType, "QIDO-RS Study");
+
+         this._queryService.findInstances(request);
       });
 
       this._queryView.qidoSeries.on((args: QidoRsEventArgs) => {
@@ -43,7 +44,7 @@
          query.StudyInstanceUid  = args.StudyInstanceUID;
          query.SeriesInstanceUID = args.SeriesInstanceUID;
 
-         this._queryService.findSeries(request);
+         this._queryService.findInstances(request);
       });
 
       this._queryView.qidoInstance.on((args: QidoRsEventArgs) => {
@@ -234,6 +235,10 @@
          }
       };
 
+      request.returnValues.push(new DicomTag(DicomTags.StudyInstanceUid));
+      request.returnValues.push(new DicomTag(DicomTags.SeriesInstanceUid));
+      request.returnValues.push(new DicomTag(DicomTags.SopInstanceUid));
+
       return request;
    }
 
@@ -253,6 +258,6 @@
 
    onQueryError(textStatus: string, errorThrown: string)
    {
-      alert(textStatus + " : " + errorThrown);
+      new ModalDialog().showError("Error", textStatus + " : " + errorThrown);
    }
 } 
