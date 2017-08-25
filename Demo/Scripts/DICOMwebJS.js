@@ -37,7 +37,7 @@ var DelowRsProxy = (function () {
         $.ajax(settings).then(function (data) {
             return deffered.resolve(data);
         }, function (jqxhr, textStatus, error) {
-            return deffered.reject(Error(error));
+            return deffered.reject(error);
         });
         return deffered.promise();
     };

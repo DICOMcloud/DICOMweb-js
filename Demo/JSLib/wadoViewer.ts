@@ -155,11 +155,11 @@ class WadoViewer
                $('#loadTime').text(time + "ms");
             
            }, function(err) {
-               alert(err);
+              new ModalDialog().showError("Error", err);
            });
        }
        catch(err) {
-           alert(err);
+          new ModalDialog().showError("Error", err);
        }
    }
 }

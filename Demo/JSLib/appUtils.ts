@@ -32,13 +32,4 @@
       }
    }
 
-   export function showError(message ?:string)
-   {
-
-      alert("Error\n\n" + message);
-   }
-
-   export function showInfo(message:string) {
-      alert(message);
-   }
 }

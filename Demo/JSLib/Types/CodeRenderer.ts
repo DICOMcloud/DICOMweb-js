@@ -11,7 +11,7 @@
    }
 
    public renderValue(uiElement: HTMLElement, data: any) :any {
-      return this.renderEditor(uiElement, data);
+      return this.renderEditor(uiElement, data, null, true);
    }
 
    public clean(editor: any)
@@ -30,14 +30,20 @@
       }
    }
 
-   private renderEditor(uiElement: HTMLElement, data: any, editorMode?:string) {
+   private renderEditor(uiElement: HTMLElement, data: any, editorMode?:string, autoWrap:Boolean = false) {
       var editor = ace.edit(uiElement);
       var editorSession = editorSession = editor.getSession();
-      
-      editorSession.setValue(data);
 
-      if (typeof editorMode !== "undefined") {
+      if (data) {
+         editorSession.setValue(data);
+      }
+
+      if (editorMode) {
          editorSession.setMode(editorMode);
+      }
+
+      if (autoWrap) {
+         editorSession.setUseWrapMode(true);
       }
 
       editor.resize();

@@ -264,7 +264,7 @@ class QueryView
       };
 
       ajaxSettings.error = (jsXHR: JQueryXHR, testStatus: string, errorThrown: string) => {
-         alert("error getting study item");
+         new ModalDialog().showError("Error", "error getting study item");
       };
 
       $.ajax(ajaxSettings);

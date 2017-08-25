@@ -121,7 +121,7 @@
       this._queryView.deleteStudyRequest.on((args) => {
          this._delowRsProxy.deleteStudy(args.StudyParams.StudyInstanceUid)
             .done ( (response) => {
-               appUtils.showInfo("Success");
+               new ModalDialog().show("Success");
          })
             .fail( (error) => {
                new ModalDialog().showError("Error", error);
@@ -286,6 +286,6 @@
 
    onQueryError(status: any, errorThrown: string)
    {
-      new ModalDialog().showError("Error (HTTP Status" + status + ")", errorThrown);
+      new ModalDialog().showError("Error (HTTP Status: " + status + ")", errorThrown);
    }
 } 

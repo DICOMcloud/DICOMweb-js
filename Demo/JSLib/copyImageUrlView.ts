@@ -36,7 +36,7 @@
                   appUtils.download(data, "dicom.dcm");
                }).fail(
                (err) => {
-                  appUtils.showError(err.message);
+                  new ModalDialog().showError("Error", err.message);
                }
                );
          }

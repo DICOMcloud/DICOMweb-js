@@ -53,11 +53,6 @@ class app {
 
       new StoreView($("#_StoreView")[0]);
 
-      //window.onerror = function (message, url, lineNumber) {
-      //   //save error and send to server for example.
-      //   alert(message + "\n" + url + "\n" + lineNumber);
-      //   return true;
-      //};  
 
       $("#serverList").change(function () {
          DICOMwebJS.ServerConfiguration.BaseServerUrl = $("#serverList").val();
@@ -126,7 +121,9 @@ $(document).ready(function () {
       if (input.length) {
          input.val(log);
       } else {
-         if (log) alert(log);
+         if (log) {
+            new ModalDialog().showError("Error", log);
+         }
       }
 
    });

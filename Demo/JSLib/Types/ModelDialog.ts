@@ -48,6 +48,10 @@ class ModalDialog {
 
       this._$dlgTitle.text(title);
 
+      if (data) {
+         data = data.toString()
+      }
+
       this._editor = this._codeRenderer.renderValue(this._contentElement, data);
 
       this._$dlg.modal("show");

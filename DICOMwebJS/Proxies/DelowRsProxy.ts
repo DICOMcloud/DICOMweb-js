@@ -38,7 +38,7 @@
          return deffered.resolve(data);
       },
       (jqxhr, textStatus, error) => {
-         return deffered.reject(Error(error));
+         return deffered.reject(error);
          });
 
       return deffered.promise();
