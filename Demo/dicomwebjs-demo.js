@@ -73,6 +73,7 @@ var StoreResultView = (function () {
         this.$progress.show();
     };
     StoreResultView.prototype.showSuccess = function (xmlData) {
+        var codeRenderer = new CodeRenderer();
         this.$progress.hide();
         this.$resultBody.show();
         this.$alert.addClass("alert-success").removeClass("alert-danger");
@@ -81,25 +82,26 @@ var StoreResultView = (function () {
             var $referencedInstance = $(xmlData).find("DicomAttribute[keyword='ReferencedInstanceSequence']");
             var instanceUrl = $referencedInstance.find("DicomAttribute[keyword='RetrieveURI']").children("Value").text();
             this._copyImageView.setUrl(instanceUrl);
-            CodeRenderer.renderXml(this.$resultContent[0], this.getString(xmlData));
+            codeRenderer.renderXml(this.$resultContent[0], this.getString(xmlData));
         }
         else {
             this._copyImageView.setUrl("");
-            CodeRenderer.renderXml(this.$resultContent[0], "");
+            codeRenderer.renderXml(this.$resultContent[0], "");
         }
     };
     StoreResultView.prototype.showError = function (xmlData, error) {
+        var codeRenderer = new CodeRenderer();
         this.$progress.hide();
         this.$resultBody.show();
         this.$alert.addClass("alert-danger").removeClass("alert-success");
         this.$resultTitle.text(error);
         this._copyImageView.setUrl("");
         if (xmlData) {
-            CodeRenderer.renderXml(this.$resultContent[0], this.getString(xmlData));
+            codeRenderer.renderXml(this.$resultContent[0], this.getString(xmlData));
         }
         else {
             this._copyImageView.setUrl("");
-            CodeRenderer.renderXml(this.$resultContent[0], "");
+            codeRenderer.renderXml(this.$resultContent[0], "");
         }
     };
     StoreResultView.prototype.hide = function () {
@@ -463,16 +465,16 @@ var QueryController = (function () {
         var _this = this;
         this._queryView.qidoStudy.on(function (args) {
             var query = new StudyParams();
-            var request = _this.getQidoQueryParam(query, args.MediaType, "QIDO-RS Study");
             query.StudyInstanceUid = args.StudyInstanceUID;
-            _this._queryService.findStudies(request);
+            var request = _this.getQidoQueryParam(query, args.MediaType, "QIDO-RS Study");
+            _this._queryService.findInstances(request);
         });
         this._queryView.qidoSeries.on(function (args) {
             var query = new SeriesParams();
             var request = _this.getQidoQueryParam(query, args.MediaType, "QIDO-RS Series");
             query.StudyInstanceUid = args.StudyInstanceUID;
             query.SeriesInstanceUID = args.SeriesInstanceUID;
-            _this._queryService.findSeries(request);
+            _this._queryService.findInstances(request);
         });
         this._queryView.qidoInstance.on(function (args) {
             var query = new InstanceParams();
@@ -628,6 +630,9 @@ var QueryController = (function () {
                 alert(operation + " Failed");
             }
         };
+        request.returnValues.push(new DicomTag(DicomTags.StudyInstanceUid));
+        request.returnValues.push(new DicomTag(DicomTags.SeriesInstanceUid));
+        request.returnValues.push(new DicomTag(DicomTags.SopInstanceUid));
         return request;
     };
     QueryController.prototype.showDialog = function (title, mediaType, data) {
@@ -641,7 +646,7 @@ var QueryController = (function () {
         }
     };
     QueryController.prototype.onQueryError = function (textStatus, errorThrown) {
-        alert(textStatus + " : " + errorThrown);
+        new ModalDialog().showError("Error", textStatus + " : " + errorThrown);
     };
     return QueryController;
 }());
@@ -916,11 +921,7 @@ var QueryView = (function () {
         configurable: true
     });
     QueryView.prototype.clearInstanceMetadata = function () {
-        var editor;
-        var editorSession;
-        editor = ace.edit($(".pacs-metadata-viewer")[0]);
-        editorSession = editor.getSession();
-        editorSession.setValue("");
+        new CodeRenderer().renderValue($(".pacs-metadata-viewer")[0], "");
     };
     QueryView.prototype.showInstanceMetadata = function (data, args) {
         if (args.MediaType == MimeTypes.Json) {
@@ -1042,7 +1043,6 @@ var QueryView = (function () {
     QueryView.prototype.buildQueryControl = function () {
         var _this = this;
         $("#searchButton").click(function (args) {
-            args.preventDefault();
             var queryModel = _this._model.StudyQueryParams;
             queryModel.PatientId = $("#patientIdInput").val();
             queryModel.PatientName = $("#patientNameInput").val();
@@ -1272,22 +1272,10 @@ var QueryView = (function () {
         dlg.showXml(caption, data);
     };
     QueryView.prototype.renderJson = function ($contentElement, data) {
-        var editor;
-        var editorSession;
-        editor = ace.edit($contentElement[0]);
-        editorSession = editor.getSession();
-        editorSession.setValue(JSON.stringify(data, null, '\t'));
-        editorSession.setMode("ace/mode/json");
-        editor.resize();
+        new CodeRenderer().renderJson($contentElement[0], data);
     };
     QueryView.prototype.renderXml = function ($contentElement, data) {
-        var editor;
-        var editorSession;
-        editor = ace.edit($contentElement[0]);
-        editorSession = editor.getSession();
-        editorSession.setValue(data);
-        editorSession.setMode("ace/mode/html");
-        editor.resize();
+        new CodeRenderer().renderXml($contentElement[0], data);
     };
     return QueryView;
 }());
@@ -1380,33 +1368,29 @@ var RetrieveService = (function () {
 var CodeRenderer = (function () {
     function CodeRenderer() {
     }
-    CodeRenderer.renderJson = function (uiElement, data) {
-        var editor = uiElement;
-        ;
-        var editorSession;
-        editor = ace.edit(uiElement);
-        editorSession = editor.getSession();
-        editorSession.setValue(JSON.stringify(data, null, '\t'));
-        editorSession.setMode("ace/mode/json");
-        editor.resize();
+    CodeRenderer.prototype.renderJson = function (uiElement, data) {
+        return this.renderEditor(uiElement, JSON.stringify(data, null, '\t'), "ace/mode/json");
     };
-    CodeRenderer.renderXml = function (uiElement, data) {
-        var editor;
-        var editorSession;
-        editor = ace.edit(uiElement);
-        editorSession = editor.getSession();
-        editorSession.setValue(data);
-        editorSession.setMode("ace/mode/xml");
-        editor.resize();
+    CodeRenderer.prototype.renderXml = function (uiElement, data) {
+        return this.renderEditor(uiElement, data, "ace/mode/xml");
     };
-    CodeRenderer.renderValue = function (uiElement, data) {
-        this.renderEditor(uiElement, data);
+    CodeRenderer.prototype.renderValue = function (uiElement, data) {
+        return this.renderEditor(uiElement, data);
     };
-    CodeRenderer.renderEditor = function (uiElement, data, editorMode) {
-        var editor;
-        var editorSession;
-        editor = ace.edit(uiElement);
-        editorSession = editor.getSession();
+    CodeRenderer.prototype.clean = function (editor) {
+        if (editor) {
+            editor.destroy();
+            var oldDiv = editor.container;
+            var newDiv = oldDiv.cloneNode(false);
+            oldDiv.parentNode.replaceChild(newDiv, oldDiv);
+            editor.container = null;
+            editor.renderer = null;
+            editor = null;
+        }
+    };
+    CodeRenderer.prototype.renderEditor = function (uiElement, data, editorMode) {
+        var editor = ace.edit(uiElement);
+        var editorSession = editorSession = editor.getSession();
         editorSession.setValue(data);
         if (typeof editorMode !== "undefined") {
             editorSession.setMode(editorMode);
@@ -1433,8 +1417,15 @@ var LiteEvent = (function () {
 /// <reference path="coderenderer.ts" />
 var ModalDialog = (function () {
     function ModalDialog($dialogName) {
+        if ($dialogName === void 0) { $dialogName = "#modal-alert"; }
         this._onDlgClose = new LiteEvent();
+        this._codeRenderer = new CodeRenderer();
         this._$dialogName = $dialogName;
+        this._$dlg = $(this._$dialogName);
+        this._$dlgTitle = this._$dlg.find(".modal-title");
+        this._$dlgHeader = this._$dlg.find(".modal-header");
+        this._$dlgContentParent = this._$dlg.find(".model-body-content");
+        this._contentElement = this._$dlgContentParent[0];
     }
     Object.defineProperty(ModalDialog.prototype, "dilaogClosed", {
         get: function () { return this._onDlgClose; },
@@ -1442,42 +1433,35 @@ var ModalDialog = (function () {
         configurable: true
     });
     ModalDialog.prototype.showJson = function (title, data) {
-        var $dlg = $(this._$dialogName);
-        var $contentElement = $dlg.find(".model-body-content");
-        $dlg.find(".modal-title").text(title);
-        CodeRenderer.renderJson($contentElement[0], data);
-        $dlg.modal("show");
-        this.onDialogClose($dlg);
+        this._$dlgTitle.text(title);
+        this._editor = this._codeRenderer.renderJson(this._contentElement, data);
+        this._$dlg.modal("show");
+        this.onDialogClose(this._$dlg);
     };
     ModalDialog.prototype.showXml = function (title, data) {
-        var $dlg = $(this._$dialogName);
-        var $contentElement = $dlg.find(".model-body-content");
-        $dlg.find(".modal-title").text(title);
-        CodeRenderer.renderXml($contentElement[0], data);
-        $dlg.modal("show");
-        this.onDialogClose($dlg);
+        this._$dlgTitle.text(title);
+        this._editor = this._codeRenderer.renderXml(this._contentElement, data);
+        this._$dlg.modal("show");
+        this.onDialogClose(this._$dlg);
     };
     ModalDialog.prototype.showText = function (title, data) {
-        var $dlg = $(this._$dialogName);
-        var $contentElement = $dlg.find(".model-body-content");
-        $dlg.find(".modal-title").text(title);
-        CodeRenderer.renderValue($contentElement[0], data);
-        $dlg.modal("show");
-        this.onDialogClose($dlg);
+        this._$dlgTitle.text(title);
+        this._editor = this._codeRenderer.renderValue(this._contentElement, data);
+        this._$dlg.modal("show");
+        this.onDialogClose(this._$dlg);
     };
     ModalDialog.prototype.show = function (title) {
-        var $dlg = $(this._$dialogName);
-        $dlg.find(".modal-title").text(title);
-        $dlg.modal("show");
-        this.onDialogClose($dlg);
+        this.showText(title, "");
     };
-    ModalDialog.prototype.$getPreContentElement = function () {
-        var $dlg = $(this._$dialogName);
-        return $dlg.find(".model-body-preContent");
+    ModalDialog.prototype.showError = function (title, data) {
+        this._$dlgHeader.addClass("bg-danger");
+        this.showText(title, data);
     };
     ModalDialog.prototype.onDialogClose = function ($dlg) {
         var _this = this;
         $dlg.on('hidden.bs.modal', function () {
+            _this._$dlgHeader.removeClass("bg-danger");
+            _this._codeRenderer.clean(_this._editor);
             _this._onDlgClose.trigger(_this._$dialogName);
         });
     };

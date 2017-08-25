@@ -30,6 +30,9 @@
 
    public showSuccess(xmlData: Document)
    {
+      var codeRenderer = new CodeRenderer();
+
+
       this.$progress.hide();
       this.$resultBody.show();
 
@@ -42,16 +45,19 @@
 
          this._copyImageView.setUrl(instanceUrl);
 
-         CodeRenderer.renderXml(this.$resultContent[0], this.getString(xmlData));
+         codeRenderer.renderXml(this.$resultContent[0], this.getString(xmlData));
       }
       else
       {
          this._copyImageView.setUrl("");
-         CodeRenderer.renderXml(this.$resultContent[0], "");
+         codeRenderer.renderXml(this.$resultContent[0], "");
       }
    }
 
    public showError(xmlData: any, error: string) {
+      var codeRenderer = new CodeRenderer();
+
+
       this.$progress.hide();
       this.$resultBody.show();
 
@@ -61,11 +67,11 @@
       this._copyImageView.setUrl("");
 
       if (xmlData) {
-         CodeRenderer.renderXml(this.$resultContent[0], this.getString(xmlData));
+         codeRenderer.renderXml(this.$resultContent[0], this.getString(xmlData));
       }
       else {
          this._copyImageView.setUrl("");
-         CodeRenderer.renderXml(this.$resultContent[0], "");
+         codeRenderer.renderXml(this.$resultContent[0], "");
       }
    }
 

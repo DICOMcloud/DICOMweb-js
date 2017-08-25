@@ -1,47 +1,39 @@
 ﻿class CodeRenderer
 {
-   public static renderJson(uiElement:HTMLElement, data :any)
+   public renderJson(uiElement: HTMLElement, data: any)
    {
-      var editor : any = uiElement;;
-      var editorSession;
-
-
-      editor = ace.edit(uiElement);
-
-      editorSession = editor.getSession();
-      editorSession.setValue(JSON.stringify(data, null, '\t'));
-      editorSession.setMode("ace/mode/json");
-
-      editor.resize();
+      return this.renderEditor(uiElement, JSON.stringify(data, null, '\t'), "ace/mode/json");
    }
 
-   public static renderXml(uiElement: HTMLElement, data: any)
+   public renderXml(uiElement: HTMLElement, data: any) : any
    {
-      var editor : any ;
-      var editorSession;
-
-
-      editor = ace.edit(uiElement);
-
-      editorSession = editor.getSession();
-      editorSession.setValue(data);
-      editorSession.setMode("ace/mode/xml");
-
-      editor.resize();
+      return this.renderEditor(uiElement, data, "ace/mode/xml");
    }
 
-   public static renderValue(uiElement: HTMLElement, data: any) {
-      this.renderEditor(uiElement, data);
+   public renderValue(uiElement: HTMLElement, data: any) :any {
+      return this.renderEditor(uiElement, data);
    }
 
-   private static renderEditor(uiElement: HTMLElement, data: any, editorMode?:string) {
-      var editor: any;
-      var editorSession;
+   public clean(editor: any)
+   {
+      if (editor) {
+         editor.destroy();
+         var oldDiv = editor.container
+         var newDiv = oldDiv.cloneNode(false)
 
+         oldDiv.parentNode.replaceChild(newDiv, oldDiv)
 
-      editor = ace.edit(uiElement);
+         editor.container = null;
+         editor.renderer = null;
 
-      editorSession = editor.getSession();
+         editor = null;
+      }
+   }
+
+   private renderEditor(uiElement: HTMLElement, data: any, editorMode?:string) {
+      var editor = ace.edit(uiElement);
+      var editorSession = editorSession = editor.getSession();
+      
       editorSession.setValue(data);
 
       if (typeof editorMode !== "undefined") {

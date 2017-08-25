@@ -1,6 +1,8 @@
 var StoreView = (function () {
     function StoreView(parentElement) {
         this._parent = parentElement;
+        this._resultView = new StoreResultView($(".store-result-view"), new WadoUriProxy(DICOMwebJS.ServerConfiguration.getWadoRsUrl()));
+        this._resultView.hide();
         this.registerEvents();
     }
     StoreView.prototype.registerEvents = function () {
@@ -16,16 +18,19 @@ var StoreView = (function () {
             getFile.done(function (arrayBuffer) {
                 var proxy = new StowRsProxy(url);
                 var dlg = new ModalDialog("#modal-alert");
+                _this._resultView.show();
+                _this._resultView.showProgress();
                 proxy.StoreInstance(arrayBuffer, null, anonymizedElementsQuery).done(function (xhr) {
                     if (xhr.getResponseHeader("content-type").indexOf("application/json") >= 0) {
                         dlg.showJson("JSON Store Response", JSON.parse(xhr.response));
                     }
                     else {
-                        dlg.showXml("XML Store Response", xhr.response);
+                        _this._resultView.showSuccess(xhr.responseXML);
                     }
                 })
                     .fail(function (xhr) {
-                    dlg.showText("Error Storing Dataset", xhr.response);
+                    //dlg.showText("Error Storing Dataset", xhr.response);
+                    _this._resultView.showError(xhr.responseXML, "Error Storing Dataset");
                 });
             });
         });
@@ -46,10 +51,12 @@ var StoreView = (function () {
     };
     StoreView.prototype.getAnonymizedElementsQuery = function () {
         var anonyElementsQuery = "";
-        $(this._parent).find(".anonymizer-field").each(function (index, element) {
+        $(this._parent).find(".app-anonymizer-field").each(function (index, element) {
             var tagKey = $(element).attr("data-app-tag");
             var tagValue = $(element).val();
-            anonyElementsQuery += tagKey + "=" + tagValue + "&";
+            if (tagValue !== "") {
+                anonyElementsQuery += tagKey + "=" + tagValue + "&";
+            }
         });
         return anonyElementsQuery;
     };

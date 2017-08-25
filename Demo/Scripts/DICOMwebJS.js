@@ -180,19 +180,21 @@ var QidoRsProxy = (function () {
         xhr.setRequestHeader("accept", acceptHeader);
         xhr.timeout = 20000;
         xhr.onreadystatechange = function () {
-            if (xhr.readyState == 4 && xhr.status == 200) {
-                if (query.success) {
-                    var data = xhr.response;
-                    if (acceptHeader === MimeTypes.Json) {
-                        data = JSON.parse(data);
+            if (xhr.readyState == 4) {
+                if (xhr.status == 200) {
+                    if (query.success) {
+                        var data = xhr.response;
+                        if (acceptHeader === MimeTypes.Json) {
+                            data = JSON.parse(data);
+                        }
+                        query.success(data);
                     }
-                    query.success(data);
                 }
-            }
-        };
-        xhr.onerror = function (error) {
-            if (query.error) {
-                query.error(xhr.statusText, error);
+                else {
+                    if (query.error) {
+                        query.error(xhr.statusText, xhr.responseText);
+                    }
+                }
             }
         };
         if (DICOMwebJS.ServerConfiguration.IncludeAuthorizationHeader) {

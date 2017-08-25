@@ -8,14 +8,16 @@ cornerstoneWADOImageLoader.configure({
     }
 });
 var WadoViewer = (function () {
-    function WadoViewer(element, uriProx) {
+    function WadoViewer($parentView, uriProxy) {
         this._loaded = false;
-        this._viewerElement = element;
-        this._uriProxy = uriProx;
-        cornerstone.enable(element);
+        this._$parentView = $parentView;
+        this._viewerElement = $parentView.find('#dicomImage').get(0);
+        this._uriProxy = uriProxy;
+        this._copyImageView = new copyImageUrlView($parentView, uriProxy);
+        cornerstone.enable(this._viewerElement);
         this.configureWebWorker();
         $(window).resize(function () {
-            cornerstone.resize(element, true);
+            cornerstone.resize(this._viewerElement, true);
         });
     }
     WadoViewer.prototype.configureWebWorker = function () {
@@ -29,18 +31,6 @@ var WadoViewer = (function () {
         };
         cornerstoneWADOImageLoader.webWorkerManager.initialize(config);
     };
-    //configureWebWorker()
-    //{
-    //   var config = {
-    //      webWorkerPath: 'cornerstoneViewer/js/cornerstoneWADOImageLoaderWebWorker.min.js',
-    //      taskConfiguration: {
-    //         'decodeTask': {
-    //            codecsPath: 'cornerstoneWADOImageLoaderCodecs.min.js'
-    //         }
-    //      }
-    //   };
-    //   cornerstoneWADOImageLoader.webWorkerManager.initialize(config);
-    //}
     WadoViewer.prototype.loadInstance = function (instance, transferSyntax) {
         if (transferSyntax === void 0) { transferSyntax = null; }
         var dicomInstance = {
@@ -54,7 +44,9 @@ var WadoViewer = (function () {
         //the loader trims this prefix from the url
         this.loadAndViewImage("wadouri:" + instanceUrl);
         this._loadedInstance = instance;
+        this._transferSyntax = transferSyntax;
         cornerstone.resize(this._viewerElement, true);
+        this._copyImageView.setUrl(instanceUrl);
     };
     WadoViewer.prototype.loadedInstance = function () {
         return this._loadedInstance;

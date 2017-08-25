@@ -21,8 +21,7 @@ var app = (function () {
         var delowProxy = new DelowRsProxy();
         var queryView = new QueryView(document.getElementById("#content"), model, rsService);
         var queryController = new QueryController(queryView, model, qidoProxy, rsService, uriProxy, delowProxy);
-        var element = $('#dicomImage').get(0);
-        var viewer = new WadoViewer(element, uriProxy);
+        var viewer = new WadoViewer($(".dicomWeb-js-viewer"), uriProxy);
         this.initAuthentication();
         queryView.instanceViewRequest.on(function (args) {
             $('.nav-tabs a[href="#_ViewerView"]').tab('show');
@@ -34,11 +33,12 @@ var app = (function () {
                 viewer.loadInstance(loadedInstance, $("#SelectedTransferSyntax").val());
             }
         });
-        window.onerror = function (message, url, lineNumber) {
-            //save error and send to server for example.
-            alert(message + "\n" + url + "\n" + lineNumber);
-            return true;
-        };
+        new StoreView($("#_StoreView")[0]);
+        //window.onerror = function (message, url, lineNumber) {
+        //   //save error and send to server for example.
+        //   alert(message + "\n" + url + "\n" + lineNumber);
+        //   return true;
+        //};  
         $("#serverList").change(function () {
             DICOMwebJS.ServerConfiguration.BaseServerUrl = $("#serverList").val();
         });

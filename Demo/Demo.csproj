@@ -181,7 +181,6 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="bower.json" />
-    <Content Include="dicomwebjs-demo.js.map" />
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
@@ -251,10 +250,10 @@
     <TypeScriptCompile Include="JSLib\Query\QueryModel.ts" />
     <TypeScriptCompile Include="JSLib\Query\QueryView.ts" />
     <TypeScriptCompile Include="JSLib\Query\RetrieveService.ts" />
+    <TypeScriptCompile Include="Scripts\typings\ace\index.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\bootstrap\bootstrap.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\DICOMwebJS\DICOMwebJS.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\jquery\jquery.d.ts" />
-    <TypeScriptCompile Include="Scripts\typings\libs\ace.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\libs\viewers.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\libs\html.ts" />
     <TypeScriptCompile Include="JSLib\Types\CodeRenderer.ts" />

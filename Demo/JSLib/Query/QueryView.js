@@ -75,12 +75,6 @@ var QueryView = (function () {
         enumerable: true,
         configurable: true
     });
-    QueryView.prototype.showError = function (message) {
-        alert("Error\n\n" + message);
-    };
-    QueryView.prototype.showInfo = function (message) {
-        alert(message);
-    };
     QueryView.prototype.clearInstanceMetadata = function () {
         var editor;
         var editorSession;
@@ -94,36 +88,6 @@ var QueryView = (function () {
         }
         if (args.MediaType == MimeTypes.xmlDicom) {
             this.renderXml($(".pacs-metadata-viewer"), data);
-        }
-    };
-    QueryView.prototype.download = function (data) {
-        //http://stackoverflow.com/questions/16086162/handle-file-download-from-ajax-post/23797348#23797348
-        var filename = "dicom.txt";
-        var blob = new Blob([data], { type: "application/octet-stream" });
-        if (typeof window.navigator.msSaveBlob !== 'undefined') {
-            // IE workaround for "HTML7007: One or more blob URLs were revoked by closing the blob for which they were created. These URLs will no longer resolve as the data backing the URL has been freed."
-            window.navigator.msSaveBlob(blob, filename);
-        }
-        else {
-            var URL = window.URL || window.webkitURL;
-            var downloadUrl = URL.createObjectURL(blob);
-            if (filename) {
-                // use HTML5 a[download] attribute to specify filename
-                var a = document.createElement("a");
-                // safari doesn't support this yet
-                if (typeof a.download === 'undefined') {
-                    window.location.assign(downloadUrl);
-                }
-                else {
-                    a.href = downloadUrl;
-                    a.download = filename;
-                    document.body.appendChild(a);
-                    a.click();
-                }
-            }
-            else {
-                window.location.assign(downloadUrl);
-            }
         }
     };
     QueryView.prototype.bin2String = function (array) {
@@ -153,31 +117,22 @@ var QueryView = (function () {
         });
         this._model.SelectedSeriesChangedEvent.on(function () {
             var index = _this._model.SelectedSeriesIndex;
-            _this._$seriesView.children(".thumbnail").removeClass("selected");
+            _this._$seriesView.find(".thumbnail").removeClass("selected");
             if (index != -1) {
-                _this._$seriesView.children(".thumbnail").eq(index).addClass("selected");
+                _this._$seriesView.find(".thumbnail").eq(index).addClass("selected");
             }
         });
         this._model.SelectedInstanceChangedEvent.on(function () {
             var index = _this._model.SelectedInstanceIndex;
-            _this._$instanceView.children(".thumbnail").removeClass("selected");
+            _this._$instanceView.find(".thumbnail").removeClass("selected");
             _this.clearInstanceMetadata();
             if (index == -1) {
                 $(".instance-details").hide();
             }
             else {
-                _this._$instanceView.children(".thumbnail").eq(index).addClass("selected");
+                _this._$instanceView.find(".thumbnail").eq(index).addClass("selected");
                 $(".instance-details").show();
             }
-        });
-        $("*[data-rs-instance]").on("click", function (ev) {
-            var instance = _this._model.selectedInstance();
-            if (instance) {
-                var args = new RsInstanceEventArgs(instance, $(ev.target).attr("data-pacs-args"));
-                _this._onInstance.trigger(args);
-            }
-            ev.preventDefault();
-            return false;
         });
         $("*[data-rs-frames]").on("click", function (ev) {
             var instance = _this._model.selectedInstance();
@@ -309,6 +264,7 @@ var QueryView = (function () {
             patientName = study.PatientName.Alphabetic;
         }
         $item.find("*[data-pacs-patientName]").text(patientName);
+        $item.find("*[data-pacs-patientId]").text(study.PatientId);
         $item.find("*[data-pacs-accessionNumber]").text(study.AccessionNumber);
         $item.find("*[data-pacs-studyDate]").text(study.StudyDate);
         $item.find("*[data-pacs-studyID]").text(study.StudyID);
@@ -337,7 +293,7 @@ var QueryView = (function () {
     };
     QueryView.prototype.registerStudyEvents = function (study, $item, index) {
         var _this = this;
-        $item.find(".panel-body").on("click", function (ev) {
+        $item.find(".thumbnail").on("click", function (ev) {
             _this._model.SelectedStudyIndex = index;
             $("#studyCollapse").collapse("hide");
             ev.preventDefault();
@@ -446,6 +402,12 @@ var QueryView = (function () {
         });
         $item.find("*[data-pacs-viewInstanceViewer]").on("click", function (ev) {
             _this._onViewInstance.trigger(new WadoUriEventArgs(instance, MimeTypes.DICOM, ""));
+            ev.preventDefault();
+            return false;
+        });
+        $item.find("*[data-rs-instance]").on("click", function (ev) {
+            var args = new RsInstanceEventArgs(instance, $(ev.target).attr("data-pacs-args"));
+            _this._onInstance.trigger(args);
             ev.preventDefault();
             return false;
         });

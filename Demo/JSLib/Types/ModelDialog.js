@@ -39,6 +39,10 @@ var ModalDialog = (function () {
         $dlg.modal("show");
         this.onDialogClose($dlg);
     };
+    ModalDialog.prototype.$getPreContentElement = function () {
+        var $dlg = $(this._$dialogName);
+        return $dlg.find(".model-body-preContent");
+    };
     ModalDialog.prototype.onDialogClose = function ($dlg) {
         var _this = this;
         $dlg.on('hidden.bs.modal', function () {

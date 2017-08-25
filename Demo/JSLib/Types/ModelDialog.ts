@@ -1,75 +1,77 @@
 ﻿/// <reference path="coderenderer.ts" />
 class ModalDialog {
    private _$dialogName: string;
+   private _$dlg: JQuery;
+   private _$dlgContentParent: JQuery;
+   private _contentElement: HTMLElement;
+   private _$dlgTitle: JQuery;
+   private _$dlgHeader: JQuery;
    private _onDlgClose = new LiteEvent<string>();
-
+   private _codeRenderer = new CodeRenderer();
+   private _editor: any;
 
    public get dilaogClosed() { return this._onDlgClose; }
 
-   constructor($dialogName: string) {
+   constructor($dialogName: string = "#modal-alert") {
       this._$dialogName = $dialogName;
+      this._$dlg = $(this._$dialogName);
+      this._$dlgTitle = this._$dlg.find(".modal-title");
+      this._$dlgHeader = this._$dlg.find(".modal-header"); 
+      this._$dlgContentParent = this._$dlg.find(".model-body-content");
+
+      
+      this._contentElement = this._$dlgContentParent[0]; 
    }
 
    public showJson(title: string, data: any) {
-      var $dlg: any = $(this._$dialogName);
-      var $contentElement = $dlg.find(".model-body-content");
+      this._$dlgTitle.text(title);
 
-      $dlg.find(".modal-title").text(title);
+      this._editor = this._codeRenderer.renderJson(this._contentElement, data);
 
-      CodeRenderer.renderJson($contentElement[0], data);
+      this._$dlg.modal("show");
 
-      $dlg.modal("show");
-
-      this.onDialogClose($dlg);
+      this.onDialogClose(this._$dlg);
    }
 
    public showXml(title: string, data: any) {
-      var $dlg: any = $(this._$dialogName);
-      var $contentElement = $dlg.find(".model-body-content");
+      
+      this._$dlgTitle.text(title);
 
-      $dlg.find(".modal-title").text(title);
+      this._editor = this._codeRenderer.renderXml(this._contentElement, data);
 
-      CodeRenderer.renderXml($contentElement[0], data);
+      this._$dlg.modal("show");
 
-      $dlg.modal("show");
-
-      this.onDialogClose($dlg);
+      this.onDialogClose(this._$dlg);
    }
 
    public showText(title: string, data: string) {
-      var $dlg: any = $(this._$dialogName);
-      var $contentElement = $dlg.find(".model-body-content");
 
-      $dlg.find(".modal-title").text(title);
+      this._$dlgTitle.text(title);
 
-      CodeRenderer.renderValue($contentElement[0], data);
+      this._editor = this._codeRenderer.renderValue(this._contentElement, data);
 
-      $dlg.modal("show");
+      this._$dlg.modal("show");
 
-      this.onDialogClose($dlg);
+      this.onDialogClose(this._$dlg);
    }
 
    public show(title: string)
    {
-      var $dlg: any = $(this._$dialogName);
-      $dlg.find(".modal-title").text(title);
-
-      $dlg.modal("show");
-
-      this.onDialogClose($dlg);
+      this.showText(title, "");
    }
 
-   public $getPreContentElement()
+   public showError(title: string, data: string)
    {
-      var $dlg: any = $(this._$dialogName);
+      this._$dlgHeader.addClass("bg-danger");
 
-      return $dlg.find(".model-body-preContent");
+      this.showText(title, data);
    }
-
+   
    private onDialogClose($dlg: any)
    {
       $dlg.on('hidden.bs.modal', () => {
-
+         this._$dlgHeader.removeClass("bg-danger");
+         this._codeRenderer.clean(this._editor);
          this._onDlgClose.trigger(this._$dialogName);
       });
    }

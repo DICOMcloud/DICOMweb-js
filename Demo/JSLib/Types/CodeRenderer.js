@@ -17,7 +17,7 @@ var CodeRenderer = (function () {
         editor = ace.edit(uiElement);
         editorSession = editor.getSession();
         editorSession.setValue(data);
-        editorSession.setMode("ace/mode/html");
+        editorSession.setMode("ace/mode/xml");
         editor.resize();
     };
     CodeRenderer.renderValue = function (uiElement, data) {

@@ -64,15 +64,9 @@ class QueryView
    
    public clearInstanceMetadata()
    {
-      var editor;
-      var editorSession;
-
-
-      editor = ace.edit($(".pacs-metadata-viewer")[0]);
-
-      editorSession = editor.getSession();
-      editorSession.setValue("");
+      new CodeRenderer().renderValue($(".pacs-metadata-viewer")[0], "");
    }
+
    public showInstanceMetadata(data: any, args: RsInstanceEventArgs)
    {
       if (args.MediaType == MimeTypes.Json) { this.renderJson($(".pacs-metadata-viewer"), data); }
@@ -233,7 +227,6 @@ class QueryView
    private buildQueryControl()
    {
       $("#searchButton").click((args: JQueryEventObject) => {
-         args.preventDefault();
          var queryModel :StudyParams = this._model.StudyQueryParams;
          queryModel.PatientId = $("#patientIdInput").val();
          queryModel.PatientName = $("#patientNameInput").val();
@@ -567,32 +560,11 @@ class QueryView
 
 
    private renderJson($contentElement: JQuery, data: any) {
-      var editor;
-      var editorSession;
-
-
-      editor = ace.edit($contentElement[0]);
-
-      editorSession = editor.getSession();
-      editorSession.setValue(JSON.stringify(data, null, '\t'));
-      editorSession.setMode("ace/mode/json");
-
-      editor.resize();
-
+      new CodeRenderer().renderJson($contentElement[0], data);
    }
 
    private renderXml($contentElement: JQuery, data: any) {
-      var editor;
-      var editorSession;
-
-
-      editor = ace.edit($contentElement[0]);
-
-      editorSession = editor.getSession();
-      editorSession.setValue(data);
-      editorSession.setMode("ace/mode/html");
-
-      editor.resize();
+      new CodeRenderer().renderXml($contentElement[0], data);
    }
 
 }
