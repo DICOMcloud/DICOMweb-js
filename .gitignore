@@ -274,3 +274,7 @@ ModelManifest.xml
 /DICOMwebJS/DICOMwebJS.js
 /DICOMwebJS/DICOMwebJS.d.ts
 *.bak
+
+
+# Except Demo Nuget Build
+!**/[Rr]esources/build/
