@@ -1,0 +1,1 @@
+nuget pack ../Build\demo\DICOMwebJS.Demo.csproj -OutputDirectory ../../dist\NuGet\ -IncludeReferencedProjects -tool -build -verbosity detailed
