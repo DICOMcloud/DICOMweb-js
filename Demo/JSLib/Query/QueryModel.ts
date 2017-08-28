@@ -87,9 +87,11 @@ class QueryModel
             throw new RangeError();
          }
 
-         this._selectedStudyIndex = value;
-         this.onSelectedStudyChanged();
-         this.Series = [];
+         if (value != this._selectedStudyIndex) {
+            this._selectedStudyIndex = value;
+            this.onSelectedStudyChanged();
+            this.Series = [];
+         }
       }
    }
 
@@ -103,9 +105,11 @@ class QueryModel
              throw new RangeError();
          }
 
-         this._selectedSeriesIndex = value;
-         this.onSelectedSeriesChanged();
-         this.Instances = [];
+          if (value != this._selectedSeriesIndex) {
+             this._selectedSeriesIndex = value;
+             this.onSelectedSeriesChanged();
+             this.Instances = [];
+          }
       }
    }
 
@@ -113,7 +117,7 @@ class QueryModel
       return this._selectedInstancesIndex;
    }
    public set SelectedInstanceIndex(value: number) {
-      //if (this._selectedInstancesIndex != value) 
+      if (this._selectedInstancesIndex != value) 
       {
           if (this._instances.length <= value || value < this.__NOT_SELECTED) {
              throw new RangeError();

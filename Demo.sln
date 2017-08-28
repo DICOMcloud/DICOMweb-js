@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo", "Demo\Demo.csproj", "{30AC3E94-5D36-4493-95FF-C5A848452A12}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DICOMwebJS.Demo", "Demo\DICOMwebJS.Demo.csproj", "{30AC3E94-5D36-4493-95FF-C5A848452A12}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DICOMwebJS", "DICOMwebJS\DICOMwebJS.csproj", "{21995373-4B66-42C6-8E50-EB3E314A4B1C}"
 EndProject

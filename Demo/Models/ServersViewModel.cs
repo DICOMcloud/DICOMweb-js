@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace Demo.Models
+namespace DICOMwebJS.Demo.Models
 {
     public class ServersViewModel : List<SelectListItem>
     {

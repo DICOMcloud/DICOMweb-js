@@ -5,10 +5,9 @@ using System.Linq;
 using System.Security.Claims;
 using System.Web;
 using System.Web.Mvc;
-using Demo.Models ;
+using DICOMwebJS.Demo.Models;
 
-
-namespace Demo
+namespace DICOMwebJS.Demo
 {
     public class DemoController : Controller
     {

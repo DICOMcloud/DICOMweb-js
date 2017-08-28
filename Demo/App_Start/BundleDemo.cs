@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.Optimization;
 
-namespace CloudPacs.Demo
+namespace DICOMwebJS.Demo
 {
     public class BundleDemo
     {

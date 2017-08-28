@@ -1,14 +1,14 @@
-﻿@*@using Demo.Models
+﻿@*@using DICOMwebJS.Demo.Models
 
 
-@model ToolbarViewModel
+    @model ToolbarViewModel
 
-<div class="xtile-toolbar panel-footer">
-    <div class="btn-group btn-group-justified" role="group">
-        
-        @foreach(var toolbarItem in Model ) {
-            <a href="#" role="button" @{toolbarItem.DataAttribute}="true" class="btn btn-default">Json</a>
-        }
+    <div class="xtile-toolbar panel-footer">
+        <div class="btn-group btn-group-justified" role="group">
 
-    </div>
-</div>*@
+            @foreach(var toolbarItem in Model ) {
+                <a href="#" role="button" @{toolbarItem.DataAttribute}="true" class="btn btn-default">Json</a>
+            }
+
+        </div>
+    </div>*@

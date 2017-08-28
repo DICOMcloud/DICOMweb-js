@@ -507,9 +507,11 @@ var QueryModel = (function () {
                 if (this._studies.length <= value || value < this.__NOT_SELECTED) {
                     throw new RangeError();
                 }
-                this._selectedStudyIndex = value;
-                this.onSelectedStudyChanged();
-                this.Series = [];
+                if (value != this._selectedStudyIndex) {
+                    this._selectedStudyIndex = value;
+                    this.onSelectedStudyChanged();
+                    this.Series = [];
+                }
             }
         },
         enumerable: true,
@@ -525,9 +527,11 @@ var QueryModel = (function () {
                 if (this._series.length <= value || value < this.__NOT_SELECTED) {
                     throw new RangeError();
                 }
-                this._selectedSeriesIndex = value;
-                this.onSelectedSeriesChanged();
-                this.Instances = [];
+                if (value != this._selectedSeriesIndex) {
+                    this._selectedSeriesIndex = value;
+                    this.onSelectedSeriesChanged();
+                    this.Instances = [];
+                }
             }
         },
         enumerable: true,
@@ -538,8 +542,7 @@ var QueryModel = (function () {
             return this._selectedInstancesIndex;
         },
         set: function (value) {
-            //if (this._selectedInstancesIndex != value) 
-            {
+            if (this._selectedInstancesIndex != value) {
                 if (this._instances.length <= value || value < this.__NOT_SELECTED) {
                     throw new RangeError();
                 }
