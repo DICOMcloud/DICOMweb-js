@@ -3,6 +3,7 @@
 
 **The dicom-webJS project is now moved from the [original repository](https://github.com/Zaid-Safadi/dicom-webJS) and is now maintained here in its own GitHub Orgnization. The project is now licensed/owned by the DICOM-webjs project Contributors. .**
 ***
+[![Join the chat at https://gitter.im/DICOMcloud/Lobby](https://badges.gitter.im/DICOMcloud/Lobby.svg)](https://gitter.im/DICOMcloud/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 # DICOMweb-JS
 DICOMweb-JS is an open source JS client for consuming DICOM Web Services - part 13 with a ASP.NET MVC demo that uses the [Cornerstone viewer](https://github.com/chafey/cornerstone) and [cornerstoneWADOImageLoader](https://github.com/chafey/cornerstoneWADOImageLoader)  
