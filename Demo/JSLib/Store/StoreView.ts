@@ -44,7 +44,7 @@
             })
             .fail((xhr: XMLHttpRequest) => {
                //dlg.showText("Error Storing Dataset", xhr.response);
-               this._resultView.showError(xhr.responseXML, "Error Storing Dataset");
+               this._resultView.showError(xhr.responseXML, "Error Storing Dataset - " + xhr.statusText);
             });
          });
       });
