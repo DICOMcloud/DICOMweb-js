@@ -147,7 +147,7 @@ var StoreView = (function () {
                 })
                     .fail(function (xhr) {
                     //dlg.showText("Error Storing Dataset", xhr.response);
-                    _this._resultView.showError(xhr.responseXML, "Error Storing Dataset");
+                    _this._resultView.showError(xhr.responseXML, "Error Storing Dataset - " + xhr.statusText);
                 });
             });
         });
@@ -225,6 +225,7 @@ cornerstoneWADOImageLoader.configure({
 });
 var WadoViewer = (function () {
     function WadoViewer($parentView, uriProxy) {
+        var _this = this;
         this._loaded = false;
         this._$parentView = $parentView;
         this._viewerElement = $parentView.find('#dicomImage').get(0);
@@ -233,7 +234,7 @@ var WadoViewer = (function () {
         cornerstone.enable(this._viewerElement);
         this.configureWebWorker();
         $(window).resize(function () {
-            cornerstone.resize(this._viewerElement, true);
+            cornerstone.resize(_this._viewerElement, true);
         });
     }
     WadoViewer.prototype.configureWebWorker = function () {
@@ -272,7 +273,8 @@ var WadoViewer = (function () {
         var element = this._viewerElement;
         try {
             var start = new Date().getTime();
-            cornerstone.loadAndCacheImage(imageId).then(function (image) {
+            var promise = cornerstone.loadAndCacheImage(imageId);
+            promise.done(function (image) {
                 console.log(image);
                 var viewport = cornerstone.getDefaultViewportForImage(element, image);
                 //$('#toggleModalityLUT').attr("checked",viewport.modalityLUT !== undefined);
@@ -334,8 +336,17 @@ var WadoViewer = (function () {
                 var end = new Date().getTime();
                 var time = end - start;
                 $('#loadTime').text(time + "ms");
-            }, function (err) {
-                new ModalDialog().showError("Error", err);
+            });
+            promise.fail(function (xhr) {
+                var errorText = "Image failed to load";
+                try {
+                    if ('TextDecoder' in window && xhr.response) {
+                        var enc = new TextDecoder();
+                        errorText = enc.decode(xhr.response);
+                    }
+                }
+                catch (error) { }
+                new ModalDialog().showError("Error - " + xhr.status, errorText);
             });
         }
         catch (err) {
@@ -346,6 +357,12 @@ var WadoViewer = (function () {
 }());
 window.onload = function () {
     new app();
+    $(document).ajaxError(function (event, request, settings, thrownError) {
+        new ModalDialog().showError("Error", thrownError);
+    });
+    if (typeof (onAppLoaded) != "undefined") {
+        onAppLoaded();
+    }
 };
 var app = (function () {
     function app() {
@@ -359,30 +376,32 @@ var app = (function () {
         else {
             DICOMwebJS.ServerConfiguration.BaseServerUrl = $("#serverList").val();
         }
-        var model = new QueryModel();
-        var rsProxy = new WadoRsProxy();
-        var uriProxy = new WadoUriProxy();
-        var qidoProxy = new QidoRsProxy();
-        var rsService = new RetrieveService(rsProxy);
-        var delowProxy = new DelowRsProxy();
-        var queryView = new QueryView(document.getElementById("#content"), model, rsService);
-        var queryController = new QueryController(queryView, model, qidoProxy, rsService, uriProxy, delowProxy);
-        var viewer = new WadoViewer($(".dicomWeb-js-viewer"), uriProxy);
         this.initAuthentication();
-        queryView.instanceViewRequest.on(function (args) {
-            $('.nav-tabs a[href="#_ViewerView"]').tab('show');
-            viewer.loadInstance(args.InstanceParams);
-        });
-        $("#SelectedTransferSyntax").change(function () {
-            var loadedInstance = viewer.loadedInstance();
-            if (null != loadedInstance) {
-                viewer.loadInstance(loadedInstance, $("#SelectedTransferSyntax").val());
-            }
-        });
-        new StoreView($("#_StoreView")[0]);
         $("#serverList").change(function () {
             DICOMwebJS.ServerConfiguration.BaseServerUrl = $("#serverList").val();
         });
+        if ($("#searchButton").length > 0) {
+            var model = new QueryModel();
+            var rsProxy = new WadoRsProxy();
+            var uriProxy = new WadoUriProxy();
+            var qidoProxy = new QidoRsProxy();
+            var rsService = new RetrieveService(rsProxy);
+            var delowProxy = new DelowRsProxy();
+            var queryView = new QueryView(document.getElementById("#content"), model, rsService);
+            var queryController = new QueryController(queryView, model, qidoProxy, rsService, uriProxy, delowProxy);
+            var viewer = new WadoViewer($(".dicomWeb-js-viewer"), uriProxy);
+            queryView.instanceViewRequest.on(function (args) {
+                $('.nav-tabs a[href="#_ViewerView"]').tab('show');
+                viewer.loadInstance(args.InstanceParams);
+            });
+            $("#SelectedTransferSyntax").change(function () {
+                var loadedInstance = viewer.loadedInstance();
+                if (null != loadedInstance) {
+                    viewer.loadInstance(loadedInstance, $("#SelectedTransferSyntax").val());
+                }
+            });
+            new StoreView($("#_StoreView")[0]);
+        }
     };
     //public initViewer() {
     //   // base function to get elements
@@ -1405,6 +1424,9 @@ var CodeRenderer = (function () {
         var editorSession = editorSession = editor.getSession();
         if (data) {
             editorSession.setValue(data);
+        }
+        else {
+            editorSession.setValue("");
         }
         if (editorMode) {
             editorSession.setMode(editorMode);

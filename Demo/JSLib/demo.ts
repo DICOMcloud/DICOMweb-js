@@ -1,5 +1,14 @@
 ﻿window.onload = () => {
    new app();
+
+   $(document).ajaxError(function (event, request, settings, thrownError) {
+      new ModalDialog().showError("Error", thrownError);
+   });
+
+   if (typeof(onAppLoaded) != "undefined")
+   {
+      onAppLoaded();
+   }
 };
 
 declare var serverUrl: string;
@@ -20,43 +29,42 @@ class app {
          DICOMwebJS.ServerConfiguration.BaseServerUrl = $("#serverList").val();
       }
       
-      var model = new QueryModel();
-      var rsProxy = new WadoRsProxy();
-      var uriProxy = new WadoUriProxy();
-      var qidoProxy = new QidoRsProxy();
-      var rsService = new RetrieveService(rsProxy);
-      var delowProxy = new DelowRsProxy();
-      var queryView = new QueryView(document.getElementById("#content"), model, rsService );
-      var queryController = new QueryController(queryView, model, qidoProxy, rsService, uriProxy, delowProxy);
-      var viewer = new WadoViewer($(".dicomWeb-js-viewer"), uriProxy);
-
-
       this.initAuthentication();
-
-      queryView.instanceViewRequest.on((args) => {
-         
-         $('.nav-tabs a[href="#_ViewerView"]').tab('show') ;
-
-         viewer.loadInstance(args.InstanceParams);
-      });
-
-
-      $("#SelectedTransferSyntax").change(function () {
-         var loadedInstance = viewer.loadedInstance();
-
-         if (null != loadedInstance)
-         {
-            viewer.loadInstance(loadedInstance, $("#SelectedTransferSyntax").val());
-         }
-
-      });
-
-      new StoreView($("#_StoreView")[0]);
-
 
       $("#serverList").change(function () {
          DICOMwebJS.ServerConfiguration.BaseServerUrl = $("#serverList").val();
       });
+
+      if ($("#searchButton").length > 0) {
+         var model = new QueryModel();
+         var rsProxy = new WadoRsProxy();
+         var uriProxy = new WadoUriProxy();
+         var qidoProxy = new QidoRsProxy();
+         var rsService = new RetrieveService(rsProxy);
+         var delowProxy = new DelowRsProxy();
+         var queryView = new QueryView(document.getElementById("#content"), model, rsService);
+         var queryController = new QueryController(queryView, model, qidoProxy, rsService, uriProxy, delowProxy);
+         var viewer = new WadoViewer($(".dicomWeb-js-viewer"), uriProxy);
+
+         queryView.instanceViewRequest.on((args) => {
+
+            $('.nav-tabs a[href="#_ViewerView"]').tab('show');
+
+            viewer.loadInstance(args.InstanceParams);
+         });
+
+
+         $("#SelectedTransferSyntax").change(function () {
+            var loadedInstance = viewer.loadedInstance();
+
+            if (null != loadedInstance) {
+               viewer.loadInstance(loadedInstance, $("#SelectedTransferSyntax").val());
+            }
+
+         });
+
+         new StoreView($("#_StoreView")[0]);
+      }
    }
 
    //public initViewer() {

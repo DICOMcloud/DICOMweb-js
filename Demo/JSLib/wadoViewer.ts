@@ -85,7 +85,9 @@ class WadoViewer
 
        try {
            var start = new Date().getTime();
-           cornerstone.loadAndCacheImage(imageId).done((image: any) => {
+           var promise = cornerstone.loadAndCacheImage(imageId);
+          
+           promise.done((image: any) => {
               console.log(image);
               var viewport = cornerstone.getDefaultViewportForImage(element, image);
               //$('#toggleModalityLUT').attr("checked",viewport.modalityLUT !== undefined);
@@ -154,10 +156,21 @@ class WadoViewer
               var time = end - start;
               $('#loadTime').text(time + "ms");
 
-           })
-            .fail(() => {
-                 new ModalDialog().showError("Error","Image Failed to load");
-              });
+           });
+          
+           promise.fail((xhr: XMLHttpRequest) => {
+              var errorText = "Image failed to load";
+
+              try {
+                 if ('TextDecoder' in window && xhr.response) {
+                    var enc = new TextDecoder();
+                    errorText = enc.decode(xhr.response);
+                 }
+              }
+              catch (error){ }
+
+              new ModalDialog().showError("Error - " + xhr.status, errorText );
+            });
        }
        catch(err) {
           new ModalDialog().showError("Error", err);

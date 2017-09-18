@@ -37,6 +37,10 @@
       if (data) {
          editorSession.setValue(data);
       }
+      else
+      {
+         editorSession.setValue("");
+      }
 
       if (editorMode) {
          editorSession.setMode(editorMode);
