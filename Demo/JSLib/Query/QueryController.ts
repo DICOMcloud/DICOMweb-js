@@ -128,6 +128,14 @@
          });
       });
 
+      this._queryView.showStudyViewer.on((args) => {
+         var studyUid = args.StudyParams.StudyInstanceUid;
+
+         var viewerUrl = DICOMwebJS.ServerConfiguration.getOhifViewerUrl(studyUid);
+
+         window.open(viewerUrl, "ohifViewer");
+      });
+
       this._queryModel.StudyQueryChangedEvent = () => {
          this.queryStudies();
       };

@@ -27,6 +27,7 @@ class QueryView
    private _onFrames = new LiteEvent<RsFramesEventArgs>();
    private _onWadoUri = new LiteEvent<WadoUriEventArgs>();
    private _onDeleteStudy = new LiteEvent<StudyEventArgs>();
+   private _onShowStudyViewer = new LiteEvent<StudyEventArgs>();
 
    private _onViewInstance = new LiteEvent<WadoUriEventArgs>();
 
@@ -58,8 +59,10 @@ class QueryView
    public get wadoUriRequest() { return this._onWadoUri; }
 
    public get deleteStudyRequest() { return this._onDeleteStudy; }
+   public get showStudyViewer() { return this._onShowStudyViewer; }
 
    public get instanceViewRequest() { return this._onViewInstance; }
+
    
    public clearInstanceMetadata()
    {
@@ -413,6 +416,14 @@ class QueryView
          return false;
       });
 
+      $item.find('*[data-pacs-ohifviewer]').on("click", (ev: JQueryEventObject) => {
+         var args = new StudyEventArgs(study);
+
+         this._onShowStudyViewer.trigger(args);
+
+         ev.preventDefault();
+         return false;
+      });
    }
 
    private registerSeriesEvents(series: SeriesParams, $item: JQuery, index:number) {

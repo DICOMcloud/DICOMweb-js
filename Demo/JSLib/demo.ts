@@ -12,6 +12,7 @@
 };
 
 declare var serverUrl: string;
+declare var ohifViewerUrl: string;
 
 class app {
 
@@ -28,7 +29,11 @@ class app {
       else {
          DICOMwebJS.ServerConfiguration.BaseServerUrl = $("#serverList").val();
       }
-      
+
+      if (typeof (ohifViewerUrl) != "undefined") {
+         DICOMwebJS.ServerConfiguration.OhifViewerUrl = ohifViewerUrl;
+      }
+
       this.initAuthentication();
 
       $("#serverList").change(function () {

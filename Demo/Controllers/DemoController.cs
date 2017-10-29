@@ -21,11 +21,11 @@ namespace DICOMwebJS.Demo
             }
         
             var serverUrl = ConfigurationManager.AppSettings["app:serverUrl"];
-            
+            var ohifViewerUrl = ConfigurationManager.AppSettings["app:ohifViewer"];
             
             serverUrl = serverUrl ?? "" ;
 
-            //ViewBag.serverUrl = serverUrl ;
+            ViewBag.ohifViewerUrl = ohifViewerUrl ;
             
             return View ( new ServersViewModel ( serverUrl.Split ( new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries ).
                                                 Select ( (string x )=> 

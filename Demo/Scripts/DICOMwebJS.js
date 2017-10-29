@@ -450,6 +450,11 @@ var DICOMwebJS;
             return DICOMwebJS.ServerConfiguration.BaseServerUrl + DICOMwebJS.ServerConfiguration.DelowRsPart;
         }
         ServerConfiguration.getDelowRsUrl = getDelowRsUrl;
+        function getOhifViewerUrl(studyInstanceUid) {
+            return DICOMwebJS.ServerConfiguration.OhifViewerUrl + "?url=" +
+                DICOMwebJS.ServerConfiguration.BaseServerUrl + "/ohif/study/" + studyInstanceUid + "/series";
+        }
+        ServerConfiguration.getOhifViewerUrl = getOhifViewerUrl;
     })(ServerConfiguration = DICOMwebJS.ServerConfiguration || (DICOMwebJS.ServerConfiguration = {}));
 })(DICOMwebJS || (DICOMwebJS = {}));
 var StowRsProxy = (function () {

@@ -77,6 +77,7 @@ declare class InstanceParams extends SeriesParams {
 declare module DICOMwebJS {
     module ServerConfiguration {
         var BaseServerUrl: string;
+        var OhifViewerUrl: string;
         var WadoUriPart: string;
         var WadoRsPart: string;
         var StowPart: string;
@@ -89,6 +90,7 @@ declare module DICOMwebJS {
         function getStowUrl(): string;
         function getQidoUrl(): string;
         function getDelowRsUrl(): string;
+        function getOhifViewerUrl(studyInstanceUid: string): string;
     }
 }
 declare class StowRsProxy {

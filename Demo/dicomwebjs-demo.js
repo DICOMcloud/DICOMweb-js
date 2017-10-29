@@ -1,8 +1,48 @@
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var appUtils;
+(function (appUtils) {
+    function download(data, filename) {
+        //http://stackoverflow.com/questions/16086162/handle-file-download-from-ajax-post/23797348#23797348
+        var blob = new Blob([data], { type: "application/octet-stream" });
+        if (typeof window.navigator.msSaveBlob !== 'undefined') {
+            // IE workaround for "HTML7007: One or more blob URLs were revoked by closing the blob for which they were created. These URLs will no longer resolve as the data backing the URL has been freed."
+            window.navigator.msSaveBlob(blob, filename);
+        }
+        else {
+            var URL = window.URL || window.webkitURL;
+            var downloadUrl = URL.createObjectURL(blob);
+            if (filename) {
+                // use HTML5 a[download] attribute to specify filename
+                var a = document.createElement("a");
+                // safari doesn't support this yet
+                if (typeof a.download === 'undefined') {
+                    window.location.assign(downloadUrl);
+                }
+                else {
+                    a.href = downloadUrl;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    //TODO: this should be added, need testing
+                    document.body.removeChild(a);
+                }
+            }
+            else {
+                window.location.assign(downloadUrl);
+            }
+        }
+    }
+    appUtils.download = download;
+})(appUtils || (appUtils = {}));
 var copyImageUrlView = (function () {
     function copyImageUrlView($parent, uriProxy) {
         this._$parent = $parent;
@@ -58,303 +98,6 @@ var copyImageUrlView = (function () {
     };
     return copyImageUrlView;
 }());
-var StoreResultView = (function () {
-    function StoreResultView($view, uriProxy) {
-        this.$view = $view;
-        this.$progress = this.$view.find(".progress").hide();
-        this.$alert = this.$view.find(".store-result-alert");
-        this.$resultBody = this.$view.find(".store-result-body").hide();
-        this.$resultTitle = this.$view.find(".store-result-title");
-        this.$resultContent = this.$view.find(".store-result-content");
-        this._copyImageView = new copyImageUrlView($view, uriProxy);
-    }
-    StoreResultView.prototype.showProgress = function () {
-        this.$resultBody.hide();
-        this.$progress.show();
-    };
-    StoreResultView.prototype.showSuccess = function (xmlData) {
-        var codeRenderer = new CodeRenderer();
-        this.$progress.hide();
-        this.$resultBody.show();
-        this.$alert.addClass("alert-success").removeClass("alert-danger");
-        this.$resultTitle.text("Success!");
-        if (xmlData) {
-            var $referencedInstance = $(xmlData).find("DicomAttribute[keyword='ReferencedInstanceSequence']");
-            var instanceUrl = $referencedInstance.find("DicomAttribute[keyword='RetrieveURI']").children("Value").text();
-            this._copyImageView.setUrl(instanceUrl);
-            codeRenderer.renderXml(this.$resultContent[0], this.getString(xmlData));
-        }
-        else {
-            this._copyImageView.setUrl("");
-            codeRenderer.renderXml(this.$resultContent[0], "");
-        }
-    };
-    StoreResultView.prototype.showError = function (xmlData, error) {
-        var codeRenderer = new CodeRenderer();
-        this.$progress.hide();
-        this.$resultBody.show();
-        this.$alert.addClass("alert-danger").removeClass("alert-success");
-        this.$resultTitle.text(error);
-        this._copyImageView.setUrl("");
-        if (xmlData) {
-            codeRenderer.renderXml(this.$resultContent[0], this.getString(xmlData));
-        }
-        else {
-            this._copyImageView.setUrl("");
-            codeRenderer.renderXml(this.$resultContent[0], "");
-        }
-    };
-    StoreResultView.prototype.hide = function () {
-        this.$view.hide();
-    };
-    StoreResultView.prototype.show = function () {
-        this.$view.show();
-    };
-    StoreResultView.prototype.getString = function (data) {
-        return data.xml ? data.xml : (new XMLSerializer()).serializeToString(data);
-    };
-    return StoreResultView;
-}());
-var StoreView = (function () {
-    function StoreView(parentElement) {
-        this._parent = parentElement;
-        this._resultView = new StoreResultView($(".store-result-view"), new WadoUriProxy(DICOMwebJS.ServerConfiguration.getWadoRsUrl()));
-        this._resultView.hide();
-        this.registerEvents();
-    }
-    StoreView.prototype.registerEvents = function () {
-        var _this = this;
-        $(this._parent).find("#addFileButton").click(function (e) {
-            e.preventDefault();
-            var newName = jQuery('#displayName').val();
-            // Initiate method calls using jQuery promises.
-            // Get the local file as an array buffer.
-            var getFile = _this.getFileBuffer();
-            var url = DICOMwebJS.ServerConfiguration.getStowUrl();
-            var anonymizedElementsQuery = _this.getAnonymizedElementsQuery();
-            getFile.done(function (arrayBuffer) {
-                var proxy = new StowRsProxy(url);
-                var dlg = new ModalDialog("#modal-alert");
-                _this._resultView.show();
-                _this._resultView.showProgress();
-                proxy.StoreInstance(arrayBuffer, null, anonymizedElementsQuery).done(function (xhr) {
-                    if (xhr.getResponseHeader("content-type").indexOf("application/json") >= 0) {
-                        dlg.showJson("JSON Store Response", JSON.parse(xhr.response));
-                    }
-                    else {
-                        _this._resultView.showSuccess(xhr.responseXML);
-                    }
-                })
-                    .fail(function (xhr) {
-                    //dlg.showText("Error Storing Dataset", xhr.response);
-                    _this._resultView.showError(xhr.responseXML, "Error Storing Dataset - " + xhr.statusText);
-                });
-            });
-        });
-    };
-    // Get the local file as an array buffer.
-    StoreView.prototype.getFileBuffer = function () {
-        var fileInput = $('#getFile');
-        var deferred = jQuery.Deferred();
-        var reader = new FileReader();
-        reader.onloadend = function (e) {
-            deferred.resolve(e.target.result);
-        };
-        reader.onerror = function (e) {
-            deferred.reject(e.target.error);
-        };
-        reader.readAsArrayBuffer(fileInput[0].files[0]);
-        return deferred.promise();
-    };
-    StoreView.prototype.getAnonymizedElementsQuery = function () {
-        var anonyElementsQuery = "";
-        $(this._parent).find(".app-anonymizer-field").each(function (index, element) {
-            var tagKey = $(element).attr("data-app-tag");
-            var tagValue = $(element).val();
-            if (tagValue !== "") {
-                anonyElementsQuery += tagKey + "=" + tagValue + "&";
-            }
-        });
-        return anonyElementsQuery;
-    };
-    return StoreView;
-}());
-var appUtils;
-(function (appUtils) {
-    function download(data, filename) {
-        //http://stackoverflow.com/questions/16086162/handle-file-download-from-ajax-post/23797348#23797348
-        var blob = new Blob([data], { type: "application/octet-stream" });
-        if (typeof window.navigator.msSaveBlob !== 'undefined') {
-            // IE workaround for "HTML7007: One or more blob URLs were revoked by closing the blob for which they were created. These URLs will no longer resolve as the data backing the URL has been freed."
-            window.navigator.msSaveBlob(blob, filename);
-        }
-        else {
-            var URL = window.URL || window.webkitURL;
-            var downloadUrl = URL.createObjectURL(blob);
-            if (filename) {
-                // use HTML5 a[download] attribute to specify filename
-                var a = document.createElement("a");
-                // safari doesn't support this yet
-                if (typeof a.download === 'undefined') {
-                    window.location.assign(downloadUrl);
-                }
-                else {
-                    a.href = downloadUrl;
-                    a.download = filename;
-                    document.body.appendChild(a);
-                    a.click();
-                    //TODO: this should be added, need testing
-                    document.body.removeChild(a);
-                }
-            }
-            else {
-                window.location.assign(downloadUrl);
-            }
-        }
-    }
-    appUtils.download = download;
-})(appUtils || (appUtils = {}));
-cornerstoneWADOImageLoader.configure({
-    beforeSend: function (xhr) {
-        // Add custom headers here (e.g. auth tokens)
-        //xhr.setRequestHeader('x-auth-token', 'my auth token');
-        if (DICOMwebJS.ServerConfiguration.IncludeAuthorizationHeader) {
-            xhr.setRequestHeader("Authorization", DICOMwebJS.ServerConfiguration.SecurityToken);
-        }
-    }
-});
-var WadoViewer = (function () {
-    function WadoViewer($parentView, uriProxy) {
-        var _this = this;
-        this._loaded = false;
-        this._$parentView = $parentView;
-        this._viewerElement = $parentView.find('#dicomImage').get(0);
-        this._uriProxy = uriProxy;
-        this._copyImageView = new copyImageUrlView($parentView, uriProxy);
-        cornerstone.enable(this._viewerElement);
-        this.configureWebWorker();
-        $(window).resize(function () {
-            cornerstone.resize(_this._viewerElement, true);
-        });
-    }
-    WadoViewer.prototype.configureWebWorker = function () {
-        var config = {
-            webWorkerPath: 'bower_components/cornerstoneWADOImageLoader/dist/cornerstoneWADOImageLoaderWebWorker.min.js',
-            taskConfiguration: {
-                'decodeTask': {
-                    codecsPath: 'cornerstoneWADOImageLoaderCodecs.min.js'
-                }
-            }
-        };
-        cornerstoneWADOImageLoader.webWorkerManager.initialize(config);
-    };
-    WadoViewer.prototype.loadInstance = function (instance, transferSyntax) {
-        if (transferSyntax === void 0) { transferSyntax = null; }
-        var dicomInstance = {
-            studyUID: instance.StudyInstanceUid,
-            seriesUID: instance.SeriesInstanceUID,
-            instanceUID: instance.SopInstanceUid
-        };
-        var imageParam = { frameNumber: null, transferSyntax: transferSyntax };
-        var instanceUrl = this._uriProxy.createUrl(dicomInstance, MimeTypes.DICOM, imageParam);
-        //add this "wadouri:" so it loads the wado uri loader, 
-        //the loader trims this prefix from the url
-        this.loadAndViewImage("wadouri:" + instanceUrl);
-        this._loadedInstance = instance;
-        this._transferSyntax = transferSyntax;
-        cornerstone.resize(this._viewerElement, true);
-        this._copyImageView.setUrl(instanceUrl);
-    };
-    WadoViewer.prototype.loadedInstance = function () {
-        return this._loadedInstance;
-    };
-    WadoViewer.prototype.loadAndViewImage = function (imageId) {
-        var _this = this;
-        var element = this._viewerElement;
-        try {
-            var start = new Date().getTime();
-            var promise = cornerstone.loadAndCacheImage(imageId);
-            promise.done(function (image) {
-                console.log(image);
-                var viewport = cornerstone.getDefaultViewportForImage(element, image);
-                //$('#toggleModalityLUT').attr("checked",viewport.modalityLUT !== undefined);
-                //$('#toggleVOILUT').attr("checked",viewport.voiLUT !== undefined);
-                cornerstone.displayImage(element, image, viewport);
-                if (_this._loaded === false) {
-                    cornerstoneTools.mouseInput.enable(element);
-                    cornerstoneTools.mouseWheelInput.enable(element);
-                    cornerstoneTools.wwwc.activate(element, 1); // ww/wc is the default tool for left mouse button
-                    cornerstoneTools.pan.activate(element, 2); // pan is the default tool for middle mouse button
-                    cornerstoneTools.zoom.activate(element, 4); // zoom is the default tool for right mouse button
-                    cornerstoneTools.zoomWheel.activate(element); // zoom is the default tool for middle mouse wheel
-                    cornerstoneTools.wwwcTouchDrag.activate(element);
-                    _this._loaded = true;
-                }
-                function getTransferSyntax() {
-                    var value = image.data.string('x00020010');
-                    return value + ' [' + uids[value] + ']';
-                }
-                function getSopClass() {
-                    var value = image.data.string('x00080016');
-                    return value + ' [' + uids[value] + ']';
-                }
-                function getPixelRepresentation() {
-                    var value = image.data.uint16('x00280103');
-                    if (value === undefined) {
-                        return;
-                    }
-                    return value + (value === 0 ? ' (unsigned)' : ' (signed)');
-                }
-                function getPlanarConfiguration() {
-                    var value = image.data.uint16('x00280006');
-                    if (value === undefined) {
-                        return;
-                    }
-                    return value + (value === 0 ? ' (pixel)' : ' (plane)');
-                }
-                $('#transferSyntax').text(getTransferSyntax());
-                $('#sopClass').text(getSopClass());
-                $('#samplesPerPixel').text(image.data.uint16('x00280002'));
-                $('#photometricInterpretation').text(image.data.string('x00280004'));
-                $('#numberOfFrames').text(image.data.string('x00280008'));
-                $('#planarConfiguration').text(getPlanarConfiguration());
-                $('#rows').text(image.data.uint16('x00280010'));
-                $('#columns').text(image.data.uint16('x00280011'));
-                $('#pixelSpacing').text(image.data.string('x00280030'));
-                $('#bitsAllocated').text(image.data.uint16('x00280100'));
-                $('#bitsStored').text(image.data.uint16('x00280101'));
-                $('#highBit').text(image.data.uint16('x00280102'));
-                $('#pixelRepresentation').text(getPixelRepresentation());
-                $('#windowCenter').text(image.data.string('x00281050'));
-                $('#windowWidth').text(image.data.string('x00281051'));
-                $('#rescaleIntercept').text(image.data.string('x00281052'));
-                $('#rescaleSlope').text(image.data.string('x00281053'));
-                $('#basicOffsetTable').text(image.data.elements.x7fe00010.basicOffsetTable ? image.data.elements.x7fe00010.basicOffsetTable.length : '');
-                $('#fragments').text(image.data.elements.x7fe00010.fragments ? image.data.elements.x7fe00010.fragments.length : '');
-                $('#minStoredPixelValue').text(image.minPixelValue);
-                $('#maxStoredPixelValue').text(image.maxPixelValue);
-                var end = new Date().getTime();
-                var time = end - start;
-                $('#loadTime').text(time + "ms");
-            });
-            promise.fail(function (xhr) {
-                var errorText = "Image failed to load";
-                try {
-                    if ('TextDecoder' in window && xhr.response) {
-                        var enc = new TextDecoder();
-                        errorText = enc.decode(xhr.response);
-                    }
-                }
-                catch (error) { }
-                new ModalDialog().showError("Error - " + xhr.status, errorText);
-            });
-        }
-        catch (err) {
-            new ModalDialog().showError("Error", err);
-        }
-    };
-    return WadoViewer;
-}());
 window.onload = function () {
     new app();
     $(document).ajaxError(function (event, request, settings, thrownError) {
@@ -375,6 +118,9 @@ var app = (function () {
         }
         else {
             DICOMwebJS.ServerConfiguration.BaseServerUrl = $("#serverList").val();
+        }
+        if (typeof (ohifViewerUrl) != "undefined") {
+            DICOMwebJS.ServerConfiguration.OhifViewerUrl = ohifViewerUrl;
         }
         this.initAuthentication();
         $("#serverList").change(function () {
@@ -546,6 +292,11 @@ var QueryController = (function () {
                 .fail(function (error) {
                 new ModalDialog().showError("Error", error);
             });
+        });
+        this._queryView.showStudyViewer.on(function (args) {
+            var studyUid = args.StudyParams.StudyInstanceUid;
+            var viewerUrl = DICOMwebJS.ServerConfiguration.getOhifViewerUrl(studyUid);
+            window.open(viewerUrl, "ohifViewer");
         });
         this._queryModel.StudyQueryChangedEvent = function () {
             _this.queryStudies();
@@ -889,6 +640,7 @@ var QueryView = (function () {
         this._onFrames = new LiteEvent();
         this._onWadoUri = new LiteEvent();
         this._onDeleteStudy = new LiteEvent();
+        this._onShowStudyViewer = new LiteEvent();
         this._onViewInstance = new LiteEvent();
         this._ViewClassName = {
             $SeriesQuery: ".series-query", $StudyQuery: ".studies-query", $InstanceQuery: ".instance-query",
@@ -942,6 +694,11 @@ var QueryView = (function () {
     });
     Object.defineProperty(QueryView.prototype, "deleteStudyRequest", {
         get: function () { return this._onDeleteStudy; },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(QueryView.prototype, "showStudyViewer", {
+        get: function () { return this._onShowStudyViewer; },
         enumerable: true,
         configurable: true
     });
@@ -1201,6 +958,12 @@ var QueryView = (function () {
             ev.preventDefault();
             return false;
         });
+        $item.find('*[data-pacs-ohifviewer]').on("click", function (ev) {
+            var args = new StudyEventArgs(study);
+            _this._onShowStudyViewer.trigger(args);
+            ev.preventDefault();
+            return false;
+        });
     };
     QueryView.prototype.registerSeriesEvents = function (series, $item, index) {
         var _this = this;
@@ -1394,6 +1157,127 @@ var RetrieveService = (function () {
         });
     };
     return RetrieveService;
+}());
+var StoreResultView = (function () {
+    function StoreResultView($view, uriProxy) {
+        this.$view = $view;
+        this.$progress = this.$view.find(".progress").hide();
+        this.$alert = this.$view.find(".store-result-alert");
+        this.$resultBody = this.$view.find(".store-result-body").hide();
+        this.$resultTitle = this.$view.find(".store-result-title");
+        this.$resultContent = this.$view.find(".store-result-content");
+        this._copyImageView = new copyImageUrlView($view, uriProxy);
+    }
+    StoreResultView.prototype.showProgress = function () {
+        this.$resultBody.hide();
+        this.$progress.show();
+    };
+    StoreResultView.prototype.showSuccess = function (xmlData) {
+        var codeRenderer = new CodeRenderer();
+        this.$progress.hide();
+        this.$resultBody.show();
+        this.$alert.addClass("alert-success").removeClass("alert-danger");
+        this.$resultTitle.text("Success!");
+        if (xmlData) {
+            var $referencedInstance = $(xmlData).find("DicomAttribute[keyword='ReferencedInstanceSequence']");
+            var instanceUrl = $referencedInstance.find("DicomAttribute[keyword='RetrieveURI']").children("Value").text();
+            this._copyImageView.setUrl(instanceUrl);
+            codeRenderer.renderXml(this.$resultContent[0], this.getString(xmlData));
+        }
+        else {
+            this._copyImageView.setUrl("");
+            codeRenderer.renderXml(this.$resultContent[0], "");
+        }
+    };
+    StoreResultView.prototype.showError = function (xmlData, error) {
+        var codeRenderer = new CodeRenderer();
+        this.$progress.hide();
+        this.$resultBody.show();
+        this.$alert.addClass("alert-danger").removeClass("alert-success");
+        this.$resultTitle.text(error);
+        this._copyImageView.setUrl("");
+        if (xmlData) {
+            codeRenderer.renderXml(this.$resultContent[0], this.getString(xmlData));
+        }
+        else {
+            this._copyImageView.setUrl("");
+            codeRenderer.renderXml(this.$resultContent[0], "");
+        }
+    };
+    StoreResultView.prototype.hide = function () {
+        this.$view.hide();
+    };
+    StoreResultView.prototype.show = function () {
+        this.$view.show();
+    };
+    StoreResultView.prototype.getString = function (data) {
+        return data.xml ? data.xml : (new XMLSerializer()).serializeToString(data);
+    };
+    return StoreResultView;
+}());
+var StoreView = (function () {
+    function StoreView(parentElement) {
+        this._parent = parentElement;
+        this._resultView = new StoreResultView($(".store-result-view"), new WadoUriProxy(DICOMwebJS.ServerConfiguration.getWadoRsUrl()));
+        this._resultView.hide();
+        this.registerEvents();
+    }
+    StoreView.prototype.registerEvents = function () {
+        var _this = this;
+        $(this._parent).find("#addFileButton").click(function (e) {
+            e.preventDefault();
+            var newName = jQuery('#displayName').val();
+            // Initiate method calls using jQuery promises.
+            // Get the local file as an array buffer.
+            var getFile = _this.getFileBuffer();
+            var url = DICOMwebJS.ServerConfiguration.getStowUrl();
+            var anonymizedElementsQuery = _this.getAnonymizedElementsQuery();
+            getFile.done(function (arrayBuffer) {
+                var proxy = new StowRsProxy(url);
+                var dlg = new ModalDialog("#modal-alert");
+                _this._resultView.show();
+                _this._resultView.showProgress();
+                proxy.StoreInstance(arrayBuffer, null, anonymizedElementsQuery).done(function (xhr) {
+                    if (xhr.getResponseHeader("content-type").indexOf("application/json") >= 0) {
+                        dlg.showJson("JSON Store Response", JSON.parse(xhr.response));
+                    }
+                    else {
+                        _this._resultView.showSuccess(xhr.responseXML);
+                    }
+                })
+                    .fail(function (xhr) {
+                    //dlg.showText("Error Storing Dataset", xhr.response);
+                    _this._resultView.showError(xhr.responseXML, "Error Storing Dataset - " + xhr.statusText);
+                });
+            });
+        });
+    };
+    // Get the local file as an array buffer.
+    StoreView.prototype.getFileBuffer = function () {
+        var fileInput = $('#getFile');
+        var deferred = jQuery.Deferred();
+        var reader = new FileReader();
+        reader.onloadend = function (e) {
+            deferred.resolve(e.target.result);
+        };
+        reader.onerror = function (e) {
+            deferred.reject(e.target.error);
+        };
+        reader.readAsArrayBuffer(fileInput[0].files[0]);
+        return deferred.promise();
+    };
+    StoreView.prototype.getAnonymizedElementsQuery = function () {
+        var anonyElementsQuery = "";
+        $(this._parent).find(".app-anonymizer-field").each(function (index, element) {
+            var tagKey = $(element).attr("data-app-tag");
+            var tagValue = $(element).val();
+            if (tagValue !== "") {
+                anonyElementsQuery += tagKey + "=" + tagValue + "&";
+            }
+        });
+        return anonyElementsQuery;
+    };
+    return StoreView;
 }());
 var CodeRenderer = (function () {
     function CodeRenderer() {
@@ -1651,4 +1535,145 @@ var WadoUriEventArgs = (function (_super) {
     ;
     return WadoUriEventArgs;
 }(RsInstanceEventArgs));
+cornerstoneWADOImageLoader.configure({
+    beforeSend: function (xhr) {
+        // Add custom headers here (e.g. auth tokens)
+        //xhr.setRequestHeader('x-auth-token', 'my auth token');
+        if (DICOMwebJS.ServerConfiguration.IncludeAuthorizationHeader) {
+            xhr.setRequestHeader("Authorization", DICOMwebJS.ServerConfiguration.SecurityToken);
+        }
+    }
+});
+var WadoViewer = (function () {
+    function WadoViewer($parentView, uriProxy) {
+        var _this = this;
+        this._loaded = false;
+        this._$parentView = $parentView;
+        this._viewerElement = $parentView.find('#dicomImage').get(0);
+        this._uriProxy = uriProxy;
+        this._copyImageView = new copyImageUrlView($parentView, uriProxy);
+        cornerstone.enable(this._viewerElement);
+        this.configureWebWorker();
+        $(window).resize(function () {
+            cornerstone.resize(_this._viewerElement, true);
+        });
+    }
+    WadoViewer.prototype.configureWebWorker = function () {
+        var config = {
+            webWorkerPath: 'bower_components/cornerstoneWADOImageLoader/dist/cornerstoneWADOImageLoaderWebWorker.min.js',
+            taskConfiguration: {
+                'decodeTask': {
+                    codecsPath: 'cornerstoneWADOImageLoaderCodecs.min.js'
+                }
+            }
+        };
+        cornerstoneWADOImageLoader.webWorkerManager.initialize(config);
+    };
+    WadoViewer.prototype.loadInstance = function (instance, transferSyntax) {
+        if (transferSyntax === void 0) { transferSyntax = null; }
+        var dicomInstance = {
+            studyUID: instance.StudyInstanceUid,
+            seriesUID: instance.SeriesInstanceUID,
+            instanceUID: instance.SopInstanceUid
+        };
+        var imageParam = { frameNumber: null, transferSyntax: transferSyntax };
+        var instanceUrl = this._uriProxy.createUrl(dicomInstance, MimeTypes.DICOM, imageParam);
+        //add this "wadouri:" so it loads the wado uri loader, 
+        //the loader trims this prefix from the url
+        this.loadAndViewImage("wadouri:" + instanceUrl);
+        this._loadedInstance = instance;
+        this._transferSyntax = transferSyntax;
+        cornerstone.resize(this._viewerElement, true);
+        this._copyImageView.setUrl(instanceUrl);
+    };
+    WadoViewer.prototype.loadedInstance = function () {
+        return this._loadedInstance;
+    };
+    WadoViewer.prototype.loadAndViewImage = function (imageId) {
+        var _this = this;
+        var element = this._viewerElement;
+        try {
+            var start = new Date().getTime();
+            var promise = cornerstone.loadAndCacheImage(imageId);
+            promise.done(function (image) {
+                console.log(image);
+                var viewport = cornerstone.getDefaultViewportForImage(element, image);
+                //$('#toggleModalityLUT').attr("checked",viewport.modalityLUT !== undefined);
+                //$('#toggleVOILUT').attr("checked",viewport.voiLUT !== undefined);
+                cornerstone.displayImage(element, image, viewport);
+                if (_this._loaded === false) {
+                    cornerstoneTools.mouseInput.enable(element);
+                    cornerstoneTools.mouseWheelInput.enable(element);
+                    cornerstoneTools.wwwc.activate(element, 1); // ww/wc is the default tool for left mouse button
+                    cornerstoneTools.pan.activate(element, 2); // pan is the default tool for middle mouse button
+                    cornerstoneTools.zoom.activate(element, 4); // zoom is the default tool for right mouse button
+                    cornerstoneTools.zoomWheel.activate(element); // zoom is the default tool for middle mouse wheel
+                    cornerstoneTools.wwwcTouchDrag.activate(element);
+                    _this._loaded = true;
+                }
+                function getTransferSyntax() {
+                    var value = image.data.string('x00020010');
+                    return value + ' [' + uids[value] + ']';
+                }
+                function getSopClass() {
+                    var value = image.data.string('x00080016');
+                    return value + ' [' + uids[value] + ']';
+                }
+                function getPixelRepresentation() {
+                    var value = image.data.uint16('x00280103');
+                    if (value === undefined) {
+                        return;
+                    }
+                    return value + (value === 0 ? ' (unsigned)' : ' (signed)');
+                }
+                function getPlanarConfiguration() {
+                    var value = image.data.uint16('x00280006');
+                    if (value === undefined) {
+                        return;
+                    }
+                    return value + (value === 0 ? ' (pixel)' : ' (plane)');
+                }
+                $('#transferSyntax').text(getTransferSyntax());
+                $('#sopClass').text(getSopClass());
+                $('#samplesPerPixel').text(image.data.uint16('x00280002'));
+                $('#photometricInterpretation').text(image.data.string('x00280004'));
+                $('#numberOfFrames').text(image.data.string('x00280008'));
+                $('#planarConfiguration').text(getPlanarConfiguration());
+                $('#rows').text(image.data.uint16('x00280010'));
+                $('#columns').text(image.data.uint16('x00280011'));
+                $('#pixelSpacing').text(image.data.string('x00280030'));
+                $('#bitsAllocated').text(image.data.uint16('x00280100'));
+                $('#bitsStored').text(image.data.uint16('x00280101'));
+                $('#highBit').text(image.data.uint16('x00280102'));
+                $('#pixelRepresentation').text(getPixelRepresentation());
+                $('#windowCenter').text(image.data.string('x00281050'));
+                $('#windowWidth').text(image.data.string('x00281051'));
+                $('#rescaleIntercept').text(image.data.string('x00281052'));
+                $('#rescaleSlope').text(image.data.string('x00281053'));
+                $('#basicOffsetTable').text(image.data.elements.x7fe00010.basicOffsetTable ? image.data.elements.x7fe00010.basicOffsetTable.length : '');
+                $('#fragments').text(image.data.elements.x7fe00010.fragments ? image.data.elements.x7fe00010.fragments.length : '');
+                $('#minStoredPixelValue').text(image.minPixelValue);
+                $('#maxStoredPixelValue').text(image.maxPixelValue);
+                var end = new Date().getTime();
+                var time = end - start;
+                $('#loadTime').text(time + "ms");
+            });
+            promise.fail(function (xhr) {
+                var errorText = "Image failed to load";
+                try {
+                    if ('TextDecoder' in window && xhr.response) {
+                        var enc = new TextDecoder();
+                        errorText = enc.decode(xhr.response);
+                    }
+                }
+                catch (error) { }
+                new ModalDialog().showError("Error - " + xhr.status, errorText);
+            });
+        }
+        catch (err) {
+            new ModalDialog().showError("Error", err);
+        }
+    };
+    return WadoViewer;
+}());
 //# sourceMappingURL=dicomwebjs-demo.js.map
