@@ -1,4 +1,6 @@
-﻿class StoreView
+﻿declare var dcloudMaxUpload: number;
+
+class StoreView
 {
    private _parent: HTMLElement;
    private _resultView: StoreResultView;
@@ -16,6 +18,17 @@
 
    private registerEvents()
    {
+      //https://stackoverflow.com/questions/15854946/how-do-i-limit-the-number-of-file-upload-in-html
+
+      if (typeof (dcloudMaxUpload) !== "undefined" && dcloudMaxUpload > 0) {
+         $('#getFile').change(function () {
+            if (this.files.length > dcloudMaxUpload) {
+               new ModalDialog().showError("Too many files", "Please select no more than " + dcloudMaxUpload + " files");
+               this.value = '';
+            }
+         });
+      }
+
       $(this._parent).find("#addFileButton").click((e) => {
          e.preventDefault();
          var newName = jQuery('#displayName').val();
@@ -27,13 +40,13 @@
          var anonymizedElementsQuery = this.getAnonymizedElementsQuery();
 
 
-         getFile.done((arrayBuffer: ArrayBuffer) => {
+         getFile.done((arrayBufferList: Array<ArrayBuffer>) => {
             var proxy = new StowRsProxy(url);
             var dlg = new ModalDialog("#modal-alert");
 
             this._resultView.show();
             this._resultView.showProgress();
-            proxy.StoreInstance(arrayBuffer, null, anonymizedElementsQuery).done ( (xhr: XMLHttpRequest) => {
+            proxy.StoreInstance(arrayBufferList, null, anonymizedElementsQuery).done ( (xhr: XMLHttpRequest) => {
 
                if (xhr.getResponseHeader("content-type").indexOf("application/json") >= 0) {
                   dlg.showJson("JSON Store Response", JSON.parse(xhr.response));
@@ -43,8 +56,14 @@
                }
             })
             .fail((xhr: XMLHttpRequest) => {
-               //dlg.showText("Error Storing Dataset", xhr.response);
-               this._resultView.showError(xhr.responseXML, "Error Storing Dataset - " + xhr.statusText);
+               if (xhr.status === 202) //Accepted
+               {
+                  this._resultView.showWarning(xhr.responseXML, "Some Errors during store  - " + xhr.statusText);
+               }
+               else
+               {
+                  this._resultView.showError(xhr.responseXML, "Error Storing Dataset - " + xhr.statusText);
+               }
             });
          });
       });
@@ -52,19 +71,22 @@
 
    // Get the local file as an array buffer.
    private getFileBuffer() {
-      var fileInput: any = $('#getFile');
+      var results: Array<ArrayBuffer> = [];
+      var fileInput: HTMLInputElement = <HTMLInputElement>$('#getFile')[0];
+      var promises: Array<JQueryPromise<ArrayBuffer>> = [];
       var deferred = jQuery.Deferred();
-      var reader = new FileReader();
+      var files = fileInput.files;
 
-      reader.onloadend = function (e: any) {
-         deferred.resolve(e.target.result);
+      for (var index = 0; index < files.length; index++)
+      {
+         var reader = new fileReaderAsync();
+
+         promises.push(reader.read(files[index]).done((result) => { results.push(result);}));
       }
 
-      reader.onerror = function (e: any) {
-         deferred.reject(e.target.error);
-      }
-
-      reader.readAsArrayBuffer(fileInput[0].files[0]);
+      $.when.apply($, promises).then(() => {
+         deferred.resolve(results);
+      });
 
       return deferred.promise();
    }
@@ -83,7 +105,4 @@
 
       return anonyElementsQuery;
    }
-
-
-
 }

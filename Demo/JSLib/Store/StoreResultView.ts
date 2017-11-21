@@ -36,7 +36,7 @@
       this.$progress.hide();
       this.$resultBody.show();
 
-      this.$alert.addClass("alert-success").removeClass("alert-danger");
+      this.setAlertClass("alert-success");
       this.$resultTitle.text("Success!");
 
       if (xmlData) {
@@ -55,13 +55,21 @@
    }
 
    public showError(xmlData: any, error: string) {
+      this.showFailure(xmlData, error, "alert-danger");
+   }
+
+   public showWarning(xmlData: any, error: string) {
+      this.showFailure(xmlData, error, "alert-warning");
+   }
+
+   private showFailure(xmlData: any, error: string, alertStyle:string) {
       var codeRenderer = new CodeRenderer();
 
 
       this.$progress.hide();
       this.$resultBody.show();
 
-      this.$alert.addClass("alert-danger").removeClass("alert-success");
+      this.setAlertClass(alertStyle);
 
       this.$resultTitle.text(error);
       this._copyImageView.setUrl("");
@@ -73,6 +81,11 @@
          this._copyImageView.setUrl("");
          codeRenderer.renderXml(this.$resultContent[0], "");
       }
+   }
+
+   private setAlertClass(alertClass)
+   {
+      this.$alert.removeClass("alert-success alert-warning alert-danger").addClass(alertClass);
    }
 
    public hide()

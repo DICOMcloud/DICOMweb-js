@@ -171,6 +171,7 @@
     <TypeScriptCompile Include="JSLib\Store\StoreResultView.ts" />
     <TypeScriptCompile Include="JSLib\Store\StoreView.ts" />
     <TypeScriptCompile Include="JSLib\appUtils.ts" />
+    <TypeScriptCompile Include="JSLib\Types\fileReaderAsync.ts" />
     <TypeScriptCompile Include="JSLib\wadoViewer.ts" />
     <Content Include="dicomwebjs-demo.js" />
     <Content Include="JSLib\uids.js" />
@@ -215,7 +216,9 @@
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
-    <Content Include="Views\Web.config" />
+    <Content Include="Views\Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />

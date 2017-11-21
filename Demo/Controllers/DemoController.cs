@@ -22,11 +22,13 @@ namespace DICOMwebJS.Demo
         
             var serverUrl = ConfigurationManager.AppSettings["app:serverUrl"];
             var ohifViewerUrl = ConfigurationManager.AppSettings["app:ohifViewer"];
+            var maxUpload = ConfigurationManager.AppSettings["app:maxUpload"];
             
             serverUrl = serverUrl ?? "" ;
 
             ViewBag.ohifViewerUrl = ohifViewerUrl ;
-            
+            ViewBag.maxUpload = (maxUpload != null) ? int.Parse(maxUpload) : -1 ;
+
             return View ( new ServersViewModel ( serverUrl.Split ( new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries ).
                                                 Select ( (string x )=> 
                                                 { 

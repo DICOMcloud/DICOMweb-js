@@ -1176,7 +1176,7 @@ var StoreResultView = (function () {
         var codeRenderer = new CodeRenderer();
         this.$progress.hide();
         this.$resultBody.show();
-        this.$alert.addClass("alert-success").removeClass("alert-danger");
+        this.setAlertClass("alert-success");
         this.$resultTitle.text("Success!");
         if (xmlData) {
             var $referencedInstance = $(xmlData).find("DicomAttribute[keyword='ReferencedInstanceSequence']");
@@ -1190,10 +1190,16 @@ var StoreResultView = (function () {
         }
     };
     StoreResultView.prototype.showError = function (xmlData, error) {
+        this.showFailure(xmlData, error, "alert-danger");
+    };
+    StoreResultView.prototype.showWarning = function (xmlData, error) {
+        this.showFailure(xmlData, error, "alert-warning");
+    };
+    StoreResultView.prototype.showFailure = function (xmlData, error, alertStyle) {
         var codeRenderer = new CodeRenderer();
         this.$progress.hide();
         this.$resultBody.show();
-        this.$alert.addClass("alert-danger").removeClass("alert-success");
+        this.setAlertClass(alertStyle);
         this.$resultTitle.text(error);
         this._copyImageView.setUrl("");
         if (xmlData) {
@@ -1203,6 +1209,9 @@ var StoreResultView = (function () {
             this._copyImageView.setUrl("");
             codeRenderer.renderXml(this.$resultContent[0], "");
         }
+    };
+    StoreResultView.prototype.setAlertClass = function (alertClass) {
+        this.$alert.removeClass("alert-success alert-warning alert-danger").addClass(alertClass);
     };
     StoreResultView.prototype.hide = function () {
         this.$view.hide();
@@ -1223,7 +1232,16 @@ var StoreView = (function () {
         this.registerEvents();
     }
     StoreView.prototype.registerEvents = function () {
+        //https://stackoverflow.com/questions/15854946/how-do-i-limit-the-number-of-file-upload-in-html
         var _this = this;
+        if (typeof (dcloudMaxUpload) !== "undefined" && dcloudMaxUpload > 0) {
+            $('#getFile').change(function () {
+                if (this.files.length > dcloudMaxUpload) {
+                    new ModalDialog().showError("Too many files", "Please select no more than " + dcloudMaxUpload + " files");
+                    this.value = '';
+                }
+            });
+        }
         $(this._parent).find("#addFileButton").click(function (e) {
             e.preventDefault();
             var newName = jQuery('#displayName').val();
@@ -1232,12 +1250,12 @@ var StoreView = (function () {
             var getFile = _this.getFileBuffer();
             var url = DICOMwebJS.ServerConfiguration.getStowUrl();
             var anonymizedElementsQuery = _this.getAnonymizedElementsQuery();
-            getFile.done(function (arrayBuffer) {
+            getFile.done(function (arrayBufferList) {
                 var proxy = new StowRsProxy(url);
                 var dlg = new ModalDialog("#modal-alert");
                 _this._resultView.show();
                 _this._resultView.showProgress();
-                proxy.StoreInstance(arrayBuffer, null, anonymizedElementsQuery).done(function (xhr) {
+                proxy.StoreInstance(arrayBufferList, null, anonymizedElementsQuery).done(function (xhr) {
                     if (xhr.getResponseHeader("content-type").indexOf("application/json") >= 0) {
                         dlg.showJson("JSON Store Response", JSON.parse(xhr.response));
                     }
@@ -1246,24 +1264,30 @@ var StoreView = (function () {
                     }
                 })
                     .fail(function (xhr) {
-                    //dlg.showText("Error Storing Dataset", xhr.response);
-                    _this._resultView.showError(xhr.responseXML, "Error Storing Dataset - " + xhr.statusText);
+                    if (xhr.status === 202) {
+                        _this._resultView.showWarning(xhr.responseXML, "Some Errors during store  - " + xhr.statusText);
+                    }
+                    else {
+                        _this._resultView.showError(xhr.responseXML, "Error Storing Dataset - " + xhr.statusText);
+                    }
                 });
             });
         });
     };
     // Get the local file as an array buffer.
     StoreView.prototype.getFileBuffer = function () {
-        var fileInput = $('#getFile');
+        var results = [];
+        var fileInput = $('#getFile')[0];
+        var promises = [];
         var deferred = jQuery.Deferred();
-        var reader = new FileReader();
-        reader.onloadend = function (e) {
-            deferred.resolve(e.target.result);
-        };
-        reader.onerror = function (e) {
-            deferred.reject(e.target.error);
-        };
-        reader.readAsArrayBuffer(fileInput[0].files[0]);
+        var files = fileInput.files;
+        for (var index = 0; index < files.length; index++) {
+            var reader = new fileReaderAsync();
+            promises.push(reader.read(files[index]).done(function (result) { results.push(result); }));
+        }
+        $.when.apply($, promises).then(function () {
+            deferred.resolve(results);
+        });
         return deferred.promise();
     };
     StoreView.prototype.getAnonymizedElementsQuery = function () {
@@ -1321,6 +1345,23 @@ var CodeRenderer = (function () {
         editor.resize();
     };
     return CodeRenderer;
+}());
+var fileReaderAsync = (function () {
+    function fileReaderAsync() {
+    }
+    fileReaderAsync.prototype.read = function (file) {
+        var deferred = $.Deferred();
+        var reader = new FileReader();
+        reader.onloadend = function (e) {
+            deferred.resolve(e.target.result);
+        };
+        reader.onerror = function (e) {
+            deferred.reject(e.target.error);
+        };
+        reader.readAsArrayBuffer(file);
+        return deferred.promise();
+    };
+    return fileReaderAsync;
 }());
 var LiteEvent = (function () {
     function LiteEvent() {

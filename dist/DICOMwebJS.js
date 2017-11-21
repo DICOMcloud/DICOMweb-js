@@ -485,7 +485,7 @@ var StowRsProxy = (function () {
         enumerable: true,
         configurable: true
     });
-    StowRsProxy.prototype.StoreInstance = function (fileBuffer, studyInstanceUID, query) {
+    StowRsProxy.prototype.StoreInstance = function (fileBufferList, studyInstanceUID, query) {
         var deffered = $.Deferred();
         var studyPart = (studyInstanceUID) ? "/studies/" + studyInstanceUID : "";
         var url = this.BaseUrl + studyPart + "?" + (query || "");
@@ -494,7 +494,7 @@ var StowRsProxy = (function () {
         var method = 'POST';
         var acceptHeader = "application/json, application/dicom+xml; q=0.9, */*; q = 0.1";
         var url = url;
-        var request = this.gen_multipart(" ", boundary, MimeTypes.DICOM, fileBuffer);
+        var request = this.gen_multipart(" ", boundary, MimeTypes.DICOM, fileBufferList);
         var xhr = new XMLHttpRequest();
         xhr.open(method, url, true);
         xhr.setRequestHeader("Content-Type", MimeTypes.getMultiPartAcceptHeader(MimeTypes.DICOM) + '; boundary="' + boundary + '"');
@@ -518,22 +518,33 @@ var StowRsProxy = (function () {
         xhr.send(request);
         return deffered.promise();
     };
-    StowRsProxy.prototype.gen_multipart = function (title, boundary, mimetype, byteBuffer) {
-        var buffer = new Uint8Array(byteBuffer);
-        var before = [title, "\r\n--", boundary, "\r\n", 'Content-Type:', mimetype, "\r\n\r\n"].join('');
+    StowRsProxy.prototype.gen_multipart = function (title, boundary, mimetype, byteBufferList) {
+        var before = ["\r\n--", boundary, "\r\n", 'Content-Type:', mimetype, "\r\n\r\n"].join('');
         var after = "\r\n--" + boundary + "--";
-        var size = before.length + buffer.byteLength + after.length;
+        var beforeArray = new Uint8Array(before.length);
+        var afterArray = new Uint8Array(after.length);
+        for (var i = 0; i < before.length; i++) {
+            beforeArray[i] = before.charCodeAt(i) & 0xff;
+        }
+        for (var j = 0; j < after.length; j++) {
+            afterArray[j] = after.charCodeAt(j) & 0xff;
+        }
+        var size = 0;
+        byteBufferList.forEach(function (byteBuffer) {
+            size += before.length + byteBuffer.byteLength;
+        });
+        size += after.length;
         var uint8array = new Uint8Array(size);
-        var i = 0;
-        for (; i < before.length; i++) {
-            uint8array[i] = before.charCodeAt(i) & 0xff;
+        var offset = 0;
+        for (var index = 0; index < byteBufferList.length; index++) {
+            var buffer = new Uint8Array(byteBufferList[index]);
+            uint8array.set(beforeArray, offset);
+            offset += beforeArray.byteLength;
+            uint8array.set(buffer, offset);
+            offset += buffer.byteLength;
         }
-        for (var j = 0; j < buffer.byteLength; i++, j++) {
-            uint8array[i] = buffer[j];
-        }
-        for (var j = 0; j < after.length; i++, j++) {
-            uint8array[i] = after.charCodeAt(j) & 0xff;
-        }
+        uint8array.set(afterArray, offset);
+        offset += afterArray.byteLength;
         return uint8array;
     };
     return StowRsProxy;
