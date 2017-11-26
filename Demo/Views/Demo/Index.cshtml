@@ -1,8 +1,7 @@
-﻿@model List<SelectListItem>
+﻿@using DICOMwebJS.Demo.Models
 
-@{
-    Layout = "../Shared/_Layout.cshtml";
-}
+@model List<SelectListItem>
+
 
 @{
     ViewBag.Title = "DICOMwebJS Demo";
@@ -70,23 +69,16 @@
 {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.8/ace.js"></script>
 
-    @if ( ViewBag.serverUrl != null )
-    {
-    <script>
-        var serverUrl = "@ViewBag.serverUrl";
-    </script>
-    }
-
-    @if (ViewBag.ohifViewerUrl != null)
+    @if (!string.IsNullOrWhiteSpace(@AppSettings.Current.OhifViewerUrl))
     {
         <script>
-            var ohifViewerUrl = "@ViewBag.ohifViewerUrl";
+            var ohifViewerUrl = "@AppSettings.Current.OhifViewerUrl";
         </script>
     }
 
     @if (ViewBag.maxUpload != null)
     {
-        <script>var dcloudMaxUpload = @ViewBag.maxUpload;</script>
+        <script>var dcloudMaxUpload = @AppSettings.Current.MaxUpload;</script>
     }
 
 

@@ -151,6 +151,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\AppSettings.cs" />
     <Compile Include="Models\ServersViewModel.cs" />
     <Compile Include="Models\MimeTypes.cs" />
     <Compile Include="Models\ToolbarViewModel.cs" />

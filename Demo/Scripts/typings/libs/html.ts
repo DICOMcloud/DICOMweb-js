@@ -10,5 +10,4 @@ interface Element {
    select: any;
 }
 
-declare function onAppLoaded();
 declare var TextDecoder: any;

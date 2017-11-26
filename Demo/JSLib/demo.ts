@@ -1,15 +1,10 @@
-﻿window.onload = () => {
+﻿jQuery(document).ready(() => {
    new app();
 
    $(document).ajaxError(function (event, request, settings, thrownError) {
       new ModalDialog().showError("Error", thrownError);
    });
-
-   if (typeof(onAppLoaded) != "undefined")
-   {
-      onAppLoaded();
-   }
-};
+});
 
 declare var serverUrl: string;
 declare var ohifViewerUrl: string;
