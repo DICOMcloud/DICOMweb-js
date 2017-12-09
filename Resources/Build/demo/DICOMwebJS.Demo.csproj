@@ -26,6 +26,7 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <WebGreaseLibPath>..\packages\WebGrease.1.5.2\lib</WebGreaseLibPath>
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -101,6 +102,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\..\..\Demo\Views\Shared\_CopyImageUrl.cshtml">
+      <Link>NuGet\Content\Views\Shared\_CopyImageUrl.cshtml</Link>
+    </Content>
     <None Include="..\..\..\dist\DICOMwebJS.js">
       <Link>NuGet\Content\Scripts\DICOMwebJS.js</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -116,10 +120,6 @@
     </None>
     <None Include="..\..\..\Demo\Views\Demo\_AlertDlg.cshtml">
       <Link>NuGet\Content\Views\Demo\_AlertDlg.cshtml</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\Demo\Views\Demo\_CopyImageUrl.cshtml">
-      <Link>NuGet\Content\Views\Demo\_CopyImageUrl.cshtml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\Demo\Views\Demo\_cornerstoneViewer.cshtml">
@@ -239,6 +239,10 @@
     </Compile>
     <Compile Include="..\..\..\Demo\Controllers\DemoController.cs">
       <Link>NuGet\Content\Controllers\DemoController.cs</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="..\..\..\Demo\Models\AppSettings.cs">
+      <Link>NuGet\Content\Models\AppSettings.cs</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="..\..\..\Demo\Models\MimeTypes.cs">
