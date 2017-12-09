@@ -31,10 +31,15 @@
            return DICOMwebJS.ServerConfiguration.BaseServerUrl + DICOMwebJS.ServerConfiguration.DelowRsPart;
         }
 
+        export function getOhifJsonEndpoint(studyInstanceUid: string): string
+        {
+           return DICOMwebJS.ServerConfiguration.BaseServerUrl + "/ohif/study/" + studyInstanceUid + "/series"
+        }
+
         export function getOhifViewerUrl(studyInstanceUid: string): string
         {
            return DICOMwebJS.ServerConfiguration.OhifViewerUrl + "?url=" +
-              DICOMwebJS.ServerConfiguration.BaseServerUrl + "/ohif/study/" + studyInstanceUid + "/series";
+              DICOMwebJS.ServerConfiguration.getOhifJsonEndpoint(studyInstanceUid);
         }
     }
 }

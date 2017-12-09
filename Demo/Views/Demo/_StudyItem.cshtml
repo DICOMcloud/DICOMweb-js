@@ -22,16 +22,20 @@
             <span data-pacs-accessionNumber="true"></span>
         </div>
     </div>
-    <div class="btn-group btn-group-justified" role="group" aria-label="...">
+
+    <div class="btn-group btn-group-justified my-btn-group" role="group" aria-label="...">
+
         @{
             var serverUrl = System.Configuration.ConfigurationManager.AppSettings["app:ohifViewer"];
             var showViewer = !string.IsNullOrWhiteSpace(serverUrl);
 
             if (showViewer)
             {
-                <a href="#" type="button" role="button" data-pacs-ohifviewer="" class="btn btn-sm btn-success">
-                    View Study
-                </a>
+                <div class="btn-group" role="group">
+                    <button type="button" data-pacs-ohifviewer="" class="btn btn-sm btn-success glyphicon glyphicon-new-window">
+                        View
+                    </button>
+                </div>
             }
             else
             {
@@ -46,26 +50,26 @@
                     </ul>
                 </div>
             }
+                <div class="btn-group" role="group">
+                    <button type="button" data-pacs-querySeries="" class="btn btn-sm btn-default glyphicon glyphicon-th"></button>
+                </div>
+                <div class="btn-group dropup" role="group">
+                    <button type="button" class="btn btn-default btn-sm dropdown-toggle glyphicon glyphicon-option-horizontal" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a href="#" data-pacs-deleteStudy="true">Delete</a></li>
+                        <li class="divider" role="separator"></li>
+                        <li><a href="#" data-pacs-study-json="true">RS-Meta (JSON)</a></li>
+                        <li><a href="#" data-pacs-study-xml>RS-Meta (XML)</a></li>
 
-            <div class="btn-group dropup">
-                <a href="#" type="button" role="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    More...
-                    <span class="caret"></span>
-                </a>
-                <ul class="dropdown-menu">
-                    <li><a href="#" data-pacs-deleteStudy="true">Delete</a></li>
-                    <li class="divider" role="separator"></li>
-                    <li><a href="#" data-pacs-study-json="true">RS-Meta (JSON)</a></li>
-                    <li><a href="#" data-pacs-study-xml>RS-Meta (XML)</a></li>
-
-                    @if (showViewer)
-                    {
+                        @if (showViewer)
+                        {
                         <li class="divider" role="separator"></li>
                         <li><a href="#" data-pacs-viewQidoStudy="json">QIDO (JSON)</a></li>
                         <li><a href="#" data-pacs-viewQidoStudy="xml">QIDO (XML)</a></li>
-                    }
-                </ul>
+                        }
+                    </ul>
+                </div>
+                }
             </div>
-        }
-    </div>
 </div>

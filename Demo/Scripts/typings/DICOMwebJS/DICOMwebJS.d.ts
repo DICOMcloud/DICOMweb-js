@@ -90,6 +90,7 @@ declare module DICOMwebJS {
         function getStowUrl(): string;
         function getQidoUrl(): string;
         function getDelowRsUrl(): string;
+        function getOhifJsonEndpoint(studyInstanceUid: string): string;
         function getOhifViewerUrl(studyInstanceUid: string): string;
     }
 }

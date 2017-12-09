@@ -5,7 +5,7 @@
    _retrieveService: RetrieveService;
    _wadoUriService: WadoUriProxy;
    _delowRsProxy: DelowRsProxy;
-
+   _viewer: WadoViewer;
    constructor
    (
       queryView: QueryView,
@@ -13,7 +13,8 @@
       queryService: QidoRsProxy,
       retrieveService: RetrieveService,
       wadoUriService: WadoUriProxy,
-      delowRsProxy: DelowRsProxy
+      delowRsProxy: DelowRsProxy,
+      viewer: WadoViewer
    ) {
       this._queryView = queryView;
       this._queryModel = queryModel;
@@ -21,12 +22,30 @@
       this._retrieveService = retrieveService;
       this._wadoUriService = wadoUriService;
       this._delowRsProxy = delowRsProxy;
-
+      this._viewer = viewer;
       this.registerEvents();
    }
 
    private registerEvents()
    {
+      this._queryView.instanceViewRequest.on((args) => {
+         let dicomInstance: CommonDicomInstanceParams = {
+            studyUID: args.InstanceParams.StudyInstanceUid,
+            seriesUID: args.InstanceParams.SeriesInstanceUID,
+            instanceUID: args.InstanceParams.SopInstanceUid
+         };
+
+         this._viewer.loadInstance(dicomInstance);
+      });
+
+      this._queryView.previewStudy.on((args) => {
+         var query = new StudyParams();
+
+         query.StudyInstanceUid = args.StudyParams.StudyInstanceUid;
+
+         this._viewer.loadStudy(query);
+      });
+
       this._queryView.qidoStudy.on((args:QidoRsEventArgs) => {
          var query = new StudyParams();
 
@@ -132,7 +151,7 @@
          var studyUid = args.StudyParams.StudyInstanceUid;
 
          var viewerUrl = DICOMwebJS.ServerConfiguration.getOhifViewerUrl(studyUid);
-
+         this._queryModel.selectedStudy()
          window.open(viewerUrl, "ohifViewer");
       });
 
@@ -140,11 +159,11 @@
          this.queryStudies();
       };
 
-      this._queryModel.SelectedStudyChangedEvent.on ( () => {
+      this._queryView.querySeries.on(() => {
          this.querySeries(this._queryModel.selectedStudy());
       });
 
-      this._queryModel.SelectedSeriesChangedEvent.on ( () => {
+      this._queryView.queryInstances.on(() => {
          this.queryInstances(this._queryModel.selectedSeries());
       });
    }

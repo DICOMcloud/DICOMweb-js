@@ -19,6 +19,7 @@ class QueryView
    private _$instanceView: JQuery;
 
    //EVENTS
+   private _onPreviewStudy = new LiteEvent<StudyEventArgs>();
    private _onQidoStudy = new LiteEvent<QidoRsEventArgs>();
    private _onQidoSeries = new LiteEvent<QidoRsEventArgs>();
    private _onQidoInstance = new LiteEvent<QidoRsEventArgs>();
@@ -28,6 +29,9 @@ class QueryView
    private _onWadoUri = new LiteEvent<WadoUriEventArgs>();
    private _onDeleteStudy = new LiteEvent<StudyEventArgs>();
    private _onShowStudyViewer = new LiteEvent<StudyEventArgs>();
+
+   private _onQuerySeries = new LiteEvent<void>();
+   private _onQueryInstances = new LiteEvent<void>();
 
    private _onViewInstance = new LiteEvent<WadoUriEventArgs>();
 
@@ -60,9 +64,11 @@ class QueryView
 
    public get deleteStudyRequest() { return this._onDeleteStudy; }
    public get showStudyViewer() { return this._onShowStudyViewer; }
-
+   public get previewStudy() { return this._onPreviewStudy; }
    public get instanceViewRequest() { return this._onViewInstance; }
-
+   public get querySeries() { return this._onQuerySeries; }
+   public get queryInstances() { return this._onQueryInstances; }
+   
    
    public clearInstanceMetadata()
    {
@@ -360,12 +366,13 @@ class QueryView
    private registerStudyEvents(study: StudyParams, $item: JQuery, index: number)
    {
       $item.find(".thumbnail").on("click", (ev: JQueryEventObject) => {
+         var args = new StudyEventArgs(study);
+
+         this._onPreviewStudy.trigger(args);
+
          this._model.SelectedStudyIndex = index;
 
-         $("#studyCollapse").collapse("hide");
-
          ev.preventDefault();
-
          return false;
       });
 
@@ -424,11 +431,27 @@ class QueryView
          ev.preventDefault();
          return false;
       });
+
+      $item.find('*[data-pacs-querySeries]').on("click", (ev: JQueryEventObject) => {
+         
+         $("#studyCollapse").collapse("hide");
+
+         this._model.SelectedStudyIndex = index;
+
+         this._onQuerySeries.trigger();
+
+         ev.preventDefault();
+
+         return false;
+      });
    }
 
    private registerSeriesEvents(series: SeriesParams, $item: JQuery, index:number) {
       $item.find(".panel-body").on("click", (ev: Event) => {
+
          this._model.SelectedSeriesIndex = index;
+
+         this._onQueryInstances.trigger();
 
          $("#seriesCollapse").collapse("hide");
 

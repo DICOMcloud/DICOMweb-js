@@ -264,23 +264,43 @@ cornerstoneWADOImageLoader.configure({
         }
     }
 });
+;
 var WadoViewer = (function () {
     function WadoViewer($parentView, uriProxy) {
         var _this = this;
         this._loaded = false;
+        this._mouseActionsButtons = new ViewerMouseButtons();
+        this.WADO_IMAGE_LOADER_PREFIX = "wadouri:";
         this._$parentView = $parentView;
         this._viewerElement = $parentView.find('#dicomImage').get(0);
         this._uriProxy = uriProxy;
         this._copyImageView = new copyImageUrlView($parentView, uriProxy);
+        this._seriesNavigator = new SeriesNavigator(this);
+        this._instanceSlider = new InstanceSlider(this);
         cornerstone.enable(this._viewerElement);
         this.configureWebWorker();
+        $(this._viewerElement).on('CornerstoneNewImage', function (event, e) {
+            _this.onNewImage(e);
+        });
+        $(this._$parentView).find("input[name=defaultButtonTool]").change(function (eventObj) {
+            var element = eventObj.target;
+            if (element.value == "WL") {
+                _this._mouseActionsButtons.DefaultButton = _this._mouseActionsButtons.MouseActions.WL;
+            }
+            else {
+                _this._mouseActionsButtons.DefaultButton = _this._mouseActionsButtons.MouseActions.Sroll;
+            }
+            if (_this._loaded) {
+                _this._mouseActionsButtons.applyMouseAction(_this._viewerElement);
+            }
+        });
         $(window).resize(function () {
             cornerstone.resize(_this._viewerElement, true);
         });
     }
     WadoViewer.prototype.configureWebWorker = function () {
         var config = {
-            webWorkerPath: 'bower_components/cornerstoneWADOImageLoader/dist/cornerstoneWADOImageLoaderWebWorker.min.js',
+            webWorkerPath: location.protocol + "//" + location.host + '/bower_components/cornerstoneWADOImageLoader/dist/cornerstoneWADOImageLoaderWebWorker.min.js',
             taskConfiguration: {
                 'decodeTask': {
                     codecsPath: 'cornerstoneWADOImageLoaderCodecs.min.js'
@@ -289,48 +309,108 @@ var WadoViewer = (function () {
         };
         cornerstoneWADOImageLoader.webWorkerManager.initialize(config);
     };
-    WadoViewer.prototype.loadInstance = function (instance, transferSyntax) {
-        if (transferSyntax === void 0) { transferSyntax = null; }
-        var dicomInstance = {
-            studyUID: instance.StudyInstanceUid,
-            seriesUID: instance.SeriesInstanceUID,
-            instanceUID: instance.SopInstanceUid
-        };
-        var imageParam = { frameNumber: null, transferSyntax: transferSyntax };
-        var instanceUrl = this._uriProxy.createUrl(dicomInstance, MimeTypes.DICOM, imageParam);
-        //add this "wadouri:" so it loads the wado uri loader, 
-        //the loader trims this prefix from the url
-        this.loadAndViewImage("wadouri:" + instanceUrl);
-        this._loadedInstance = instance;
-        this._transferSyntax = transferSyntax;
+    WadoViewer.prototype.refresh = function () {
         cornerstone.resize(this._viewerElement, true);
-        this._copyImageView.setUrl(instanceUrl);
+    };
+    WadoViewer.prototype.parentView = function () {
+        return this._$parentView;
+    };
+    WadoViewer.prototype.getViewerElement = function () {
+        return this._viewerElement;
+    };
+    WadoViewer.prototype.loadStudy = function (studyParam, transferSyntax) {
+        var _this = this;
+        if (transferSyntax === void 0) { transferSyntax = null; }
+        this._seriesNavigator.reset();
+        $.getJSON(DICOMwebJS.ServerConfiguration.getOhifJsonEndpoint(studyParam.StudyInstanceUid)).then(function (data) {
+            $.each(data.studies, function (studyIndex, study) {
+                $.each(study.seriesList, function (seriesIndex, series) {
+                    _this.loadSeriesJson(study, series, transferSyntax).then(function () {
+                        _this._seriesNavigator.setStudy(study, seriesIndex, transferSyntax);
+                    });
+                    return false;
+                });
+                return false;
+            });
+        });
+    };
+    WadoViewer.prototype.loadSeriesJson = function (study, series, transferSyntax) {
+        var _this = this;
+        if (transferSyntax === void 0) { transferSyntax = null; }
+        var imageIds = [];
+        var instanceParams = [];
+        var stack = {
+            currentImageIdIndex: 0,
+            imageIds: imageIds,
+            instanceParams: instanceParams
+        };
+        $.each(series.instances, function (instsanceIndex, instance) {
+            var imageParam = { frameNumber: null, transferSyntax: transferSyntax };
+            var dicomInstance = {
+                studyUID: study.studyInstanceUid,
+                seriesUID: series.seriesInstanceUid,
+                instanceUID: instance.sopInstanceUid
+            };
+            var wadoImageLoaderUrl = _this.getWadoImageLoaderUrl(dicomInstance, imageParam);
+            instanceParams.push(dicomInstance);
+            imageIds.push(wadoImageLoaderUrl);
+        });
+        this._stack = stack;
+        return this.loadAndViewImage(stack);
+    };
+    WadoViewer.prototype.loadInstance = function (dicomInstance, transferSyntax) {
+        if (transferSyntax === void 0) { transferSyntax = null; }
+        var imageParam = { frameNumber: null, transferSyntax: transferSyntax };
+        var wadoImageLoaderUrl = this.getWadoImageLoaderUrl(dicomInstance, imageParam);
+        var stack = {
+            currentImageIdIndex: 0,
+            imageIds: [],
+            instanceParams: []
+        };
+        stack.imageIds.push(wadoImageLoaderUrl);
+        stack.instanceParams.push(dicomInstance);
+        this._stack = stack;
+        this._seriesNavigator.reset();
+        this.loadAndViewImage(stack);
     };
     WadoViewer.prototype.loadedInstance = function () {
-        return this._loadedInstance;
+        if (this._stack) {
+            return this._stack.instanceParams[this._stack.currentImageIdIndex];
+        }
+        return null;
     };
-    WadoViewer.prototype.loadAndViewImage = function (imageId) {
+    WadoViewer.prototype.loadAndViewImage = function (stack) {
         var _this = this;
         var element = this._viewerElement;
+        var promise;
+        this._instanceSlider.reset();
+        if (stack.imageIds.length == 0) {
+            return;
+        }
+        var start = new Date().getTime();
+        cornerstoneTools.clearToolState(element, "stack");
+        this._instanceSlider.setStack(stack);
         try {
-            var start = new Date().getTime();
-            var promise = cornerstone.loadAndCacheImage(imageId);
+            promise = cornerstone.loadAndCacheImage(stack.imageIds[0]);
             promise.done(function (image) {
-                console.log(image);
+                _this._loaded = true;
                 var viewport = cornerstone.getDefaultViewportForImage(element, image);
                 //$('#toggleModalityLUT').attr("checked",viewport.modalityLUT !== undefined);
                 //$('#toggleVOILUT').attr("checked",viewport.voiLUT !== undefined);
                 cornerstone.displayImage(element, image, viewport);
-                if (_this._loaded === false) {
-                    cornerstoneTools.mouseInput.enable(element);
-                    cornerstoneTools.mouseWheelInput.enable(element);
-                    cornerstoneTools.wwwc.activate(element, 1); // ww/wc is the default tool for left mouse button
-                    cornerstoneTools.pan.activate(element, 2); // pan is the default tool for middle mouse button
-                    cornerstoneTools.zoom.activate(element, 4); // zoom is the default tool for right mouse button
-                    cornerstoneTools.zoomWheel.activate(element); // zoom is the default tool for middle mouse wheel
-                    cornerstoneTools.wwwcTouchDrag.activate(element);
-                    _this._loaded = true;
+                cornerstoneTools.mouseInput.enable(element);
+                cornerstoneTools.mouseWheelInput.enable(element);
+                cornerstoneTools.wwwcTouchDrag.activate(element);
+                cornerstoneTools.addStackStateManager(element, ['stack', 'playClip']);
+                cornerstoneTools.addToolState(element, 'stack', stack);
+                if (stack.imageIds.length > 1) {
+                    _this._mouseActionsButtons.WheelButton = _this._mouseActionsButtons.MouseActions.Sroll;
                 }
+                else {
+                    _this._mouseActionsButtons.WheelButton = _this._mouseActionsButtons.MouseActions.Zoom;
+                }
+                _this._mouseActionsButtons.applyMouseAction(element);
+                cornerstone.resize(_this._viewerElement, true);
                 function getTransferSyntax() {
                     var value = image.data.string('x00020010');
                     return value + ' [' + uids[value] + ']';
@@ -393,9 +473,170 @@ var WadoViewer = (function () {
         catch (err) {
             new ModalDialog().showError("Error", err);
         }
+        return promise;
+    };
+    WadoViewer.prototype.getWadoImageLoaderUrl = function (dicomInstance, imageParam) {
+        var instanceUrl = this._uriProxy.createUrl(dicomInstance, MimeTypes.DICOM, imageParam);
+        //add this "wadouri:" so it loads the wado uri loader, 
+        //the loader trims this prefix from the url
+        return this.WADO_IMAGE_LOADER_PREFIX + instanceUrl;
+    };
+    WadoViewer.prototype.onNewImage = function (e) {
+        var newImageIdIndex = this._stack.currentImageIdIndex;
+        this._copyImageView.setUrl(this._stack.imageIds[this._stack.currentImageIdIndex].replace(this.WADO_IMAGE_LOADER_PREFIX, ""));
     };
     return WadoViewer;
 }());
+var ViewerMouseButtons = (function () {
+    function ViewerMouseButtons() {
+        this.MouseActions = { WL: "WL", Zoom: "Zoom", Pan: "Pan", Sroll: "Scroll" };
+        this.DefaultButton = this.MouseActions.WL;
+        this.RightButton = this.MouseActions.Zoom;
+        this.MiddleButton = this.MouseActions.Pan;
+        this.WheelButton = this.MouseActions.Sroll;
+    }
+    ViewerMouseButtons.prototype.applyMouseAction = function (element) {
+        cornerstoneTools.wwwc.activate(element, 0);
+        cornerstoneTools.pan.activate(element, 0);
+        cornerstoneTools.zoom.activate(element, 0);
+        cornerstoneTools.stackScroll.activate(element, 0);
+        this.apply(element, cornerstoneTools.wwwc, this.MouseActions.WL);
+        this.apply(element, cornerstoneTools.pan, this.MouseActions.Pan);
+        this.apply(element, cornerstoneTools.zoom, this.MouseActions.Zoom);
+        this.apply(element, cornerstoneTools.stackScroll, this.MouseActions.Sroll);
+        if (this.WheelButton == this.MouseActions.Zoom) {
+            cornerstoneTools.zoomWheel.activate(element);
+            cornerstoneTools.stackScrollWheel.deactivate(element);
+            cornerstoneTools.scrollIndicator.disable(element);
+        }
+        else {
+            // Enable all tools we want to use with this element
+            //cornerstoneTools.stackScroll.activate(element, 1);
+            cornerstoneTools.stackScrollWheel.activate(element);
+            cornerstoneTools.scrollIndicator.enable(element);
+            cornerstoneTools.zoomWheel.deactivate(element);
+        }
+    };
+    ViewerMouseButtons.prototype.apply = function (element, action, mouseAction) {
+        if (this.DefaultButton == mouseAction) {
+            action.activate(element, 1);
+        }
+        else if (this.RightButton == mouseAction) {
+            action.activate(element, 4);
+        }
+        else if (this.MiddleButton == mouseAction) {
+            action.activate(element, 2);
+        }
+    };
+    return ViewerMouseButtons;
+}());
+var SeriesNavigator = (function () {
+    function SeriesNavigator(viewer) {
+        var _this = this;
+        this._study = null;
+        this._loadedSeriesIndex = -1;
+        this._transferSyntax = null;
+        this._seriesCount = 0;
+        this._wadoViewer = viewer;
+        this._$prevEl = this._wadoViewer.parentView().find(".prevtSer");
+        this._$nextEl = this._wadoViewer.parentView().find(".nextSer");
+        this._$serInput = this._wadoViewer.parentView().find(".seriesCount");
+        this._$nextEl.click(function () { _this.next(); });
+        this._$prevEl.click(function () { _this.prev(); });
+        this.reset();
+    }
+    SeriesNavigator.prototype.setStudy = function (study, loadedSeriesIndex, transferSyntax) {
+        if (transferSyntax === void 0) { transferSyntax = null; }
+        this._study = study;
+        this._loadedSeriesIndex = loadedSeriesIndex;
+        this._transferSyntax = transferSyntax;
+        this._seriesCount = study.seriesList.length;
+        this.render();
+    };
+    SeriesNavigator.prototype.reset = function () {
+        this._$serInput.text("");
+        this._$prevEl.attr("disabled", "true");
+        this._$nextEl.attr("disabled", "true");
+        this._loadedSeriesIndex = -1;
+        this._seriesCount = 0;
+        this._study = null;
+    };
+    SeriesNavigator.prototype.render = function () {
+        this._$serInput.text("Series " + (this._loadedSeriesIndex + 1) + "/" + this._seriesCount);
+        if (this._loadedSeriesIndex == 0) {
+            this._$prevEl.attr("disabled", "true");
+        }
+        else {
+            this._$prevEl.removeAttr("disabled");
+        }
+        if (this._loadedSeriesIndex == this._seriesCount - 1) {
+            this._$nextEl.attr("disabled", "true");
+        }
+        else {
+            this._$nextEl.removeAttr("disabled");
+        }
+    };
+    SeriesNavigator.prototype.next = function () {
+        if (this._loadedSeriesIndex == -1 || this._loadedSeriesIndex >= this._seriesCount - 1)
+            return;
+        this._wadoViewer.loadSeriesJson(this._study, this._study.seriesList[++this._loadedSeriesIndex], this._transferSyntax);
+        this.render();
+    };
+    SeriesNavigator.prototype.prev = function () {
+        if (this._loadedSeriesIndex <= 0)
+            return;
+        this._wadoViewer.loadSeriesJson(this._study, this._study.seriesList[--this._loadedSeriesIndex], this._transferSyntax);
+        this.render();
+    };
+    return SeriesNavigator;
+}());
+var InstanceSlider = (function () {
+    function InstanceSlider(viewer) {
+        var _this = this;
+        this._viewer = viewer;
+        this._$slider = viewer.parentView().find(".instance-slider");
+        this._$instanceCount = viewer.parentView().find(".instance-count");
+        $(this._viewer.getViewerElement()).on('CornerstoneNewImage', function (event, e) {
+            _this._$slider.val(_this._stack.currentImageIdIndex + 1);
+            _this.render();
+        });
+        this._$slider.on('input', function () {
+            var slideIndex = _this._$slider.val() - 1;
+            if (slideIndex >= 0 && slideIndex < _this._stack.imageIds.length) {
+                var targetElement = _this._viewer.getViewerElement();
+                var stackToolDataSource = cornerstoneTools.getToolState(targetElement, 'stack');
+                if (stackToolDataSource === undefined) {
+                    return;
+                }
+                var stackData = stackToolDataSource.data[0];
+                // Switch images, if necessary
+                if (slideIndex !== stackData.currentImageIdIndex && stackData.imageIds[slideIndex] !== undefined) {
+                    cornerstone.loadAndCacheImage(stackData.imageIds[slideIndex]).then(function (image) {
+                        var viewport = cornerstone.getViewport(targetElement);
+                        stackData.currentImageIdIndex = slideIndex;
+                        cornerstone.displayImage(targetElement, image, viewport);
+                    });
+                }
+            }
+        });
+    }
+    InstanceSlider.prototype.setStack = function (stack) {
+        this._stack = stack;
+        this._$slider.val(stack.currentImageIdIndex + 1);
+        this._$slider.attr("min", 1);
+        this._$slider.attr("max", this._stack.imageIds.length);
+        this.render();
+    };
+    InstanceSlider.prototype.reset = function () {
+        this._stack = null;
+        this._$instanceCount.text("");
+    };
+    InstanceSlider.prototype.render = function () {
+        this._$instanceCount.text("Count " + (this._stack.currentImageIdIndex + 1) + "/" + this._stack.imageIds.length);
+    };
+    return InstanceSlider;
+}());
+/// <reference path="../scripts/typings/dicomwebjs/dicomwebjs.d.ts" />
 jQuery(document).ready(function () {
     new app();
     $(document).ajaxError(function (event, request, settings, thrownError) {
@@ -408,6 +649,7 @@ var app = (function () {
         this.init();
     }
     app.prototype.init = function () {
+        var _this = this;
         if (typeof (serverUrl) != "undefined") {
             DICOMwebJS.ServerConfiguration.BaseServerUrl = serverUrl;
         }
@@ -429,11 +671,13 @@ var app = (function () {
             var rsService = new RetrieveService(rsProxy);
             var delowProxy = new DelowRsProxy();
             var queryView = new QueryView(document.getElementById("#content"), model, rsService);
-            var queryController = new QueryController(queryView, model, qidoProxy, rsService, uriProxy, delowProxy);
             var viewer = new WadoViewer($(".dicomWeb-js-viewer"), uriProxy);
+            var queryController = new QueryController(queryView, model, qidoProxy, rsService, uriProxy, delowProxy, viewer);
             queryView.instanceViewRequest.on(function (args) {
-                $('.nav-tabs a[href="#_ViewerView"]').tab('show');
-                viewer.loadInstance(args.InstanceParams);
+                _this.showViewer(viewer);
+            });
+            queryView.previewStudy.on(function (args) {
+                _this.showViewer(viewer);
             });
             $("#SelectedTransferSyntax").change(function () {
                 var loadedInstance = viewer.loadedInstance();
@@ -443,6 +687,10 @@ var app = (function () {
             });
             new StoreView($("#_StoreView")[0]);
         }
+    };
+    app.prototype.showViewer = function (viewer) {
+        $('.nav-tabs a[href="#_ViewerView"]').tab('show');
+        viewer.refresh();
     };
     //public initViewer() {
     //   // base function to get elements
@@ -500,17 +748,31 @@ $(document).ready(function () {
     });
 });
 var QueryController = (function () {
-    function QueryController(queryView, queryModel, queryService, retrieveService, wadoUriService, delowRsProxy) {
+    function QueryController(queryView, queryModel, queryService, retrieveService, wadoUriService, delowRsProxy, viewer) {
         this._queryView = queryView;
         this._queryModel = queryModel;
         this._queryService = queryService;
         this._retrieveService = retrieveService;
         this._wadoUriService = wadoUriService;
         this._delowRsProxy = delowRsProxy;
+        this._viewer = viewer;
         this.registerEvents();
     }
     QueryController.prototype.registerEvents = function () {
         var _this = this;
+        this._queryView.instanceViewRequest.on(function (args) {
+            var dicomInstance = {
+                studyUID: args.InstanceParams.StudyInstanceUid,
+                seriesUID: args.InstanceParams.SeriesInstanceUID,
+                instanceUID: args.InstanceParams.SopInstanceUid
+            };
+            _this._viewer.loadInstance(dicomInstance);
+        });
+        this._queryView.previewStudy.on(function (args) {
+            var query = new StudyParams();
+            query.StudyInstanceUid = args.StudyParams.StudyInstanceUid;
+            _this._viewer.loadStudy(query);
+        });
         this._queryView.qidoStudy.on(function (args) {
             var query = new StudyParams();
             query.StudyInstanceUid = args.StudyInstanceUID;
@@ -591,15 +853,16 @@ var QueryController = (function () {
         this._queryView.showStudyViewer.on(function (args) {
             var studyUid = args.StudyParams.StudyInstanceUid;
             var viewerUrl = DICOMwebJS.ServerConfiguration.getOhifViewerUrl(studyUid);
+            _this._queryModel.selectedStudy();
             window.open(viewerUrl, "ohifViewer");
         });
         this._queryModel.StudyQueryChangedEvent = function () {
             _this.queryStudies();
         };
-        this._queryModel.SelectedStudyChangedEvent.on(function () {
+        this._queryView.querySeries.on(function () {
             _this.querySeries(_this._queryModel.selectedStudy());
         });
-        this._queryModel.SelectedSeriesChangedEvent.on(function () {
+        this._queryView.queryInstances.on(function () {
             _this.queryInstances(_this._queryModel.selectedSeries());
         });
     };
@@ -927,6 +1190,7 @@ var QueryView = (function () {
         //keep it simple for now
         this.RetrieveInstanceEvent = null;
         //EVENTS
+        this._onPreviewStudy = new LiteEvent();
         this._onQidoStudy = new LiteEvent();
         this._onQidoSeries = new LiteEvent();
         this._onQidoInstance = new LiteEvent();
@@ -936,6 +1200,8 @@ var QueryView = (function () {
         this._onWadoUri = new LiteEvent();
         this._onDeleteStudy = new LiteEvent();
         this._onShowStudyViewer = new LiteEvent();
+        this._onQuerySeries = new LiteEvent();
+        this._onQueryInstances = new LiteEvent();
         this._onViewInstance = new LiteEvent();
         this._ViewClassName = {
             $SeriesQuery: ".series-query", $StudyQuery: ".studies-query", $InstanceQuery: ".instance-query",
@@ -997,8 +1263,23 @@ var QueryView = (function () {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(QueryView.prototype, "previewStudy", {
+        get: function () { return this._onPreviewStudy; },
+        enumerable: true,
+        configurable: true
+    });
     Object.defineProperty(QueryView.prototype, "instanceViewRequest", {
         get: function () { return this._onViewInstance; },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(QueryView.prototype, "querySeries", {
+        get: function () { return this._onQuerySeries; },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(QueryView.prototype, "queryInstances", {
+        get: function () { return this._onQueryInstances; },
         enumerable: true,
         configurable: true
     });
@@ -1216,8 +1497,9 @@ var QueryView = (function () {
     QueryView.prototype.registerStudyEvents = function (study, $item, index) {
         var _this = this;
         $item.find(".thumbnail").on("click", function (ev) {
+            var args = new StudyEventArgs(study);
+            _this._onPreviewStudy.trigger(args);
             _this._model.SelectedStudyIndex = index;
-            $("#studyCollapse").collapse("hide");
             ev.preventDefault();
             return false;
         });
@@ -1259,11 +1541,19 @@ var QueryView = (function () {
             ev.preventDefault();
             return false;
         });
+        $item.find('*[data-pacs-querySeries]').on("click", function (ev) {
+            $("#studyCollapse").collapse("hide");
+            _this._model.SelectedStudyIndex = index;
+            _this._onQuerySeries.trigger();
+            ev.preventDefault();
+            return false;
+        });
     };
     QueryView.prototype.registerSeriesEvents = function (series, $item, index) {
         var _this = this;
         $item.find(".panel-body").on("click", function (ev) {
             _this._model.SelectedSeriesIndex = index;
+            _this._onQueryInstances.trigger();
             $("#seriesCollapse").collapse("hide");
             ev.preventDefault();
             return false;

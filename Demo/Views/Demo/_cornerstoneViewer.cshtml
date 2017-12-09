@@ -24,6 +24,37 @@
 
                 </div>
             </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="control-group">
+                        <label class="control-label">Default Button:</label>
+                        <div class="btn-group" data-toggle="buttons">
+                            <label class="btn btn-primary active">
+                                <input type="radio" name="defaultButtonTool" value="WL" autocomplete="off" checked>W/L
+                            </label>
+                            <label class="btn btn-primary">
+                                <input type="radio" name="defaultButtonTool" value="Stack" autocomplete="off">Stack
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="control-group" >
+                        <button type="button" class="btn btn-sm btn-success prevtSer glyphicon glyphicon-backward" >
+                        </button>
+                        <label class="control-label seriesCount"></label>
+                        <button type="button" class="btn btn-sm btn-success nextSer glyphicon glyphicon-forward">
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="control-group">
+                        <input type="range" min="1" max="1" value="1" class="instance-slider">
+                        <label class="control-label instance-count"></label>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="col-md-3">
             <span>Select Transfer Syntax:</span>
@@ -67,5 +98,4 @@
             <span>Load Time: </span><span id="loadTime"></span><br>
         </div>
     </div>
-
 </div>

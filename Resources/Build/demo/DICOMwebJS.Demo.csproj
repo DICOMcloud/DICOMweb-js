@@ -351,6 +351,10 @@
       <Link>NuGet\Content\Scripts\typings\DICOMwebJS\DICOMwebJS.d.ts</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="..\..\..\Demo\JSLib\Types\fileReaderAsync.ts">
+      <Link>NuGet\Content\JSLib\Types\fileReaderAsync.ts</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <TypeScriptCompile Include="Scripts\typings\ace\index.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\bootstrap\index.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\jquery\jquery.d.ts" />

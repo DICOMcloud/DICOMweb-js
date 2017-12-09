@@ -11,6 +11,7 @@ interface Cornerstone
    loadAndCacheImage(imageId: string): JQueryPromise<{}>;
    getDefaultViewportForImage(element: any, image: any);
    displayImage(element: any, image: any, viewport: any);
+   getViewport: any;
 }
 
 interface CornerstoneTools
@@ -22,6 +23,15 @@ interface CornerstoneTools
    zoom: any; // zoom is the default tool for right mouse button
    zoomWheel: any; // zoom is the default tool for middle mouse wheel
    wwwcTouchDrag: any;
+   addStackStateManager: any;
+   addToolState: any;
+   removeToolState: any;
+   getToolState: any;
+   clearToolState: any;
+   stackScroll: any;
+   stackScrollWheel: any;
+
+   scrollIndicator: any;
 }
 
 interface CornerstoneWADOImageLoader

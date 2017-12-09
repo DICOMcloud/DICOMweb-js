@@ -450,9 +450,13 @@ var DICOMwebJS;
             return DICOMwebJS.ServerConfiguration.BaseServerUrl + DICOMwebJS.ServerConfiguration.DelowRsPart;
         }
         ServerConfiguration.getDelowRsUrl = getDelowRsUrl;
+        function getOhifJsonEndpoint(studyInstanceUid) {
+            return DICOMwebJS.ServerConfiguration.BaseServerUrl + "/ohif/study/" + studyInstanceUid + "/series";
+        }
+        ServerConfiguration.getOhifJsonEndpoint = getOhifJsonEndpoint;
         function getOhifViewerUrl(studyInstanceUid) {
             return DICOMwebJS.ServerConfiguration.OhifViewerUrl + "?url=" +
-                DICOMwebJS.ServerConfiguration.BaseServerUrl + "/ohif/study/" + studyInstanceUid + "/series";
+                DICOMwebJS.ServerConfiguration.getOhifJsonEndpoint(studyInstanceUid);
         }
         ServerConfiguration.getOhifViewerUrl = getOhifViewerUrl;
     })(ServerConfiguration = DICOMwebJS.ServerConfiguration || (DICOMwebJS.ServerConfiguration = {}));

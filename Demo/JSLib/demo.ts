@@ -1,4 +1,6 @@
-﻿jQuery(document).ready(() => {
+﻿/// <reference path="../scripts/typings/dicomwebjs/dicomwebjs.d.ts" />
+
+jQuery(document).ready(() => {
    new app();
 
    $(document).ajaxError(function (event, request, settings, thrownError) {
@@ -8,6 +10,7 @@
 
 declare var serverUrl: string;
 declare var ohifViewerUrl: string;
+
 
 class app {
 
@@ -43,16 +46,16 @@ class app {
          var rsService = new RetrieveService(rsProxy);
          var delowProxy = new DelowRsProxy();
          var queryView = new QueryView(document.getElementById("#content"), model, rsService);
-         var queryController = new QueryController(queryView, model, qidoProxy, rsService, uriProxy, delowProxy);
          var viewer = new WadoViewer($(".dicomWeb-js-viewer"), uriProxy);
+         var queryController = new QueryController(queryView, model, qidoProxy, rsService, uriProxy, delowProxy, viewer);
 
          queryView.instanceViewRequest.on((args) => {
-
-            $('.nav-tabs a[href="#_ViewerView"]').tab('show');
-
-            viewer.loadInstance(args.InstanceParams);
+            this.showViewer(viewer);
          });
 
+         queryView.previewStudy.on((args: StudyEventArgs) => {
+            this.showViewer(viewer);
+         });
 
          $("#SelectedTransferSyntax").change(function () {
             var loadedInstance = viewer.loadedInstance();
@@ -65,6 +68,13 @@ class app {
 
          new StoreView($("#_StoreView")[0]);
       }
+   }
+
+   private showViewer(viewer: WadoViewer)
+   {
+      $('.nav-tabs a[href="#_ViewerView"]').tab('show');
+
+      viewer.refresh();
    }
 
    //public initViewer() {
