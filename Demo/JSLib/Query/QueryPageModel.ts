@@ -1,4 +1,5 @@
-﻿class QueryPageModel
+﻿/// <reference path="../types/iliteevent.ts" />
+class QueryPageModel
 {
    public totalCount: number;
    public firstOffset: number;

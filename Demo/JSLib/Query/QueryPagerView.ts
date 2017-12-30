@@ -1,4 +1,5 @@
-﻿class QueryPagerView
+﻿/// <reference path="../types/iliteevent.ts" />
+class QueryPagerView
 {
    _$first: JQuery;
    _$prev: JQuery;

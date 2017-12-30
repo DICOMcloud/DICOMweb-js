@@ -13,4 +13,4 @@ var LiteEvent = (function () {
     };
     return LiteEvent;
 }());
-//# sourceMappingURL=ILiteEvent.js.map
+//# sourceMappingURL=iliteevent.js.map
