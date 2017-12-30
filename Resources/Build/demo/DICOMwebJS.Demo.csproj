@@ -359,6 +359,12 @@
       <Link>NuGet\Content\JSLib\Types\fileReaderAsync.ts</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <TypeScriptCompile Include="..\..\..\Demo\JSLib\Query\QueryPageModel.ts">
+      <Link>NuGet\Content\JSLib\Query\QueryPageModel.ts</Link>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="..\..\..\Demo\JSLib\Query\QueryPagerView.ts">
+      <Link>NuGet\Content\JSLib\Query\QueryPagerView.ts</Link>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="Scripts\typings\ace\index.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\bootstrap\index.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\jquery\jquery.d.ts" />
