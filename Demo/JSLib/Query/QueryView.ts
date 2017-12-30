@@ -199,7 +199,15 @@ class QueryView
          $("#studyCollapse").collapse("show");
       }
 
-      $("*[data-pacs-study-count]").text(this._model.Studies.length);
+      var pageText = "";
+      if (this._model.StudyPaginationModel.totalCount > this._model.StudyPaginationModel.pageLimit) {
+         pageText = (this._model.StudyPaginationModel.currentOffset + 1) + "-" + (this._model.StudyPaginationModel.currentOffset + this._model.Studies.length) + " of " + this._model.StudyPaginationModel.totalCount;
+      }
+      else
+      {
+         pageText = this._model.Studies.length + ""; 
+      }
+      $("*[data-pacs-study-count]").text(pageText);
 
    }
 

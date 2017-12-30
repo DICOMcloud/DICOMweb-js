@@ -47,7 +47,12 @@ class app {
          var delowProxy = new DelowRsProxy();
          var queryView = new QueryView(document.getElementById("#content"), model, rsService);
          var viewer = new WadoViewer($(".dicomWeb-js-viewer"), uriProxy);
-         var queryController = new QueryController(queryView, model, qidoProxy, rsService, uriProxy, delowProxy, viewer);
+         var studyPagerModel = new QueryPageModel();
+         var studyPager = new QueryPagerView($(".pagination-study"), studyPagerModel);
+
+         model.StudyPaginationModel = studyPagerModel;
+
+         var queryController = new QueryController(queryView, model, qidoProxy, rsService, uriProxy, delowProxy, viewer, studyPager );
 
          queryView.instanceViewRequest.on((args) => {
             this.showViewer(viewer);

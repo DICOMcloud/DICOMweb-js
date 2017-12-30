@@ -6,6 +6,9 @@
    _wadoUriService: WadoUriProxy;
    _delowRsProxy: DelowRsProxy;
    _viewer: WadoViewer;
+   _studyPagerView: QueryPagerView;
+   _studyPagerModel: QueryPageModel;
+
    constructor
    (
       queryView: QueryView,
@@ -14,7 +17,8 @@
       retrieveService: RetrieveService,
       wadoUriService: WadoUriProxy,
       delowRsProxy: DelowRsProxy,
-      viewer: WadoViewer
+      viewer: WadoViewer,
+      studyPagerView: QueryPagerView
    ) {
       this._queryView = queryView;
       this._queryModel = queryModel;
@@ -23,7 +27,12 @@
       this._wadoUriService = wadoUriService;
       this._delowRsProxy = delowRsProxy;
       this._viewer = viewer;
+      
+      this._studyPagerView = studyPagerView;
+      this._studyPagerModel = studyPagerView.model;
+      this._studyPagerView.hide();
       this.registerEvents();
+
    }
 
    private registerEvents()
@@ -166,17 +175,59 @@
       this._queryView.queryInstances.on(() => {
          this.queryInstances(this._queryModel.selectedSeries());
       });
+
+
+      this.registerStudyPager();
    }
 
-   queryStudies(): any {
-       if (!this._queryModel.StudyQueryParams){
+   registerStudyPager()
+   {
+      var offset = 0;
+      var limit = this._studyPagerModel.pageLimit;
+
+      this._studyPagerView.onFirst.on(() => {
+         offset = this._studyPagerModel.firstOffset;
+         limit = this._studyPagerModel.pageLimit;
+         this.queryStudies(offset, limit);
+      });
+
+      this._studyPagerView.onPrev.on(() => {
+         offset = this._studyPagerModel.prevOffset;
+         limit = this._studyPagerModel.pageLimit;
+         this.queryStudies(offset, limit);
+      });
+
+      this._studyPagerView.onNext.on(() => {
+         offset = this._studyPagerModel.nextOffset;
+         limit = this._studyPagerModel.pageLimit;
+         this.queryStudies(offset, limit);
+      });
+
+      this._studyPagerView.onLast.on(() => {
+         offset = this._studyPagerModel.lastOffset;
+         limit = this._studyPagerModel.pageLimit;
+         this.queryStudies(offset, limit);
+      });
+
+
+
+   }
+
+   queryStudies(offset=0, limit=12): any {
+       if (!this._queryModel.StudyQueryParams || offset === -1){
            return;
        }
+
+       var options: QueryOptions = new QueryOptions();
+
+       options.limit = limit;
+       options.offset = offset;
+ 
 
       var params: queryParams = {
          query: this._queryModel.StudyQueryParams,
          returnValues: [],
-         options: null,
+         options: options,
          acceptType: MimeTypes.Json,
          success: null,
          error: null 
@@ -184,6 +235,25 @@
 
       this._queryService.findStudies(params)
          .done((xhr: XMLHttpRequest, data: any) => {
+
+            try {
+               var totalCount = xhr.getResponseHeader("X-Total-Count");
+               if (totalCount) {
+                  this._studyPagerModel.setLinkHeader(xhr.getResponseHeader("link"), data.length, parseInt(totalCount, 10));
+                  this._studyPagerModel.currentOffset = offset;
+                  this._studyPagerView.render();
+                  this._studyPagerView.show();
+               }
+               else
+               {
+                  this._studyPagerView.hide();
+               }
+            }
+            catch(err)
+            {
+               this._studyPagerView.hide();
+            }
+
             this.onQueryStudies(data);
 
          }).fail((xhr: XMLHttpRequest) => {

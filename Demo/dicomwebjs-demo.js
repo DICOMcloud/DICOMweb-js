@@ -58,6 +58,165 @@ var copyImageUrlView = (function () {
     };
     return copyImageUrlView;
 }());
+var QueryPagerView = (function () {
+    function QueryPagerView($element, model) {
+        this.onFirst = new LiteEvent();
+        this.onPrev = new LiteEvent();
+        this.onNext = new LiteEvent();
+        this.onLast = new LiteEvent();
+        this._$element = $element;
+        this.model = model;
+        this._$first = $(this._$element).find(".page-first");
+        this._$prev = $(this._$element).find(".page-previous");
+        this._$next = $(this._$element).find(".page-next");
+        this._$last = $(this._$element).find(".page-last");
+        this._$pageInfo = $(this._$element).find(".page-info");
+        this._registerEvents();
+        this.render();
+    }
+    QueryPagerView.prototype._registerEvents = function () {
+        var _this = this;
+        this._$first.click(function () { _this.onFirst.trigger(); });
+        this._$prev.click(function () { _this.onPrev.trigger(); });
+        this._$next.click(function () { _this.onNext.trigger(); });
+        this._$last.click(function () { _this.onLast.trigger(); });
+    };
+    QueryPagerView.prototype.render = function () {
+        if (this.model.firstOffset < 0) {
+            this._$first.addClass("disabled");
+        }
+        else {
+            this._$first.removeClass("disabled");
+        }
+        if (this.model.prevOffset < 0) {
+            this._$prev.addClass("disabled");
+        }
+        else {
+            this._$prev.removeClass("disabled");
+        }
+        if (this.model.nextOffset < 0) {
+            this._$next.addClass("disabled");
+        }
+        else {
+            this._$next.removeClass("disabled");
+        }
+        if (this.model.lastOffset < 0) {
+            this._$last.addClass("disabled");
+        }
+        else {
+            this._$last.removeClass("disabled");
+        }
+        this._$pageInfo.text("Page: " + this.model.currentPage + "/" + this.model.pageCount);
+    };
+    QueryPagerView.prototype.show = function () {
+        this._$element.show();
+    };
+    QueryPagerView.prototype.hide = function () {
+        this._$element.hide();
+    };
+    return QueryPagerView;
+}());
+var QueryPageModel = (function () {
+    function QueryPageModel() {
+        this.totalCount = 0;
+        this._resultsCount = 0;
+        this.firstOffset = -1;
+        this.prevOffset = -1;
+        this.nextOffset = -1;
+        this.lastOffset = -1;
+        this._currentPageOffset = 0;
+        this.pageLimit = 12;
+        this.currentPage = 0;
+        this.pageCount = 0;
+    }
+    QueryPageModel.prototype.setLinkHeader = function (linkHeader, resultsCount, totalCount) {
+        var _this = this;
+        if (typeof linkHeader == "undefined" || linkHeader == null) {
+            return;
+        }
+        this.totalCount = totalCount;
+        this.ResultsCount = resultsCount;
+        var pageLinks = linkHeader.split(",");
+        this.firstOffset = this.prevOffset = this.nextOffset = this.lastOffset = -1;
+        pageLinks.forEach(function (link) {
+            var linkParts = link.split(";");
+            var queryPart = linkParts[0].split("?")[1];
+            var offset = parseInt(_this.getQueryVariable(queryPart, "offset"), 10);
+            _this.pageLimit = parseInt(_this.getQueryVariable(queryPart, "limit"), 10);
+            var rel = _this.getQueryVariable(linkParts[1], "rel");
+            switch (rel) {
+                case "\"first\"":
+                    {
+                        _this.firstOffset = offset;
+                    }
+                    break;
+                case "\"prev\"":
+                    {
+                        _this.prevOffset = offset;
+                    }
+                    break;
+                case "\"next\"":
+                    {
+                        _this.nextOffset = offset;
+                    }
+                    break;
+                case "\"last\"":
+                    {
+                        _this.lastOffset = offset;
+                    }
+                    break;
+            }
+        });
+    };
+    Object.defineProperty(QueryPageModel.prototype, "currentOffset", {
+        get: function () {
+            return this._currentPageOffset;
+        },
+        set: function (offset) {
+            this._currentPageOffset = offset;
+            this.currentPage = Math.floor(this._currentPageOffset / this.pageLimit) + 1;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(QueryPageModel.prototype, "pageLimit", {
+        get: function () {
+            return this._pageLimit;
+        },
+        set: function (limit) {
+            if (limit < 1) {
+                throw "page limit can't be less than 1";
+            }
+            this._pageLimit = limit;
+            this.currentPage = Math.floor(this._currentPageOffset / this.pageLimit) + 1;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(QueryPageModel.prototype, "ResultsCount", {
+        get: function () {
+            return this._resultsCount;
+        },
+        set: function (count) {
+            this._resultsCount = count;
+            this.pageCount = Math.ceil(this.totalCount / this.pageLimit);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    //https://stackoverflow.com/questions/2090551/parse-query-string-in-javascript
+    QueryPageModel.prototype.getQueryVariable = function (query, variable) {
+        var vars = query.split('&');
+        for (var i = 0; i < vars.length; i++) {
+            var pair = vars[i].split('=');
+            if (decodeURIComponent(pair[0]).trim() == variable) {
+                return decodeURIComponent(pair[1]);
+            }
+        }
+        return "";
+    };
+    return QueryPageModel;
+}());
 var StoreResultView = (function () {
     function StoreResultView($view, uriProxy) {
         this.$view = $view;
@@ -672,7 +831,10 @@ var app = (function () {
             var delowProxy = new DelowRsProxy();
             var queryView = new QueryView(document.getElementById("#content"), model, rsService);
             var viewer = new WadoViewer($(".dicomWeb-js-viewer"), uriProxy);
-            var queryController = new QueryController(queryView, model, qidoProxy, rsService, uriProxy, delowProxy, viewer);
+            var studyPagerModel = new QueryPageModel();
+            var studyPager = new QueryPagerView($(".pagination-study"), studyPagerModel);
+            model.StudyPaginationModel = studyPagerModel;
+            var queryController = new QueryController(queryView, model, qidoProxy, rsService, uriProxy, delowProxy, viewer, studyPager);
             queryView.instanceViewRequest.on(function (args) {
                 _this.showViewer(viewer);
             });
@@ -748,7 +910,7 @@ $(document).ready(function () {
     });
 });
 var QueryController = (function () {
-    function QueryController(queryView, queryModel, queryService, retrieveService, wadoUriService, delowRsProxy, viewer) {
+    function QueryController(queryView, queryModel, queryService, retrieveService, wadoUriService, delowRsProxy, viewer, studyPagerView) {
         this._queryView = queryView;
         this._queryModel = queryModel;
         this._queryService = queryService;
@@ -756,6 +918,9 @@ var QueryController = (function () {
         this._wadoUriService = wadoUriService;
         this._delowRsProxy = delowRsProxy;
         this._viewer = viewer;
+        this._studyPagerView = studyPagerView;
+        this._studyPagerModel = studyPagerView.model;
+        this._studyPagerView.hide();
         this.registerEvents();
     }
     QueryController.prototype.registerEvents = function () {
@@ -865,22 +1030,68 @@ var QueryController = (function () {
         this._queryView.queryInstances.on(function () {
             _this.queryInstances(_this._queryModel.selectedSeries());
         });
+        this.registerStudyPager();
     };
-    QueryController.prototype.queryStudies = function () {
+    QueryController.prototype.registerStudyPager = function () {
         var _this = this;
-        if (!this._queryModel.StudyQueryParams) {
+        var offset = 0;
+        var limit = this._studyPagerModel.pageLimit;
+        this._studyPagerView.onFirst.on(function () {
+            offset = _this._studyPagerModel.firstOffset;
+            limit = _this._studyPagerModel.pageLimit;
+            _this.queryStudies(offset, limit);
+        });
+        this._studyPagerView.onPrev.on(function () {
+            offset = _this._studyPagerModel.prevOffset;
+            limit = _this._studyPagerModel.pageLimit;
+            _this.queryStudies(offset, limit);
+        });
+        this._studyPagerView.onNext.on(function () {
+            offset = _this._studyPagerModel.nextOffset;
+            limit = _this._studyPagerModel.pageLimit;
+            _this.queryStudies(offset, limit);
+        });
+        this._studyPagerView.onLast.on(function () {
+            offset = _this._studyPagerModel.lastOffset;
+            limit = _this._studyPagerModel.pageLimit;
+            _this.queryStudies(offset, limit);
+        });
+    };
+    QueryController.prototype.queryStudies = function (offset, limit) {
+        var _this = this;
+        if (offset === void 0) { offset = 0; }
+        if (limit === void 0) { limit = 12; }
+        if (!this._queryModel.StudyQueryParams || offset === -1) {
             return;
         }
+        var options = new QueryOptions();
+        options.limit = limit;
+        options.offset = offset;
         var params = {
             query: this._queryModel.StudyQueryParams,
             returnValues: [],
-            options: null,
+            options: options,
             acceptType: MimeTypes.Json,
             success: null,
             error: null
         };
         this._queryService.findStudies(params)
             .done(function (xhr, data) {
+            try {
+                var totalCount = xhr.getResponseHeader("X-Total-Count");
+                if (totalCount) {
+                    _this._studyPagerModel.setLinkHeader(xhr.getResponseHeader("link"), data.length, parseInt(totalCount, 10));
+                    _this._studyPagerModel.currentOffset = offset;
+                    _this._studyPagerView.render();
+                    _this._studyPagerView.show();
+                }
+                else {
+                    _this._studyPagerView.hide();
+                }
+            }
+            catch (err) {
+                _this._studyPagerView.hide();
+            }
             _this.onQueryStudies(data);
         }).fail(function (xhr) {
             _this.onQueryError(xhr.status, xhr.responseText);
@@ -1005,6 +1216,7 @@ var QueryModel = (function () {
         this._selectedStudyIndex = this.__NOT_SELECTED;
         this._selectedSeriesIndex = this.__NOT_SELECTED;
         this._selectedInstancesIndex = this.__NOT_SELECTED;
+        this._studyPaginationModel = null;
     }
     Object.defineProperty(QueryModel.prototype, "SelectedStudyChangedEvent", {
         get: function () { return this._onSelectedStudyChanged; },
@@ -1123,6 +1335,16 @@ var QueryModel = (function () {
                 this._selectedInstancesIndex = value;
                 this.onSelectedInstanceChanged();
             }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(QueryModel.prototype, "StudyPaginationModel", {
+        get: function () {
+            return this._studyPaginationModel;
+        },
+        set: function (studpagination) {
+            this._studyPaginationModel = studpagination;
         },
         enumerable: true,
         configurable: true
@@ -1380,7 +1602,14 @@ var QueryView = (function () {
         if (!$("#studyCollapse").hasClass("in")) {
             $("#studyCollapse").collapse("show");
         }
-        $("*[data-pacs-study-count]").text(this._model.Studies.length);
+        var pageText = "";
+        if (this._model.StudyPaginationModel.totalCount > this._model.StudyPaginationModel.pageLimit) {
+            pageText = (this._model.StudyPaginationModel.currentOffset + 1) + "-" + (this._model.StudyPaginationModel.currentOffset + this._model.Studies.length) + " of " + this._model.StudyPaginationModel.totalCount;
+        }
+        else {
+            pageText = this._model.Studies.length + "";
+        }
+        $("*[data-pacs-study-count]").text(pageText);
     };
     QueryView.prototype.renderSeries = function () {
         var _this = this;

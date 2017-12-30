@@ -26,8 +26,12 @@ class QueryModel
    private _selectedSeriesIndex: number = this.__NOT_SELECTED ;
    private _selectedInstancesIndex: number = this.__NOT_SELECTED;
 
+   private _studyPaginationModel: QueryPageModel;
+
    constructor()
-   { }
+   {
+      this._studyPaginationModel = null;
+   }
 
    public get StudyQueryParams() : StudyParams
    {
@@ -128,7 +132,15 @@ class QueryModel
       }
    }
 
-   
+   public get StudyPaginationModel(): QueryPageModel
+   {
+      return this._studyPaginationModel;
+   }
+   public set StudyPaginationModel(studpagination: QueryPageModel)
+   {
+      this._studyPaginationModel = studpagination;
+   }
+
    public selectedStudy() : StudyParams
    {
       if (this._studies.length > 0) {

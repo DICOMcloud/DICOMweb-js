@@ -176,6 +176,9 @@ var QidoRsProxy = (function () {
             queryString += "&";
         }
         queryString += includes.join("&");
+        if (query.options && query.options.limit > 0) {
+            queryString += "&limit=" + query.options.limit + "&offset=" + query.options.offset;
+        }
         methodUrl += "?" + queryString;
         xhr.open("GET", methodUrl, true);
         xhr.setRequestHeader("accept", acceptHeader);

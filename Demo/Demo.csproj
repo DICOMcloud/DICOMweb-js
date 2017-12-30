@@ -183,6 +183,8 @@
     <Content Include="Views\Shared\_CopyImageUrl.cshtml" />
     <Content Include="Views\Demo\_StoreResult.cshtml" />
     <TypeScriptCompile Include="JSLib\copyImageUrlView.ts" />
+    <TypeScriptCompile Include="JSLib\Query\QueryPagerView.ts" />
+    <TypeScriptCompile Include="JSLib\Query\QueryPageModel.ts" />
     <TypeScriptCompile Include="JSLib\Store\StoreResultView.ts" />
     <TypeScriptCompile Include="JSLib\Store\StoreView.ts" />
     <TypeScriptCompile Include="JSLib\appUtils.ts" />
