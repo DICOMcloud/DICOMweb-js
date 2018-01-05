@@ -66,13 +66,20 @@ class QueryPagerView
          this._$last.removeClass("disabled");
       }
 
-      this._$pageInfo.text("Page: " + this.model.currentPage + "/" + this.model.pageCount);
+      if (this.model.pageCount >= this.model.currentPage) {
+         this._$pageInfo.text("Page: " + this.model.currentPage + "/" + this.model.pageCount);
+      }
+      else
+      {
+         this._$pageInfo.text("Page: " + this.model.currentPage);
+      }
    }
 
    public show()
    {
       this._$element.show();
    }
+
    public hide() {
       this._$element.hide();
    }

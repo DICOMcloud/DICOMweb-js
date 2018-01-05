@@ -238,8 +238,15 @@
 
             try {
                var totalCount = xhr.getResponseHeader("X-Total-Count");
-               if (totalCount) {
-                  this._studyPagerModel.setLinkHeader(xhr.getResponseHeader("link"), data.length, parseInt(totalCount, 10));
+               var linkHeader = xhr.getResponseHeader("link");
+               
+               if (linkHeader) {
+                  if (!totalCount)
+                  {
+                     totalCount = "-1";                       
+                  }
+
+                  this._studyPagerModel.setLinkHeader(linkHeader, data.length, parseInt(totalCount, 10));
                   this._studyPagerModel.currentOffset = offset;
                   this._studyPagerView.render();
                   this._studyPagerView.show();
