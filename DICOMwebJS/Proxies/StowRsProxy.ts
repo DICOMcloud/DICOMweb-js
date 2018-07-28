@@ -27,7 +27,7 @@
       fileBufferList: Array<ArrayBuffer>,
       studyInstanceUID: string,
       query:string
-   ) : JQueryPromise<XMLHttpRequest>
+   ): JQueryPromise<{}>
    {
       var deffered = $.Deferred();
       var studyPart = (studyInstanceUID) ? "/studies/" + studyInstanceUID : "";

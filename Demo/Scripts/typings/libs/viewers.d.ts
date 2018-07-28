@@ -6,7 +6,7 @@
 
 interface Cornerstone
 {
-   enable(element: Element): any;
+   enable(element: Element, options: any): any;
    resize(element: Element, fit: Boolean): any;
    loadAndCacheImage(imageId: string): JQueryPromise<{}>;
    getDefaultViewportForImage(element: any, image: any);
@@ -38,6 +38,7 @@ interface CornerstoneWADOImageLoader
 {
    configure(options: any);
    webWorkerManager: any;
+   external: any;
 }
 
 declare var dwv: DWV;

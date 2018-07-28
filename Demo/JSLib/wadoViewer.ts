@@ -40,15 +40,21 @@ class WadoViewer
       this._seriesNavigator = new SeriesNavigator(this);
       this._instanceSlider = new InstanceSlider(this);
 
-      cornerstone.enable(this._viewerElement);
+      const options = {
+        renderer: 'webgl'
+      };
 
+      cornerstone.enable(this._viewerElement, options);
+
+      cornerstoneWADOImageLoader.external.cornerstone = cornerstone;
 
       this.configureWebWorker();
 
 
-      $(this._viewerElement).on('CornerstoneNewImage', (event :JQueryEventObject, e:any) => {
-         this.onNewImage(e);
-      });
+     this._viewerElement.addEventListener('cornerstonenewimage', (e) => {
+       this.onNewImage(e);
+     });
+
 
       $(this._$parentView).find("input[name=defaultButtonTool]").change((eventObj:JQueryEventObject) =>{
          var element: any = eventObj.target;
@@ -76,10 +82,11 @@ class WadoViewer
    {
       var config = {
          
-         webWorkerPath: location.protocol + "//" + location.host + '/bower_components/cornerstoneWADOImageLoader/dist/cornerstoneWADOImageLoaderWebWorker.min.js',
+         webWorkerPath: location.protocol + "//" + location.host + '/scripts/cornerstone/cornerstoneWADOImageLoaderWebWorker.min.js',
          taskConfiguration: {
             'decodeTask': {
-               codecsPath: 'cornerstoneWADOImageLoaderCodecs.min.js'
+              codecsPath: location.protocol + "//" + location.host + '/scripts/cornerstone/cornerstoneWADOImageLoaderCodecs.min.js',
+              usePDFJS: false
             }
          }
       };
@@ -199,7 +206,7 @@ class WadoViewer
        try {
           promise = cornerstone.loadAndCacheImage(stack.imageIds[0]);
 
-          promise.done((image: any) => {
+          promise.then((image: any) => {
              this._loaded = true;
 
              var viewport = cornerstone.getDefaultViewportForImage(element, image);
@@ -279,7 +286,7 @@ class WadoViewer
 
           });
 
-          promise.fail((xhr: XMLHttpRequest) => {
+          promise.catch((xhr: XMLHttpRequest) => {
              var errorText = "Image failed to load";
 
              try {
@@ -466,10 +473,10 @@ class InstanceSlider
       this._$slider = viewer.parentView().find(".instance-slider");
       this._$instanceCount = viewer.parentView().find(".instance-count");
 
-      $(this._viewer.getViewerElement()).on('CornerstoneNewImage', (event: JQueryEventObject, e: any) => {
-         this._$slider.val(this._stack.currentImageIdIndex + 1);
-         this.render();
-      });
+     this._viewer.getViewerElement().addEventListener('cornerstonenewimage', (e) => {
+       this._$slider.val(this._stack.currentImageIdIndex + 1);
+       this.render();
+     });
 
       this._$slider.on('input', () => {
          var slideIndex = this._$slider.val()-1;

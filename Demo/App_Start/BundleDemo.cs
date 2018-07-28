@@ -11,13 +11,6 @@ namespace DICOMwebJS.Demo
             bundles.Add(new ScriptBundle("~/bundles/dicomweb").Include(
                         "~/Scripts/DICOMweb*"));
 
-            bundles.Add ( new ScriptBundle("~/bundles/cornerstornViewer").Include (
-            "~/bower_components/cornerstone/dist/cornerstone.js",    
-            "~/bower_components/dicomParser/dist/dicomParser.js",
-            "~/bower_components/cornerstoneWADOImageLoader/dist/cornerstoneWADOImageLoader.js",
-            "~/bower_components/cornerstoneMath/dist/cornerstoneMath.js",
-            "~/bower_components/cornerstoneTools/dist/cornerstoneTools.js" )) ;
-
             bundles.Add(new ScriptBundle("~/bundles/app").Include (
                        "~/JSLib/uids.js",
                        "~/dicomwebjs-demo.js"));
