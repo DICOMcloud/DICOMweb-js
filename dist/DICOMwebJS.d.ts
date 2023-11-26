@@ -1,7 +1,8 @@
 declare class DelowRsProxy {
     _baseUrl: string;
     constructor(baseUrl?: string);
-    BaseUrl: string;
+    get BaseUrl(): string;
+    set BaseUrl(value: string);
     deleteStudy(studyUID: string): JQueryPromise<any>;
 }
 declare class MimeTypes {
@@ -28,19 +29,23 @@ declare class DicomModuleBase {
 declare class QidoRsProxy {
     _baseUrl: string;
     constructor(baseUrl?: string);
-    BaseUrl: string;
+    get BaseUrl(): string;
+    set BaseUrl(value: string);
     findStudies(query: queryParams): JQueryPromise<XMLHttpRequest>;
     findSeries(query: queryParams): JQueryPromise<XMLHttpRequest>;
     findInstances(query: queryParams): JQueryPromise<XMLHttpRequest>;
-    private DoQuery(query, path);
+    private DoQuery;
 }
 declare class QueryOptions {
     private _fuzzy;
-    fuzzyMatching: boolean;
+    get fuzzyMatching(): boolean;
+    set fuzzyMatching(value: boolean);
     private _limit;
-    limit: number;
+    get limit(): number;
+    set limit(value: number);
     private _offset;
-    offset: number;
+    get offset(): number;
+    set offset(value: number);
 }
 declare class queryParams {
     query: DicomModuleBase;
@@ -52,27 +57,41 @@ declare class queryParams {
 }
 declare class PatientParams extends DicomModuleBase {
     constructor(elementsProvider?: any);
-    PatientId: string;
-    PatientName: PersonName;
+    get PatientId(): string;
+    set PatientId(value: string);
+    get PatientName(): PersonName;
+    set PatientName(value: PersonName);
 }
 declare class StudyParams extends PatientParams {
     constructor(elementsProvider?: DicomDatasetService);
-    StudyInstanceUid: string;
-    StudyDate: string;
-    StudyID: string;
-    AccessionNumber: string;
-    StudyDescription: string;
+    get StudyInstanceUid(): string;
+    set StudyInstanceUid(value: string);
+    get StudyDate(): string;
+    set StudyDate(value: string);
+    get StudyID(): string;
+    set StudyID(value: string);
+    get AccessionNumber(): string;
+    set AccessionNumber(value: string);
+    get StudyDescription(): string;
+    set StudyDescription(value: string);
 }
 declare class SeriesParams extends StudyParams {
-    Modality: string;
-    SeriesNumber: string;
-    SeriesInstanceUID: string;
-    SeriesDescription: string;
-    SeriesDate: string;
+    get Modality(): string;
+    set Modality(value: string);
+    get SeriesNumber(): string;
+    set SeriesNumber(value: string);
+    get SeriesInstanceUID(): string;
+    set SeriesInstanceUID(value: string);
+    get SeriesDescription(): string;
+    set SeriesDescription(value: string);
+    get SeriesDate(): string;
+    set SeriesDate(value: string);
 }
 declare class InstanceParams extends SeriesParams {
-    SopInstanceUid: string;
-    InstanceNumber: string;
+    get SopInstanceUid(): string;
+    set SopInstanceUid(value: string);
+    get InstanceNumber(): string;
+    set InstanceNumber(value: string);
 }
 declare module DICOMwebJS {
     module ServerConfiguration {
@@ -97,16 +116,19 @@ declare module DICOMwebJS {
 declare class StowRsProxy {
     _baseUrl: string;
     constructor(baseUrl?: string);
-    BaseUrl: string;
+    get BaseUrl(): string;
+    set BaseUrl(value: string);
     private _returnJson;
-    returnJson: boolean;
+    get returnJson(): boolean;
+    set returnJson(value: boolean);
     StoreInstance(fileBufferList: Array<ArrayBuffer>, studyInstanceUID: string, query: string): JQueryPromise<{}>;
-    private gen_multipart(title, boundary, mimetype, byteBufferList);
+    private gen_multipart;
 }
 declare class WadoRsProxy {
     _baseUrl: string;
     constructor(baseUrl?: string);
-    BaseUrl: string;
+    get BaseUrl(): string;
+    set BaseUrl(value: string);
     getStudy(studyInstanceUid: string, mediaType: string, transferSyntax?: string): JQueryPromise<{}>;
     getSeries(studyInstanceUid: string, seriesInstanceUid: string, mediaType: string, transferSyntax?: string): JQueryPromise<{}>;
     getObjectInstance(studyInstanceUid: string, seriesInstanceUid: string, sopInstanceUID: string, mediaType: string, transferSyntax?: string): JQueryPromise<{}>;
@@ -124,7 +146,8 @@ declare class WadoUriProxy {
     private static _QueryParamsFormatted;
     private _baseUrl;
     constructor(baseUrl?: string);
-    BaseUrl: string;
+    get BaseUrl(): string;
+    set BaseUrl(value: string);
     getDicomInstance(instanceData: CommonDicomInstanceParams, anonymize: boolean, imageParams: WadoImageParams): JQueryPromise<any>;
     getJpegImage(instanceData: CommonDicomInstanceParams, imageParams: WadoImageParams): JQueryPromise<any>;
     getUncompressedImage(instanceData: CommonDicomInstanceParams, imageParams: WadoImageParams): JQueryPromise<any>;
@@ -152,8 +175,8 @@ declare class DicomElement {
     SetValue(index: number, value: any): void;
     GetValue(index: number, defaultValue: string): any;
     toString(): string;
-    private get(index, defaultValue);
-    private getStringValue();
+    private get;
+    private getStringValue;
 }
 interface DicomElementArray extends Array<DicomElement> {
     [index: number]: DicomElement;
@@ -3810,20 +3833,32 @@ declare class DicomVR {
 declare class ImagePixelMacroIod {
     DicomSourceProvider: IDicomDatasetService;
     constructor(dicomProvider: IDicomDatasetService);
-    SamplesPerPixel: number;
-    PhotometricInterpretation: string;
-    readonly Rows: number;
-    Rowse: number;
-    Columns: number;
-    BitsAllocated: number;
-    BitsStored: number;
-    HighBit: number;
-    PixelRepresentation: string;
-    PlanarConfiguration: number;
-    SmallestImagePixelValue: number;
-    LargestImagePixelValue: number;
-    WindowCenter: number;
-    WindowWidth: number;
+    get SamplesPerPixel(): number;
+    set SamplesPerPixel(value: number);
+    get PhotometricInterpretation(): string;
+    set PhotometricInterpretation(value: string);
+    get Rows(): number;
+    set Rowse(value: number);
+    get Columns(): number;
+    set Columns(value: number);
+    get BitsAllocated(): number;
+    set BitsAllocated(value: number);
+    get BitsStored(): number;
+    set BitsStored(value: number);
+    get HighBit(): number;
+    set HighBit(value: number);
+    get PixelRepresentation(): string;
+    set PixelRepresentation(value: string);
+    get PlanarConfiguration(): number;
+    set PlanarConfiguration(value: number);
+    get SmallestImagePixelValue(): number;
+    set SmallestImagePixelValue(value: number);
+    get LargestImagePixelValue(): number;
+    set LargestImagePixelValue(value: number);
+    get WindowCenter(): number;
+    set WindowCenter(value: number);
+    get WindowWidth(): number;
+    set WindowWidth(value: number);
 }
 interface PersonName {
     Alphabetic: string;

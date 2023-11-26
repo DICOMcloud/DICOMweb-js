@@ -386,7 +386,7 @@ class SeriesNavigator
    private _$nextEl: JQuery;
    private _$serInput: JQuery;
    private _seriesCount: number = 0;
-
+    private _$downloadBase64: JQuery;
    constructor(viewer: WadoViewer)
    {
       this._wadoViewer = viewer;
@@ -394,10 +394,11 @@ class SeriesNavigator
       this._$prevEl = this._wadoViewer.parentView().find(".prevtSer");
       this._$nextEl = this._wadoViewer.parentView().find(".nextSer");
       this._$serInput = this._wadoViewer.parentView().find(".seriesCount");
-
+      this._$downloadBase64 = this._wadoViewer.parentView().find(".downbase64");
+     
       this._$nextEl.click(() => { this.next(); });
       this._$prevEl.click(() => { this.prev(); });
-
+     this._$downloadBase64.click(() => { this.down64(); });
       this.reset();
    }
 
@@ -457,7 +458,13 @@ class SeriesNavigator
 
       this._wadoViewer.loadSeriesJson(this._study, this._study.seriesList[--this._loadedSeriesIndex], this._transferSyntax);
       this.render();
-   }
+  }
+
+  private down64() {
+    const dcmCanvas = this._wadoViewer.parentView().find("#dicomImage");
+
+    console.log("hey");
+  }
 }
 
 class InstanceSlider

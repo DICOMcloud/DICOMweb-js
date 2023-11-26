@@ -30,7 +30,7 @@
    ): JQueryPromise<{}>
    {
       var deffered = $.Deferred();
-      var studyPart = (studyInstanceUID) ? "/studies/" + studyInstanceUID : "";
+      var studyPart = (studyInstanceUID) ? "/studies/" + studyInstanceUID : "/studies/";
       var url = this.BaseUrl + studyPart + "?"+ (query||"");
       var xhr = new XMLHttpRequest();
       var boundary = 'DICOM FILE';

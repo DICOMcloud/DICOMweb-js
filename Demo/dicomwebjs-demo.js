@@ -1,9 +1,17 @@
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var copyImageUrlView = (function () {
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var copyImageUrlView = /** @class */ (function () {
     function copyImageUrlView($parent, uriProxy) {
         this._$parent = $parent;
         this._uriProxy = uriProxy;
@@ -58,7 +66,7 @@ var copyImageUrlView = (function () {
     };
     return copyImageUrlView;
 }());
-var LiteEvent = (function () {
+var LiteEvent = /** @class */ (function () {
     function LiteEvent() {
         this.handlers = [];
     }
@@ -74,7 +82,7 @@ var LiteEvent = (function () {
     return LiteEvent;
 }());
 /// <reference path="../types/iliteevent.ts" />
-var QueryPagerView = (function () {
+var QueryPagerView = /** @class */ (function () {
     function QueryPagerView($element, model) {
         this.onFirst = new LiteEvent();
         this.onPrev = new LiteEvent();
@@ -138,7 +146,7 @@ var QueryPagerView = (function () {
     return QueryPagerView;
 }());
 /// <reference path="../types/iliteevent.ts" />
-var QueryPageModel = (function () {
+var QueryPageModel = /** @class */ (function () {
     function QueryPageModel() {
         this.totalCount = 0;
         this._resultsCount = 0;
@@ -239,7 +247,7 @@ var QueryPageModel = (function () {
     };
     return QueryPageModel;
 }());
-var StoreResultView = (function () {
+var StoreResultView = /** @class */ (function () {
     function StoreResultView($view, uriProxy) {
         this.$view = $view;
         this.$progress = this.$view.find(".progress").hide();
@@ -305,7 +313,7 @@ var StoreResultView = (function () {
     };
     return StoreResultView;
 }());
-var StoreView = (function () {
+var StoreView = /** @class */ (function () {
     function StoreView(parentElement) {
         this._parent = parentElement;
         this._resultView = new StoreResultView($(".store-result-view"), new WadoUriProxy(DICOMwebJS.ServerConfiguration.getWadoRsUrl()));
@@ -345,7 +353,8 @@ var StoreView = (function () {
                     }
                 })
                     .fail(function (xhr) {
-                    if (xhr.status === 202) {
+                    if (xhr.status === 202) //Accepted
+                     {
                         _this._resultView.showWarning(xhr.responseXML, "Some Errors during store  - " + xhr.statusText);
                     }
                     else {
@@ -419,7 +428,7 @@ var appUtils;
     }
     appUtils.download = download;
 })(appUtils || (appUtils = {}));
-var fileReaderAsync = (function () {
+var fileReaderAsync = /** @class */ (function () {
     function fileReaderAsync() {
     }
     fileReaderAsync.prototype.read = function (file) {
@@ -446,7 +455,7 @@ cornerstoneWADOImageLoader.configure({
     }
 });
 ;
-var WadoViewer = (function () {
+var WadoViewer = /** @class */ (function () {
     function WadoViewer($parentView, uriProxy) {
         var _this = this;
         this._loaded = false;
@@ -673,7 +682,7 @@ var WadoViewer = (function () {
     };
     return WadoViewer;
 }());
-var ViewerMouseButtons = (function () {
+var ViewerMouseButtons = /** @class */ (function () {
     function ViewerMouseButtons() {
         this.MouseActions = { WL: "WL", Zoom: "Zoom", Pan: "Pan", Sroll: "Scroll" };
         this.DefaultButton = this.MouseActions.WL;
@@ -716,7 +725,7 @@ var ViewerMouseButtons = (function () {
     };
     return ViewerMouseButtons;
 }());
-var SeriesNavigator = (function () {
+var SeriesNavigator = /** @class */ (function () {
     function SeriesNavigator(viewer) {
         var _this = this;
         this._study = null;
@@ -727,8 +736,10 @@ var SeriesNavigator = (function () {
         this._$prevEl = this._wadoViewer.parentView().find(".prevtSer");
         this._$nextEl = this._wadoViewer.parentView().find(".nextSer");
         this._$serInput = this._wadoViewer.parentView().find(".seriesCount");
+        this._$downloadBase64 = this._wadoViewer.parentView().find(".downbase64");
         this._$nextEl.click(function () { _this.next(); });
         this._$prevEl.click(function () { _this.prev(); });
+        this._$downloadBase64.click(function () { _this.down64(); });
         this.reset();
     }
     SeriesNavigator.prototype.setStudy = function (study, loadedSeriesIndex, transferSyntax) {
@@ -774,9 +785,13 @@ var SeriesNavigator = (function () {
         this._wadoViewer.loadSeriesJson(this._study, this._study.seriesList[--this._loadedSeriesIndex], this._transferSyntax);
         this.render();
     };
+    SeriesNavigator.prototype.down64 = function () {
+        var dcmCanvas = this._wadoViewer.parentView().find("#dicomImage");
+        console.log("hey");
+    };
     return SeriesNavigator;
 }());
-var InstanceSlider = (function () {
+var InstanceSlider = /** @class */ (function () {
     function InstanceSlider(viewer) {
         var _this = this;
         this._viewer = viewer;
@@ -829,7 +844,7 @@ jQuery(document).ready(function () {
         new ModalDialog().showError("Error", thrownError);
     });
 });
-var app = (function () {
+var app = /** @class */ (function () {
     function app() {
         this.__AUTHENTICATION_COOKIE = "__dicomwebclient";
         this.init();
@@ -895,7 +910,7 @@ var app = (function () {
     //   return viewer;
     //}
     app.prototype.initAuthentication = function () {
-        var token = this.getAuthenticationToken();
+        var token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6IjJaUXBKM1VwYmpBWVhZR2FYRUpsOGxWMFRPSSIsImtpZCI6IjJaUXBKM1VwYmpBWVhZR2FYRUpsOGxWMFRPSSJ9.eyJhdWQiOiJodHRwczovL2RpY29tb2hpZmludGVncmF0aW9uLXJhZGljYWxkaWNvbXdlYi5henVyZWhlYWx0aGNhcmVhcGlzLmNvbSIsImlzcyI6Imh0dHBzOi8vc3RzLndpbmRvd3MubmV0L2U5YWYwNGZlLTI4YTktNDVkZC1hYzdmLTE4MDA3ZDYzYzQ3MS8iLCJpYXQiOjE2NjY3NTUwNTYsIm5iZiI6MTY2Njc1NTA1NiwiZXhwIjoxNjY2NzU5ODUwLCJhY3IiOiIxIiwiYWlvIjoiQVdRQW0vOFRBQUFBc3JtL3ZDMzUzdjI4cjAvNERYNG5WOVpUWndxM3JLOUxpeWNyd2ZOUCtyVVZ5OWtLMnZkbFVxYnphaWNuL0EycW12QmlDK1IzRGRXR3ArQk5OQmo0ekRLOGFsNURwdlExS3lQcGlXeUtydkVBVUlVOUFqbEx4UkRWNEVoRkhtZFEiLCJhbHRzZWNpZCI6IjE6bGl2ZS5jb206MDAwM0JGRkQ1NUI0QUZBNiIsImFtciI6WyJwd2QiLCJtZmEiXSwiYXBwaWQiOiIxOTUwYTI1OC0yMjdiLTRlMzEtYTljZi03MTc0OTU5NDVmYzIiLCJhcHBpZGFjciI6IjAiLCJlbWFpbCI6IlJhZGljYWxJbWFnaW5nQG91dGxvb2suY29tIiwiZmFtaWx5X25hbWUiOiJBbFNhZmFkaSIsImdpdmVuX25hbWUiOiJaYWlkIiwiaWRwIjoibGl2ZS5jb20iLCJpcGFkZHIiOiIyMC4xMjcuMTE1LjE0MiIsIm5hbWUiOiJaYWlkIEFsU2FmYWRpIiwib2lkIjoiNzY0NmE4MjUtYWQ3Mi00OTA5LThmYTEtNzZiMjJiM2E3MDIxIiwicHVpZCI6IjEwMDMyMDAyMzdEMkI3MTkiLCJyaCI6IjAuQVZrQV9nU3Y2YWtvM1VXc2Z4Z0FmV1BFY2RoNFowX3ZXdHhEb2Ytd2MzSkxsSldkQUh3LiIsInNjcCI6InVzZXJfaW1wZXJzb25hdGlvbiIsInN1YiI6IkZDejVjaDJZbFBETFN6emxMRVFiaHlKQkVONkRMRUVVZTg2c2d5YkFlSjgiLCJ0aWQiOiJlOWFmMDRmZS0yOGE5LTQ1ZGQtYWM3Zi0xODAwN2Q2M2M0NzEiLCJ1bmlxdWVfbmFtZSI6ImxpdmUuY29tI1JhZGljYWxJbWFnaW5nQG91dGxvb2suY29tIiwidXRpIjoiMkpEekwwSW9RMEtvTHFYRUpQaWNBQSIsInZlciI6IjEuMCJ9.CoREe6GWFJCHpQoAeTNENc6VffjdhNy8mEDh2C6Sc5phWkUxsw0Oqj2L08ACWq_Jh8nykI28qsS-N4I2QhZ-pMWwUNl75AnHFc7dg3uXpInYA5e2MT6_GJFdl6s9yYnpXho_6dDLdzO_5XtskDMVLQ7zqjMTlwIUqoV1K_yDzj_ihoxr6Fq36hY8lh7lkcVveTJJ-7QXJ7snQVSlNtseQd_FemUPyCVDu2ucfve0nNR_ktWlcNMQFDiqgmVRUSRnWRJHXRqAIuEagjcrmHhDJu7F2dMBvZomh3bXgYwyQPTYKxcv1hc7dAqhtcDWHlgHfIU_a7xbusq4mAmUIVWK7w"; //this.getAuthenticationToken();
         if (token) {
             DICOMwebJS.ServerConfiguration.IncludeAuthorizationHeader = true;
             DICOMwebJS.ServerConfiguration.SecurityToken = "Bearer " + token;
@@ -936,7 +951,7 @@ $(document).ready(function () {
         }
     });
 });
-var QueryController = (function () {
+var QueryController = /** @class */ (function () {
     function QueryController(queryView, queryModel, queryService, retrieveService, wadoUriService, delowRsProxy, viewer, studyPagerView) {
         this._queryView = queryView;
         this._queryModel = queryModel;
@@ -1230,7 +1245,7 @@ var QueryController = (function () {
     return QueryController;
 }());
 //TODO: update events with real listenr, currently they are just callbacks to one function
-var QueryModel = (function () {
+var QueryModel = /** @class */ (function () {
     function QueryModel() {
         this.StudyQueryChangedEvent = null;
         this.StudiesChangedEvent = null;
@@ -1437,7 +1452,7 @@ var QueryModel = (function () {
     return QueryModel;
 }());
 /// <reference path="../../scripts/typings/libs/html.ts" />
-var QueryView = (function () {
+var QueryView = /** @class */ (function () {
     function QueryView(parentElement, model, retrieveService) {
         //these will be replaced by some event dispatcher, 
         //keep it simple for now
@@ -1917,7 +1932,7 @@ var QueryView = (function () {
     };
     return QueryView;
 }());
-var RetrieveService = (function () {
+var RetrieveService = /** @class */ (function () {
     //_queryModel: QueryModel;
     function RetrieveService(retrieveServic) {
         this._retrieveService = retrieveServic;
@@ -2003,7 +2018,7 @@ var RetrieveService = (function () {
     };
     return RetrieveService;
 }());
-var CodeRenderer = (function () {
+var CodeRenderer = /** @class */ (function () {
     function CodeRenderer() {
     }
     CodeRenderer.prototype.renderJson = function (uiElement, data) {
@@ -2047,7 +2062,7 @@ var CodeRenderer = (function () {
     return CodeRenderer;
 }());
 /// <reference path="coderenderer.ts" />
-var ModalDialog = (function () {
+var ModalDialog = /** @class */ (function () {
     function ModalDialog($dialogName) {
         if ($dialogName === void 0) { $dialogName = "#modal-alert"; }
         this._onDlgClose = new LiteEvent();
@@ -2102,7 +2117,7 @@ var ModalDialog = (function () {
     };
     return ModalDialog;
 }());
-var QidoRsEventArgs = (function () {
+var QidoRsEventArgs = /** @class */ (function () {
     function QidoRsEventArgs(mediaType, studyInstanceUid, seriesInstanceUid, sopInstanceUid) {
         this.StudyInstanceUID = studyInstanceUid;
         this.SeriesInstanceUID = seriesInstanceUid;
@@ -2151,7 +2166,7 @@ var QidoRsEventArgs = (function () {
     });
     return QidoRsEventArgs;
 }());
-var RsInstanceEventArgs = (function () {
+var RsInstanceEventArgs = /** @class */ (function () {
     function RsInstanceEventArgs(instance, mediaType) {
         this._instanceParams = instance;
         this._mediaType = mediaType;
@@ -2183,7 +2198,7 @@ var RsInstanceEventArgs = (function () {
     return RsInstanceEventArgs;
 }());
 /// <reference path="rsinstanceeventargs.ts" />
-var RsFramesEventArgs = (function (_super) {
+var RsFramesEventArgs = /** @class */ (function (_super) {
     __extends(RsFramesEventArgs, _super);
     function RsFramesEventArgs(instance, mediaType, frames) {
         var _this = _super.call(this, instance, mediaType) || this;
@@ -2204,7 +2219,7 @@ var RsFramesEventArgs = (function (_super) {
     ;
     return RsFramesEventArgs;
 }(RsInstanceEventArgs));
-var StudyEventArgs = (function () {
+var StudyEventArgs = /** @class */ (function () {
     function StudyEventArgs(study) {
         this._studyParams = study;
     }
@@ -2222,7 +2237,7 @@ var StudyEventArgs = (function () {
     ;
     return StudyEventArgs;
 }());
-var WadoUriEventArgs = (function (_super) {
+var WadoUriEventArgs = /** @class */ (function (_super) {
     __extends(WadoUriEventArgs, _super);
     function WadoUriEventArgs(instance, contentType, frame) {
         var _this = _super.call(this, instance, contentType) || this;

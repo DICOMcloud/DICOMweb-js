@@ -32,7 +32,7 @@ class QidoRsProxy
        return this.DoQuery(query, "/instances");
     }
 
-   private DoQuery(query: queryParams, path: string): JQueryPromise<XMLHttpRequest> {
+   private DoQuery(query: queryParams, path: string): JQueryPromise<any> {
       var $deffered = $.Deferred();
        var xhr = new XMLHttpRequest();
        var elements = query.query.DicomSourceProvider.getElements();

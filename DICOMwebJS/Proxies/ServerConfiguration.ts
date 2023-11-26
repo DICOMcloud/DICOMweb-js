@@ -3,10 +3,10 @@
        export var BaseServerUrl: string;
        export var OhifViewerUrl: string;
         export var WadoUriPart: string = "wadouri";
-        export var WadoRsPart : string = "wadors";
-        export var StowPart: string = "stowrs";
-        export var QidoPart: string = "qidors";
-        export var DelowRsPart: string = "delowrs";
+        export var WadoRsPart : string = "api";
+        export var StowPart: string = "api";
+        export var QidoPart: string = "api";
+        export var DelowRsPart: string = "api";
        
         export var IncludeAuthorizationHeader: boolean = false;
         export var SecurityToken: string = "";
