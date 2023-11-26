@@ -435,10 +435,10 @@ var DICOMwebJS;
     var ServerConfiguration;
     (function (ServerConfiguration) {
         ServerConfiguration.WadoUriPart = "wadouri";
-        ServerConfiguration.WadoRsPart = "";
-        ServerConfiguration.StowPart = "";
-        ServerConfiguration.QidoPart = "";
-        ServerConfiguration.DelowRsPart = "";
+        ServerConfiguration.WadoRsPart = "api";
+        ServerConfiguration.StowPart = "api";
+        ServerConfiguration.QidoPart = "api";
+        ServerConfiguration.DelowRsPart = "api";
         ServerConfiguration.IncludeAuthorizationHeader = false;
         ServerConfiguration.SecurityToken = "";
         function getWadoUriUrl() {
